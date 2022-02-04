@@ -1,4 +1,4 @@
-package com.example.trade_agent_app
+package com.tocandraw.trade_agent
 
 import io.flutter.embedding.android.FlutterActivity
 
