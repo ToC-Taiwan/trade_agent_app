@@ -48,7 +48,7 @@ android {
     }
 
     defaultConfig {
-        applicationId "com.tocandraw.trade_agent"
+        applicationId "com.tocandraw.trade_agent_v2"
         minSdkVersion 26
         targetSdkVersion 31
         versionCode flutterVersionCode.toInteger()

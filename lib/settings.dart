@@ -1,7 +1,8 @@
-import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
 import 'dart:async';
 import 'dart:convert';
+
+import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 import 'package:trade_agent_app/url.dart';
 
 class SettingsPage extends StatefulWidget {
@@ -27,7 +28,7 @@ class _SettingsPageState extends State<SettingsPage> {
         future: futureConfig,
         builder: (context, snapshot) {
           if (snapshot.hasData) {
-            Config data = snapshot.data!;
+            var data = snapshot.data!;
             return ListView(
               children: [
                 const SizedBox(
@@ -332,7 +333,7 @@ class _SettingsPageState extends State<SettingsPage> {
 }
 
 Future<Config> fetchConfig() async {
-  final response = await http.get(Uri.parse(tradeAgentURLPrefix + '/config'));
+  final response = await http.get(Uri.parse('$tradeAgentURLPrefix/config'));
   if (response.statusCode == 200) {
     return Config.fromJson(jsonDecode(response.body));
   } else {
@@ -341,16 +342,6 @@ Future<Config> fetchConfig() async {
 }
 
 class Config {
-  Server? server;
-  Database? database;
-  Mqtt? mqtt;
-  TradeSwitch? tradeSwitch;
-  Trade? trade;
-  Quota? quota;
-  TargetCond? targetCond;
-  Analyze? analyze;
-  Schedule? schedule;
-
   Config({this.server, this.database, this.mqtt, this.tradeSwitch, this.trade, this.quota, this.targetCond, this.analyze, this.schedule});
 
   Config.fromJson(Map<String, dynamic> json) {
@@ -396,14 +387,19 @@ class Config {
     }
     return data;
   }
+
+  Server? server;
+  Database? database;
+  Mqtt? mqtt;
+  TradeSwitch? tradeSwitch;
+  Trade? trade;
+  Quota? quota;
+  TargetCond? targetCond;
+  Analyze? analyze;
+  Schedule? schedule;
 }
 
 class Server {
-  String? runMode;
-  String? httpPort;
-  String? sinopacSrvHost;
-  String? sinopacSrvPort;
-
   Server({this.runMode, this.httpPort, this.sinopacSrvHost, this.sinopacSrvPort});
 
   Server.fromJson(Map<String, dynamic> json) {
@@ -421,16 +417,14 @@ class Server {
     data['sinopac_srv_port'] = sinopacSrvPort;
     return data;
   }
+
+  String? runMode;
+  String? httpPort;
+  String? sinopacSrvHost;
+  String? sinopacSrvPort;
 }
 
 class Database {
-  String? host;
-  String? port;
-  String? user;
-  String? passwd;
-  String? database;
-  String? timeZone;
-
   Database({this.host, this.port, this.user, this.passwd, this.database, this.timeZone});
 
   Database.fromJson(Map<String, dynamic> json) {
@@ -452,18 +446,16 @@ class Database {
     data['time_zone'] = timeZone;
     return data;
   }
-}
 
-class Mqtt {
   String? host;
   String? port;
   String? user;
   String? passwd;
-  String? clientId;
-  String? caPath;
-  String? certPath;
-  String? keyPath;
+  String? database;
+  String? timeZone;
+}
 
+class Mqtt {
   Mqtt({this.host, this.port, this.user, this.passwd, this.clientId, this.caPath, this.certPath, this.keyPath});
 
   Mqtt.fromJson(Map<String, dynamic> json) {
@@ -489,19 +481,18 @@ class Mqtt {
     data['key_path'] = keyPath;
     return data;
   }
+
+  String? host;
+  String? port;
+  String? user;
+  String? passwd;
+  String? clientId;
+  String? caPath;
+  String? certPath;
+  String? keyPath;
 }
 
 class TradeSwitch {
-  bool? simulation;
-  bool? buy;
-  bool? sell;
-  bool? sellFirst;
-  bool? buyLater;
-  num? meanTimeForward;
-  num? meanTimeReverse;
-  num? forwardMax;
-  num? reverseMax;
-
   TradeSwitch(
       {this.simulation, this.buy, this.sell, this.sellFirst, this.buyLater, this.meanTimeForward, this.meanTimeReverse, this.forwardMax, this.reverseMax});
 
@@ -530,19 +521,19 @@ class TradeSwitch {
     data['reverse_max'] = reverseMax;
     return data;
   }
+
+  bool? simulation;
+  bool? buy;
+  bool? sell;
+  bool? sellFirst;
+  bool? buyLater;
+  num? meanTimeForward;
+  num? meanTimeReverse;
+  num? forwardMax;
+  num? reverseMax;
 }
 
 class Trade {
-  num? historyClosePeriod;
-  num? historyTickPeriod;
-  num? historyKbarPeriod;
-  num? holdTimeFromOpen;
-  num? totalOpenTime;
-  num? tradeInWaitTime;
-  num? tradeOutWaitTime;
-  num? tradeInEndTime;
-  num? tradeOutEndTime;
-
   Trade(
       {this.historyClosePeriod,
       this.historyTickPeriod,
@@ -579,14 +570,19 @@ class Trade {
     data['trade_out_end_time'] = tradeOutEndTime;
     return data;
   }
+
+  num? historyClosePeriod;
+  num? historyTickPeriod;
+  num? historyKbarPeriod;
+  num? holdTimeFromOpen;
+  num? totalOpenTime;
+  num? tradeInWaitTime;
+  num? tradeOutWaitTime;
+  num? tradeInEndTime;
+  num? tradeOutEndTime;
 }
 
 class Quota {
-  num? tradeQuota;
-  num? tradeTaxRatio;
-  num? tradeFeeRatio;
-  num? feeDiscount;
-
   Quota({this.tradeQuota, this.tradeTaxRatio, this.tradeFeeRatio, this.feeDiscount});
 
   Quota.fromJson(Map<String, dynamic> json) {
@@ -604,16 +600,14 @@ class Quota {
     data['fee_discount'] = feeDiscount;
     return data;
   }
+
+  num? tradeQuota;
+  num? tradeTaxRatio;
+  num? tradeFeeRatio;
+  num? feeDiscount;
 }
 
 class TargetCond {
-  num? limitPriceLow;
-  num? limitPriceHigh;
-  num? limitVolume;
-  List<String>? blackStock;
-  List<String>? blackCategory;
-  num? realTimeTargetsCount;
-
   TargetCond({this.limitPriceLow, this.limitPriceHigh, this.limitVolume, this.blackStock, this.blackCategory, this.realTimeTargetsCount});
 
   TargetCond.fromJson(Map<String, dynamic> json) {
@@ -635,24 +629,16 @@ class TargetCond {
     data['real_time_targets_count'] = realTimeTargetsCount;
     return data;
   }
+
+  num? limitPriceLow;
+  num? limitPriceHigh;
+  num? limitVolume;
+  List<String>? blackStock;
+  List<String>? blackCategory;
+  num? realTimeTargetsCount;
 }
 
 class Analyze {
-  num? closeChangeRatioLow;
-  num? closeChangeRatioHigh;
-  num? openCloseChangeRatioLow;
-  num? openCloseChangeRatioHigh;
-  num? outInRatio;
-  num? inOutRatio;
-  num? volumePrLow;
-  num? volumePrHigh;
-  num? tickAnalyzeMinPeriod;
-  num? tickAnalyzeMaxPeriod;
-  num? rsiMinCount;
-  num? rsiHigh;
-  num? rsiLow;
-  num? maxLoss;
-
   Analyze(
       {this.closeChangeRatioLow,
       this.closeChangeRatioHigh,
@@ -704,12 +690,24 @@ class Analyze {
     data['max_loss'] = maxLoss;
     return data;
   }
+
+  num? closeChangeRatioLow;
+  num? closeChangeRatioHigh;
+  num? openCloseChangeRatioLow;
+  num? openCloseChangeRatioHigh;
+  num? outInRatio;
+  num? inOutRatio;
+  num? volumePrLow;
+  num? volumePrHigh;
+  num? tickAnalyzeMinPeriod;
+  num? tickAnalyzeMaxPeriod;
+  num? rsiMinCount;
+  num? rsiHigh;
+  num? rsiLow;
+  num? maxLoss;
 }
 
 class Schedule {
-  String? cleanEvent;
-  String? restartSinopac;
-
   Schedule({this.cleanEvent, this.restartSinopac});
 
   Schedule.fromJson(Map<String, dynamic> json) {
@@ -723,4 +721,7 @@ class Schedule {
     data['restart_sinopac'] = restartSinopac;
     return data;
   }
+
+  String? cleanEvent;
+  String? restartSinopac;
 }

@@ -1,7 +1,8 @@
-import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
 import 'dart:async';
 import 'dart:convert';
+
+import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 import 'package:trade_agent_app/url.dart';
 
 class OrderPage extends StatefulWidget {
@@ -28,8 +29,8 @@ class _OrderPageState extends State<OrderPage> {
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             var data = snapshot.data;
-            List<Widget> widgetArr = [];
-            for (Order i in data!) {
+            var widgetArr = <Widget>[];
+            for (final i in data!) {
               widgetArr.add(generateRow(i));
             }
             return ListView(children: widgetArr);
@@ -58,7 +59,6 @@ Widget generateRow(Order order) {
       direction: Axis.horizontal,
       children: [
         Expanded(
-          flex: 1,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: const [
@@ -142,10 +142,10 @@ Widget generateRow(Order order) {
 }
 
 Future<List<Order>> fetchOrder() async {
-  final response = await http.get(Uri.parse(tradeAgentURLPrefix + '/order'));
-  List<Order> result = [];
+  final response = await http.get(Uri.parse('$tradeAgentURLPrefix/order'));
+  var result = <Order>[];
   if (response.statusCode == 200) {
-    for (Map<String, dynamic> i in jsonDecode(response.body)) {
+    for (final Map<String, dynamic> i in jsonDecode(response.body)) {
       result.add(Order.fromJson(i));
     }
     return result;
@@ -155,14 +155,6 @@ Future<List<Order>> fetchOrder() async {
 }
 
 class Order {
-  num? stockId;
-  String? orderTime;
-  num? action;
-  num? price;
-  num? quantity;
-  num? status;
-  String? orderId;
-
   Order({this.stockId, this.orderTime, this.action, this.price, this.quantity, this.status, this.orderId});
 
   Order.fromJson(Map<String, dynamic> json) {
@@ -186,4 +178,12 @@ class Order {
     data['order_id'] = orderId;
     return data;
   }
+
+  num? stockId;
+  String? orderTime;
+  num? action;
+  num? price;
+  num? quantity;
+  num? status;
+  String? orderId;
 }

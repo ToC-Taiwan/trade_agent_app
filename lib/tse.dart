@@ -1,10 +1,11 @@
-import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
-import 'dart:io' show Platform;
 import 'dart:async';
 import 'dart:convert';
-import 'package:trade_agent_app/url.dart';
+import 'dart:io' show Platform;
+
+import 'package:flutter/material.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
+import 'package:http/http.dart' as http;
+import 'package:trade_agent_app/url.dart';
 
 class TSEPage extends StatefulWidget {
   const TSEPage({Key? key}) : super(key: key);
@@ -22,7 +23,7 @@ class _TSEPageState extends State<TSEPage> {
     size: AdSize.banner,
     request: const AdRequest(),
     listener: BannerAdListener(
-      onAdFailedToLoad: (Ad ad, LoadAdError _) {
+      onAdFailedToLoad: (ad, _) {
         // Dispose the ad here to free resources.
         ad.dispose();
       },
@@ -40,12 +41,12 @@ class _TSEPageState extends State<TSEPage> {
 
   @override
   Widget build(BuildContext context) {
-    final AdWidget adWidget = AdWidget(ad: myBanner);
-    final Container adContainer = Container(
+    final adWidget = AdWidget(ad: myBanner);
+    final adContainer = Container(
       alignment: Alignment.center,
-      child: adWidget,
       width: myBanner.size.width.toDouble(),
       height: myBanner.size.height.toDouble(),
+      child: adWidget,
     );
     return Center(
       child: FutureBuilder<TSE>(
@@ -53,7 +54,7 @@ class _TSEPageState extends State<TSEPage> {
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             var data = snapshot.data;
-            List<Widget> widgetArr = [];
+            var widgetArr = <Widget>[];
             widgetArr.add(generateRow('Date', data!.tickTime.toString().substring(0, 10)));
             widgetArr.add(generateRow('Close', commaNumber(data.close.toString())));
             widgetArr.add(generateRow('Open', commaNumber(data.open.toString())));
@@ -126,7 +127,7 @@ Widget generateRow(String columnName, String value) {
 }
 
 Future<TSE> fetchTSE() async {
-  final response = await http.get(Uri.parse(tradeAgentURLPrefix + '/tse/real-time'));
+  final response = await http.get(Uri.parse('$tradeAgentURLPrefix/tse/real-time'));
   if (response.statusCode == 200) {
     return TSE.fromJson(jsonDecode(response.body));
   } else {
@@ -135,23 +136,6 @@ Future<TSE> fetchTSE() async {
 }
 
 class TSE {
-  Stock? stock;
-  String? tickTime;
-  num? open;
-  num? high;
-  num? low;
-  num? close;
-  String? tickType;
-  num? priceChg;
-  num? pctChg;
-  String? chgType;
-  num? volume;
-  num? volumeSum;
-  num? amount;
-  num? amountSum;
-  num? yesterdayVolume;
-  num? volumeRatio;
-
   TSE(
       {this.stock,
       this.tickTime,
@@ -211,14 +195,26 @@ class TSE {
     data['volume_ratio'] = volumeRatio;
     return data;
   }
+
+  Stock? stock;
+  String? tickTime;
+  num? open;
+  num? high;
+  num? low;
+  num? close;
+  String? tickType;
+  num? priceChg;
+  num? pctChg;
+  String? chgType;
+  num? volume;
+  num? volumeSum;
+  num? amount;
+  num? amountSum;
+  num? yesterdayVolume;
+  num? volumeRatio;
 }
 
 class Stock {
-  String? number;
-  String? name;
-  String? exchange;
-  String? category;
-
   Stock({this.number, this.name, this.exchange, this.category});
 
   Stock.fromJson(Map<String, dynamic> json) {
@@ -236,4 +232,9 @@ class Stock {
     data['category'] = category;
     return data;
   }
+
+  String? number;
+  String? name;
+  String? exchange;
+  String? category;
 }

@@ -1,7 +1,8 @@
-import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
 import 'dart:async';
 import 'dart:convert';
+
+import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 import 'package:trade_agent_app/url.dart';
 
 class Targetspage extends StatefulWidget {
@@ -27,17 +28,21 @@ class _TargetspageState extends State<Targetspage> {
         future: futureTargets,
         builder: (context, snapshot) {
           if (snapshot.hasData) {
-            List<Widget> tmp = [];
-            tmp.add(const SizedBox(
-              height: 15,
-            ));
-            for (Target i in snapshot.data!) {
+            var tmp = <Widget>[];
+            tmp.add(
+              const SizedBox(
+                height: 15,
+              ),
+            );
+            for (final i in snapshot.data!) {
+              if (i.rank == -1) {
+                continue;
+              }
               tmp.add(
                 Flex(
                   direction: Axis.horizontal,
                   children: [
                     Expanded(
-                      flex: 1,
                       child: Container(
                         padding: const EdgeInsets.only(left: 20),
                         child: Text(
@@ -48,7 +53,6 @@ class _TargetspageState extends State<Targetspage> {
                       ),
                     ),
                     Expanded(
-                      flex: 1,
                       child: Container(
                         padding: const EdgeInsets.only(left: 10),
                         child: Text(
@@ -70,7 +74,6 @@ class _TargetspageState extends State<Targetspage> {
                       ),
                     ),
                     Expanded(
-                      flex: 1,
                       child: Container(
                         padding: const EdgeInsets.only(left: 10),
                         child: Text(
@@ -80,7 +83,6 @@ class _TargetspageState extends State<Targetspage> {
                       ),
                     ),
                     Expanded(
-                      flex: 1,
                       child: Container(
                         color: Colors.amber[50],
                         child: Text(
@@ -110,10 +112,10 @@ class _TargetspageState extends State<Targetspage> {
 }
 
 Future<List<Target>> fetchTargets() async {
-  List<Target> targetArr = [];
-  final response = await http.get(Uri.parse(tradeAgentURLPrefix + '/targets'));
+  var targetArr = <Target>[];
+  final response = await http.get(Uri.parse('$tradeAgentURLPrefix/targets'));
   if (response.statusCode == 200) {
-    for (Map<String, dynamic> i in jsonDecode(response.body)) {
+    for (final Map<String, dynamic> i in jsonDecode(response.body)) {
       targetArr.add(Target.fromJson(i));
     }
     return targetArr;
@@ -123,12 +125,6 @@ Future<List<Target>> fetchTargets() async {
 }
 
 class Target {
-  Stock? stock;
-  num? stockId;
-  String? tradeDay;
-  num? rank;
-  num? volume;
-
   Target({this.stock, this.stockId, this.tradeDay, this.rank, this.volume});
 
   Target.fromJson(Map<String, dynamic> json) {
@@ -150,16 +146,15 @@ class Target {
     data['volume'] = volume;
     return data;
   }
+
+  Stock? stock;
+  num? stockId;
+  String? tradeDay;
+  num? rank;
+  num? volume;
 }
 
 class Stock {
-  String? number;
-  String? name;
-  String? exchange;
-  String? category;
-  bool? dayTrade;
-  num? lastClose;
-
   Stock({this.number, this.name, this.exchange, this.category, this.dayTrade, this.lastClose});
 
   Stock.fromJson(Map<dynamic, dynamic> json) {
@@ -181,4 +176,11 @@ class Stock {
     data['last_close'] = lastClose;
     return data;
   }
+
+  String? number;
+  String? name;
+  String? exchange;
+  String? category;
+  bool? dayTrade;
+  num? lastClose;
 }

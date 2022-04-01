@@ -1,7 +1,8 @@
-import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
 import 'dart:async';
 import 'dart:convert';
+
+import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 import 'package:trade_agent_app/url.dart';
 
 class BalancePage extends StatefulWidget {
@@ -27,7 +28,7 @@ class _BalancePageState extends State<BalancePage> {
         future: futureBalance,
         builder: (context, snapshot) {
           if (snapshot.hasData) {
-            List<Balance> dataArr = [];
+            var dataArr = <Balance>[];
             dataArr = snapshot.data!;
             num total = 0;
             num lastTotal = 0;
@@ -105,10 +106,10 @@ String mathFunc(Match match) {
 }
 
 Future<List<Balance>> fetchBalance() async {
-  List<Balance> balanceArr = [];
-  final response = await http.get(Uri.parse(tradeAgentURLPrefix + '/balance'));
+  var balanceArr = <Balance>[];
+  final response = await http.get(Uri.parse('$tradeAgentURLPrefix/balance'));
   if (response.statusCode == 200) {
-    for (Map<String, dynamic> i in jsonDecode(response.body)) {
+    for (final Map<String, dynamic> i in jsonDecode(response.body)) {
       balanceArr.add(Balance.fromJson(i));
     }
     return balanceArr;
@@ -118,13 +119,6 @@ Future<List<Balance>> fetchBalance() async {
 }
 
 class Balance {
-  String? tradeDay;
-  num? tradeCount;
-  num? forward;
-  num? originalBalance;
-  num? discount;
-  num? total;
-
   Balance({this.tradeDay, this.tradeCount, this.forward, this.originalBalance, this.discount, this.total});
 
   Balance.fromJson(Map<String, dynamic> json) {
@@ -146,4 +140,11 @@ class Balance {
     data['total'] = total;
     return data;
   }
+
+  String? tradeDay;
+  num? tradeCount;
+  num? forward;
+  num? originalBalance;
+  num? discount;
+  num? total;
 }
