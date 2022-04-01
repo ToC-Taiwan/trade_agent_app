@@ -114,7 +114,7 @@ Future<List<Balance>> fetchBalance() async {
     }
     return balanceArr;
   } else {
-    throw Exception('Failed to load');
+    return balanceArr;
   }
 }
 

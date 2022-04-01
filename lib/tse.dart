@@ -53,9 +53,19 @@ class _TSEPageState extends State<TSEPage> {
         future: futureTSE,
         builder: (context, snapshot) {
           if (snapshot.hasData) {
-            var data = snapshot.data;
+            var data = snapshot.data!;
             var widgetArr = <Widget>[];
-            widgetArr.add(generateRow('Date', data!.tickTime.toString().substring(0, 10)));
+            if (data.tickTime.toString().length > 10) {
+              widgetArr.add(generateRow('Date', data.tickTime.toString().substring(0, 10)));
+            } else {
+              return const Text(
+                'Loading...',
+                style: TextStyle(
+                  fontSize: 30,
+                ),
+                textAlign: TextAlign.center,
+              );
+            }
             widgetArr.add(generateRow('Close', commaNumber(data.close.toString())));
             widgetArr.add(generateRow('Open', commaNumber(data.open.toString())));
             widgetArr.add(generateRow('High', commaNumber(data.high.toString())));
@@ -77,8 +87,6 @@ class _TSEPageState extends State<TSEPage> {
                 ),
               ],
             );
-          } else if (snapshot.hasError) {
-            return Text('${snapshot.error}');
           }
           return const CircularProgressIndicator();
         },
@@ -131,7 +139,7 @@ Future<TSE> fetchTSE() async {
   if (response.statusCode == 200) {
     return TSE.fromJson(jsonDecode(response.body));
   } else {
-    throw Exception('Failed to load');
+    return TSE();
   }
 }
 

@@ -33,9 +33,16 @@ class _OrderPageState extends State<OrderPage> {
             for (final i in data!) {
               widgetArr.add(generateRow(i));
             }
+            if (widgetArr.isEmpty) {
+              return const Text(
+                'Loading...',
+                style: TextStyle(
+                  fontSize: 30,
+                ),
+                textAlign: TextAlign.center,
+              );
+            }
             return ListView(children: widgetArr);
-          } else if (snapshot.hasError) {
-            return Text('${snapshot.error}');
           }
           return const CircularProgressIndicator();
         },
@@ -150,7 +157,7 @@ Future<List<Order>> fetchOrder() async {
     }
     return result;
   } else {
-    throw Exception('Failed to load');
+    return result;
   }
 }
 

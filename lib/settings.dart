@@ -29,6 +29,15 @@ class _SettingsPageState extends State<SettingsPage> {
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             var data = snapshot.data!;
+            if (data.server == null) {
+              return const Text(
+                'Loading...',
+                style: TextStyle(
+                  fontSize: 30,
+                ),
+                textAlign: TextAlign.center,
+              );
+            }
             return ListView(
               children: [
                 const SizedBox(
@@ -337,7 +346,7 @@ Future<Config> fetchConfig() async {
   if (response.statusCode == 200) {
     return Config.fromJson(jsonDecode(response.body));
   } else {
-    throw Exception('Failed to load');
+    return Config();
   }
 }
 

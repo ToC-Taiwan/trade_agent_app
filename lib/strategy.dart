@@ -97,6 +97,15 @@ class _StrategyPage extends State<StrategyPage> {
           future: futureStrategy,
           builder: (context, snapshot) {
             if (snapshot.hasData) {
+              if (snapshot.data!.isEmpty) {
+                return const Text(
+                  'Loading...',
+                  style: TextStyle(
+                    fontSize: 30,
+                  ),
+                  textAlign: TextAlign.center,
+                );
+              }
               var data = snapshot.data;
               return Center(
                 child: ListView.builder(
@@ -131,8 +140,6 @@ class _StrategyPage extends State<StrategyPage> {
                   },
                 ),
               );
-            } else if (snapshot.hasError) {
-              return Text('${snapshot.error}');
             }
             return const CircularProgressIndicator();
           },
@@ -229,9 +236,14 @@ void addTargets(String opt, BuildContext context) async {
       },
     );
   } else {
-    // If the server did not return a 201 CREATED response,
-    // then throw an exception.
-    throw Exception('Failed to create album.');
+    await showDialog(
+      context: context,
+      builder: (context) {
+        return const AlertDialog(
+          title: Text('Fail'),
+        );
+      },
+    );
   }
 }
 
@@ -244,7 +256,7 @@ Future<List<Strategy>> fetchStrategy() async {
     }
     return straregyArr;
   } else {
-    throw Exception('Failed to load');
+    return straregyArr;
   }
 }
 

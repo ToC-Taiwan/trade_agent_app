@@ -98,11 +98,18 @@ class _TargetspageState extends State<Targetspage> {
                 height: 30,
               ));
             }
+            if (tmp.length == 1) {
+              return const Text(
+                'Loading...',
+                style: TextStyle(
+                  fontSize: 30,
+                ),
+                textAlign: TextAlign.center,
+              );
+            }
             return ListView(
               children: tmp,
             );
-          } else if (snapshot.hasError) {
-            return Text('${snapshot.error}');
           }
           return const CircularProgressIndicator();
         },
@@ -120,7 +127,7 @@ Future<List<Target>> fetchTargets() async {
     }
     return targetArr;
   } else {
-    throw Exception('Failed to load');
+    return targetArr;
   }
 }
 

@@ -2,7 +2,7 @@ name: trade_agent_app
 description: App for trade agent
 
 publish_to: "none"
-version: 1.3.4+26671
+version: 2.0.1+26671
 
 environment:
   sdk: ">=2.15.1 <3.0.0"
