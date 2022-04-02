@@ -3,7 +3,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:trade_agent_v2/url.dart';
+import 'package:trade_agent_v2/basic/url.dart';
 
 class BalancePage extends StatefulWidget {
   const BalancePage({Key? key}) : super(key: key);

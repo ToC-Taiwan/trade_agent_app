@@ -1,11 +1,11 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:io' show Platform;
 
 import 'package:flutter/material.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:http/http.dart' as http;
-import 'package:trade_agent_v2/url.dart';
+import 'package:trade_agent_v2/basic/ad_id.dart';
+import 'package:trade_agent_v2/basic/url.dart';
 
 class TSEPage extends StatefulWidget {
   const TSEPage({Key? key}) : super(key: key);
@@ -14,11 +14,9 @@ class TSEPage extends StatefulWidget {
   State<TSEPage> createState() => _TSEPageState();
 }
 
-final String adUnitID = Platform.isAndroid ? 'ca-app-pub-1617900048851450/4933705826' : 'ca-app-pub-1617900048851450/8822922940';
-
 class _TSEPageState extends State<TSEPage> {
   final BannerAd myBanner = BannerAd(
-    adUnitId: adUnitID,
+    adUnitId: bannerAdUnitID,
     size: AdSize.banner,
     request: const AdRequest(),
     listener: BannerAdListener(

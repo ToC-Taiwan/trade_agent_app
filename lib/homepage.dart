@@ -1,11 +1,11 @@
 // import 'dart:io' show Platform;
 import 'package:flutter/material.dart';
-import 'package:trade_agent_v2/balance.dart';
-import 'package:trade_agent_v2/order.dart';
-import 'package:trade_agent_v2/settings.dart';
-import 'package:trade_agent_v2/strategy.dart';
-import 'package:trade_agent_v2/targets.dart';
-import 'package:trade_agent_v2/tse.dart';
+import 'package:trade_agent_v2/layout/balance.dart';
+import 'package:trade_agent_v2/layout/order.dart';
+import 'package:trade_agent_v2/layout/settings.dart';
+import 'package:trade_agent_v2/layout/strategy.dart';
+import 'package:trade_agent_v2/layout/targets.dart';
+import 'package:trade_agent_v2/layout/tse.dart';
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({Key? key, required this.title}) : super(key: key);
