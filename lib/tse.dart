@@ -14,11 +14,10 @@ class TSEPage extends StatefulWidget {
   State<TSEPage> createState() => _TSEPageState();
 }
 
-final String adUnitID = Platform.isAndroid ? 'ca-app-pub-1617900048851450/9273175622' : 'ca-app-pub-1617900048851450/8822922940';
+final String adUnitID = Platform.isAndroid ? 'ca-app-pub-1617900048851450/4933705826' : 'ca-app-pub-1617900048851450/8822922940';
 
 class _TSEPageState extends State<TSEPage> {
   final BannerAd myBanner = BannerAd(
-    // adUnitId: 'ca-app-pub-3940256099942544/2934735716',
     adUnitId: adUnitID,
     size: AdSize.banner,
     request: const AdRequest(),
