@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
-import 'package:trade_agent_app/intro.dart';
+import 'package:trade_agent_v2/intro.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
