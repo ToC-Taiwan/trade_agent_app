@@ -1,9 +1,12 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:http/http.dart' as http;
 import 'package:trade_agent_v2/basic/url.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class Targetspage extends StatefulWidget {
   const Targetspage({Key? key}) : super(key: key);
@@ -13,102 +16,119 @@ class Targetspage extends StatefulWidget {
 }
 
 class _TargetspageState extends State<Targetspage> {
+  List<Target> current = [];
   late Future<List<Target>> futureTargets;
 
   @override
   void initState() {
     super.initState();
-    futureTargets = fetchTargets();
+    futureTargets = fetchTargets(current, -1);
+  }
+
+  void _onItemClick(num opt) {
+    setState(() {
+      futureTargets = fetchTargets(current, opt);
+    });
+  }
+
+  void _launchInWebViewOrVC(String url) async {
+    await launch(
+      url,
+      forceSafariVC: true,
+      forceWebView: true,
+    );
   }
 
   @override
   Widget build(BuildContext context) {
-    return Center(
+    return SizedBox(
       child: FutureBuilder<List<Target>>(
         future: futureTargets,
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             var tmp = <Widget>[];
-            tmp.add(
-              const SizedBox(
-                height: 15,
-              ),
-            );
+            current = snapshot.data!;
             for (final i in snapshot.data!) {
               if (i.rank == -1) {
                 continue;
               }
               tmp.add(
-                Flex(
-                  direction: Axis.horizontal,
-                  children: [
-                    Expanded(
-                      child: Container(
-                        padding: const EdgeInsets.only(left: 20),
-                        child: Text(
-                          i.rank.toString(),
-                          textAlign: TextAlign.left,
-                          style: const TextStyle(fontWeight: FontWeight.bold),
-                        ),
+                buildTile(
+                  1,
+                  1,
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          AutoSizeText(
+                            i.stock!.name!,
+                            style: const TextStyle(fontSize: 22, color: Colors.blue, fontWeight: FontWeight.bold),
+                          ),
+                        ],
                       ),
-                    ),
-                    Expanded(
-                      child: Container(
-                        padding: const EdgeInsets.only(left: 10),
-                        child: Text(
-                          i.stock!.number!,
-                          textAlign: TextAlign.left,
-                          style: const TextStyle(fontWeight: FontWeight.bold),
-                        ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          Column(
+                            children: [
+                              Text(
+                                i.stock!.number!,
+                                style: const TextStyle(fontSize: 18, color: Colors.teal),
+                              ),
+                              Text(
+                                commaNumber('${i.volume! ~/ 1000}k'),
+                                style: const TextStyle(fontSize: 18, color: Colors.red),
+                              ),
+                            ],
+                          ),
+                          AutoSizeText(
+                            i.stock!.lastClose!.toString(),
+                            style: const TextStyle(fontSize: 20, color: Colors.black, fontWeight: FontWeight.bold),
+                          ),
+                        ],
                       ),
-                    ),
-                    Expanded(
-                      flex: 2,
-                      child: Container(
-                        padding: const EdgeInsets.only(left: 20),
-                        child: Text(
-                          i.stock!.name!,
-                          textAlign: TextAlign.left,
-                          style: const TextStyle(fontWeight: FontWeight.bold),
-                        ),
-                      ),
-                    ),
-                    Expanded(
-                      child: Container(
-                        padding: const EdgeInsets.only(left: 10),
-                        child: Text(
-                          i.stock!.lastClose!.toString(),
-                          textAlign: TextAlign.left,
-                        ),
-                      ),
-                    ),
-                    Expanded(
-                      child: Container(
-                        color: Colors.amber[50],
-                        child: Text(
-                          i.volume.toString(),
-                          textAlign: TextAlign.center,
-                        ),
-                      ),
-                    ),
-                  ],
+                      // Text(i.rank.toString()),
+                    ],
+                  ),
+                  onTap: () {
+                    var number = i.stock!.number!;
+                    setState(() {
+                      _launchInWebViewOrVC('https://tw.stock.yahoo.com/quote/$number.TW');
+                    });
+                  },
                 ),
               );
-              tmp.add(const SizedBox(
-                height: 30,
-              ));
             }
-            if (tmp.length == 1) {
-              return const Text(
-                'Loading...',
-                style: TextStyle(
-                  fontSize: 30,
-                ),
-                textAlign: TextAlign.center,
-              );
-            }
-            return ListView(
-              children: tmp,
+            return Padding(
+              padding: const EdgeInsets.all(8),
+              child: ListView(
+                shrinkWrap: true,
+                children: [
+                  TextFormField(
+                    // controller: emailController,
+                    decoration: const InputDecoration(icon: Icon(Icons.search), border: UnderlineInputBorder(), labelText: 'Search', hintText: 'Stock Number'),
+                    textInputAction: TextInputAction.search,
+                    onChanged: (val) {
+                      if (val.isNotEmpty) {
+                        _onItemClick(int.parse(val));
+                      } else {
+                        _onItemClick(-1);
+                      }
+                    },
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 10),
+                    child: StaggeredGrid.count(
+                      crossAxisCount: 3,
+                      crossAxisSpacing: 12,
+                      mainAxisSpacing: 12,
+                      children: tmp,
+                    ),
+                  ),
+                ],
+              ),
             );
           }
           return const CircularProgressIndicator();
@@ -118,17 +138,53 @@ class _TargetspageState extends State<Targetspage> {
   }
 }
 
-Future<List<Target>> fetchTargets() async {
+RegExp reg = RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))');
+
+String commaNumber(String n) {
+  return n.replaceAllMapped(reg, mathFunc);
+}
+
+String mathFunc(Match match) {
+  return '${match[1]},';
+}
+
+Widget buildTile(int cross, main, Widget child, {Function()? onTap}) {
+  return StaggeredGridTile.count(
+    crossAxisCellCount: cross,
+    mainAxisCellCount: main,
+    child: Material(
+      color: Colors.grey[200],
+      elevation: 3,
+      borderRadius: BorderRadius.circular(12),
+      shadowColor: Colors.pink.shade50,
+      child: InkWell(
+        onTap: onTap != null ? () => onTap() : () {},
+        child: child,
+      ),
+    ),
+  );
+}
+
+Future<List<Target>> fetchTargets(List<Target> current, num opt) async {
   var targetArr = <Target>[];
-  final response = await http.get(Uri.parse('$tradeAgentURLPrefix/targets'));
-  if (response.statusCode == 200) {
-    for (final Map<String, dynamic> i in jsonDecode(response.body)) {
-      targetArr.add(Target.fromJson(i));
+  if (opt == -1) {
+    final response = await http.get(Uri.parse('$tradeAgentURLPrefix/targets'));
+    if (response.statusCode == 200) {
+      for (final Map<String, dynamic> i in jsonDecode(response.body)) {
+        targetArr.add(Target.fromJson(i));
+      }
+      return targetArr;
+    } else {
+      return targetArr;
     }
-    return targetArr;
   } else {
-    return targetArr;
+    for (final i in current) {
+      if (i.stock!.number!.substring(0, opt.toString().length) == opt.toString()) {
+        targetArr.add(i);
+      }
+    }
   }
+  return targetArr;
 }
 
 class Target {

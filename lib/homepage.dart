@@ -1,4 +1,4 @@
-// import 'dart:io' show Platform;
+import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:trade_agent_v2/layout/balance.dart';
 import 'package:trade_agent_v2/layout/order.dart';
@@ -17,7 +17,9 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _currentIndex = 0;
+  int _page = 0;
+  final GlobalKey<CurvedNavigationBarState> _bottomNavigationKey = GlobalKey();
+
   final pages = [
     const Targetspage(),
     const OrderPage(),
@@ -26,16 +28,11 @@ class _MyHomePageState extends State<MyHomePage> {
     const SettingsPage(),
   ];
 
-  void _onItemClick(int index) {
-    setState(() {
-      _currentIndex = index;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        elevation: 1,
         title: Text(widget.title),
         actions: [
           IconButton(
@@ -47,39 +44,29 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
         ],
       ),
-      body: pages[_currentIndex],
-      bottomNavigationBar: BottomNavigationBar(
-        selectedIconTheme: IconThemeData(color: Colors.red[400]),
-        type: BottomNavigationBarType.fixed,
-        showUnselectedLabels: true,
-        unselectedItemColor: Colors.black,
-        iconSize: 35,
-        items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: Icon(Icons.assignment_outlined),
-            label: 'Targets',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.call_to_action_rounded),
-            label: 'Order',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.today_outlined),
-            label: 'TSE',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.money),
-            label: 'Balance',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.computer),
-            label: 'Server',
-          ),
+      body: pages[_page],
+      bottomNavigationBar: CurvedNavigationBar(
+        key: _bottomNavigationKey,
+        // index: 0,
+        height: 70,
+        items: const <Widget>[
+          Icon(Icons.assignment_outlined, size: 30),
+          Icon(Icons.call_to_action_rounded, size: 30),
+          Icon(Icons.today_outlined, size: 30),
+          Icon(Icons.money, size: 30),
+          Icon(Icons.computer, size: 30),
         ],
-        currentIndex: _currentIndex,
-        fixedColor: Colors.blue,
-        onTap: _onItemClick,
-        unselectedIconTheme: const IconThemeData(color: Colors.black),
+        color: const Color.fromARGB(255, 255, 212, 212),
+        buttonBackgroundColor: Colors.red[100],
+        backgroundColor: Colors.white,
+        animationCurve: Curves.easeInOut,
+        animationDuration: const Duration(milliseconds: 300),
+        onTap: (index) {
+          setState(() {
+            _page = index;
+          });
+        },
+        letIndexChange: (index) => true,
       ),
     );
   }
