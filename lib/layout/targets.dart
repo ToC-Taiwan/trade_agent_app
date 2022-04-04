@@ -59,35 +59,36 @@ class _TargetspageState extends State<Targetspage> {
                   Column(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          AutoSizeText(
-                            i.stock!.name!,
-                            style: const TextStyle(fontSize: 22, color: Colors.blue, fontWeight: FontWeight.bold),
-                          ),
-                        ],
+                      Expanded(
+                        child: AutoSizeText(
+                          i.stock!.number!,
+                          style: const TextStyle(fontSize: 22, color: Colors.teal),
+                        ),
                       ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          Column(
+                      Expanded(
+                        child: AutoSizeText(
+                          i.stock!.name!,
+                          style: const TextStyle(fontSize: 22, color: Colors.blue, fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                      Expanded(
+                        flex: 2,
+                        child: Padding(
+                          padding: const EdgeInsets.only(left: 5, right: 5),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Text(
-                                i.stock!.number!,
-                                style: const TextStyle(fontSize: 18, color: Colors.teal),
-                              ),
-                              Text(
+                              AutoSizeText(
                                 commaNumber('${i.volume! ~/ 1000}k'),
                                 style: const TextStyle(fontSize: 18, color: Colors.red),
                               ),
+                              AutoSizeText(
+                                i.stock!.lastClose!.toString(),
+                                style: const TextStyle(fontSize: 20, color: Colors.black, fontWeight: FontWeight.bold),
+                              ),
                             ],
                           ),
-                          AutoSizeText(
-                            i.stock!.lastClose!.toString(),
-                            style: const TextStyle(fontSize: 20, color: Colors.black, fontWeight: FontWeight.bold),
-                          ),
-                        ],
+                        ),
                       ),
                       // Text(i.rank.toString()),
                     ],
