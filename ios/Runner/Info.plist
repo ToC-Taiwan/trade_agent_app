@@ -13,7 +13,7 @@
     <key>CFBundleInfoDictionaryVersion</key>
     <string>6.0</string>
     <key>CFBundleName</key>
-    <string>trade_agent_app</string>
+    <string>trade_agent_v2</string>
     <key>CFBundlePackageType</key>
     <string>APPL</string>
     <key>CFBundleShortVersionString</key>
@@ -45,12 +45,10 @@
     <false/>
     <key>GADApplicationIdentifier</key>
     <string>ca-app-pub-1617900048851450~5212154454</string>
-    <key>SKAdNetworkItems</key>
+    <key>LSApplicationQueriesSchemes</key>
     <array>
-      <dict>
-        <key>SKAdNetworkIdentifier</key>
-        <string>cstr6suwn9.skadnetwork</string>
-      </dict>
+      <string>https</string>
+      <string>http</string>
     </array>
   </dict>
 </plist>
