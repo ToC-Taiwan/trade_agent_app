@@ -1,8 +1,8 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
 import 'package:trade_agent_v2/basic/url.dart';
 
 class OrderPage extends StatefulWidget {
@@ -149,10 +149,14 @@ Widget generateRow(Order order) {
 }
 
 Future<List<Order>> fetchOrder() async {
-  final response = await http.get(Uri.parse('$tradeAgentURLPrefix/order'));
+  var client = HttpClient();
+  client.badCertificateCallback = (cert, host, port) => true;
+  var request = await client.getUrl(Uri.parse('$tradeAgentURLPrefix/order'));
+  var fetchResult = await request.close();
   var result = <Order>[];
-  if (response.statusCode == 200) {
-    for (final Map<String, dynamic> i in jsonDecode(response.body)) {
+  if (fetchResult.statusCode == 200) {
+    var data = await fetchResult.transform(utf8.decoder).join();
+    for (final Map<String, dynamic> i in jsonDecode(data)) {
       result.add(Order.fromJson(i));
     }
     return result;

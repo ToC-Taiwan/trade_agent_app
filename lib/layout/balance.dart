@@ -1,8 +1,8 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
 import 'package:trade_agent_v2/basic/url.dart';
 
 class BalancePage extends StatefulWidget {
@@ -144,9 +144,13 @@ String mathFunc(Match match) {
 
 Future<List<Balance>> fetchBalance() async {
   var balanceArr = <Balance>[];
-  final response = await http.get(Uri.parse('$tradeAgentURLPrefix/balance'));
-  if (response.statusCode == 200) {
-    for (final Map<String, dynamic> i in jsonDecode(response.body)) {
+  var client = HttpClient();
+  client.badCertificateCallback = (cert, host, port) => true;
+  var request = await client.getUrl(Uri.parse('$tradeAgentURLPrefix/balance'));
+  var result = await request.close();
+  if (result.statusCode == 200) {
+    var data = await result.transform(utf8.decoder).join();
+    for (final Map<String, dynamic> i in jsonDecode(data)) {
       balanceArr.add(Balance.fromJson(i));
     }
     return balanceArr;

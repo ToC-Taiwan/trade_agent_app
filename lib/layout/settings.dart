@@ -1,8 +1,8 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
 import 'package:trade_agent_v2/basic/url.dart';
 
 class SettingsPage extends StatefulWidget {
@@ -348,9 +348,13 @@ class _SettingsPageState extends State<SettingsPage> {
 }
 
 Future<Config> fetchConfig() async {
-  final response = await http.get(Uri.parse('$tradeAgentURLPrefix/config'));
-  if (response.statusCode == 200) {
-    return Config.fromJson(jsonDecode(response.body));
+  var client = HttpClient();
+  client.badCertificateCallback = (cert, host, port) => true;
+  var request = await client.getUrl(Uri.parse('$tradeAgentURLPrefix/config'));
+  var result = await request.close();
+  if (result.statusCode == 200) {
+    var data = await result.transform(utf8.decoder).join();
+    return Config.fromJson(jsonDecode(data));
   } else {
     return Config();
   }

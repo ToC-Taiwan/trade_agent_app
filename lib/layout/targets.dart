@@ -1,10 +1,10 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
-import 'package:http/http.dart' as http;
 import 'package:trade_agent_v2/basic/url.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -175,15 +175,18 @@ Widget buildTile(int cross, main, Widget child, {Function()? onTap}) {
 Future<List<Target>> fetchTargets(List<Target> current, num opt) async {
   var targetArr = <Target>[];
   if (opt == -1) {
-    final response = await http.get(Uri.parse('$tradeAgentURLPrefix/targets'));
-    if (response.statusCode == 200) {
-      for (final Map<String, dynamic> i in jsonDecode(response.body)) {
+    var client = HttpClient();
+    client.badCertificateCallback = (cert, host, port) => true;
+    var request = await client.getUrl(Uri.parse('$tradeAgentURLPrefix/targets'));
+    var result = await request.close();
+    if (result.statusCode == 200) {
+      var data = await result.transform(utf8.decoder).join();
+      for (final Map<String, dynamic> i in jsonDecode(data)) {
         targetArr.add(Target.fromJson(i));
       }
       return targetArr;
-    } else {
-      return targetArr;
     }
+    return targetArr;
   } else {
     for (final i in current) {
       if (i.stock!.number!.substring(0, opt.toString().length) == opt.toString()) {
