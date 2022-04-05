@@ -23,75 +23,112 @@ class _BalancePageState extends State<BalancePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: FutureBuilder<List<Balance>>(
-        future: futureBalance,
-        builder: (context, snapshot) {
-          if (snapshot.hasData) {
-            var dataArr = <Balance>[];
-            dataArr = snapshot.data!;
-            num total = 0;
-            num lastTotal = 0;
-            dataArr.asMap().forEach((i, value) {
-              total += value.total!;
-              if (i == dataArr.length - 1) {
-                lastTotal = value.total!;
-              }
-            });
-            return ListView(
-              children: [
-                const SizedBox(
-                  child: Padding(
-                    padding: EdgeInsets.all(30),
-                    child: Center(
-                      child: Text(
-                        'Today',
-                        style: TextStyle(fontSize: 30),
+    return FutureBuilder<List<Balance>>(
+      future: futureBalance,
+      builder: (context, snapshot) {
+        if (snapshot.hasData) {
+          var dataArr = <Balance>[];
+          List<Widget> rows = [];
+          dataArr = snapshot.data!;
+          num total = 0;
+          num lastTotal = 0;
+          dataArr.asMap().forEach((i, value) {
+            rows.add(generateBalanceRow(value));
+            total += value.total!;
+            if (i == dataArr.length - 1) {
+              lastTotal = value.total!;
+            }
+          });
+          return Column(
+            children: [
+              Expanded(
+                flex: 3,
+                child: ListView(
+                  shrinkWrap: true,
+                  children: [
+                    const SizedBox(
+                      child: Padding(
+                        padding: EdgeInsets.only(top: 30),
+                        child: Center(
+                          child: Text(
+                            'Latest',
+                            style: TextStyle(fontSize: 30),
+                          ),
+                        ),
                       ),
                     ),
-                  ),
+                    SizedBox(
+                      child: Padding(
+                        padding: const EdgeInsets.only(top: 30),
+                        child: Center(
+                          child: Text(
+                            commaNumber(lastTotal.toString()),
+                            style: const TextStyle(fontSize: 60),
+                          ),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(
+                      child: Padding(
+                        padding: EdgeInsets.only(top: 30),
+                        child: Center(
+                          child: Text(
+                            'Total',
+                            style: TextStyle(fontSize: 30),
+                          ),
+                        ),
+                      ),
+                    ),
+                    SizedBox(
+                      child: Padding(
+                        padding: const EdgeInsets.only(top: 30),
+                        child: Center(
+                          child: Text(
+                            commaNumber(total.toString()),
+                            style: const TextStyle(fontSize: 60),
+                          ),
+                        ),
+                      ),
+                    )
+                  ],
                 ),
-                SizedBox(
-                  child: Padding(
-                    padding: const EdgeInsets.all(30),
-                    child: Center(
-                      child: Text(
-                        commaNumber(lastTotal.toString()),
-                        style: const TextStyle(fontSize: 60),
-                      ),
-                    ),
-                  ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(top: 18, left: 20),
+                child: Row(
+                  children: const [
+                    Expanded(
+                        flex: 2,
+                        child: Text(
+                          'Date',
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        )),
+                    Expanded(
+                        child: Text(
+                      'C',
+                    )),
+                    Expanded(child: Text('O')),
+                    Expanded(child: Text('D')),
+                    Expanded(
+                        child: Text(
+                      'Total',
+                    )),
+                  ],
                 ),
-                const SizedBox(
-                  child: Padding(
-                    padding: EdgeInsets.all(30),
-                    child: Center(
-                      child: Text(
-                        'Total',
-                        style: TextStyle(fontSize: 30),
-                      ),
-                    ),
-                  ),
+              ),
+              Expanded(
+                flex: 2,
+                child: ListView(
+                  children: rows.reversed.toList(),
                 ),
-                SizedBox(
-                  child: Padding(
-                    padding: const EdgeInsets.all(30),
-                    child: Center(
-                      child: Text(
-                        commaNumber(total.toString()),
-                        style: const TextStyle(fontSize: 60),
-                      ),
-                    ),
-                  ),
-                )
-              ],
-            );
-          } else if (snapshot.hasError) {
-            return Text('${snapshot.error}');
-          }
-          return const CircularProgressIndicator();
-        },
-      ),
+              ),
+            ],
+          );
+        } else if (snapshot.hasError) {
+          return Text('${snapshot.error}');
+        }
+        return const CircularProgressIndicator();
+      },
     );
   }
 }
@@ -116,6 +153,39 @@ Future<List<Balance>> fetchBalance() async {
   } else {
     return balanceArr;
   }
+}
+
+Widget generateBalanceRow(Balance balance) {
+  Color tmp;
+  if (balance.total! > 0) {
+    tmp = Colors.red;
+  } else {
+    tmp = Colors.green;
+  }
+  return Padding(
+    padding: const EdgeInsets.only(top: 18, left: 20),
+    child: Row(
+      children: [
+        Expanded(
+            flex: 2,
+            child: Text(
+              balance.tradeDay!.substring(0, 10),
+              style: TextStyle(fontWeight: FontWeight.bold),
+            )),
+        Expanded(
+            child: Text(
+          balance.tradeCount!.toString(),
+        )),
+        Expanded(child: Text(balance.originalBalance!.toString())),
+        Expanded(child: Text(balance.discount!.toString())),
+        Expanded(
+            child: Text(
+          balance.total!.toString(),
+          style: TextStyle(color: tmp),
+        )),
+      ],
+    ),
+  );
 }
 
 class Balance {

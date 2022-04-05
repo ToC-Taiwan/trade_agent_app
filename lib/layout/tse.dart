@@ -45,49 +45,62 @@ class _TSEPageState extends State<TSEPage> {
       height: myBanner.size.height.toDouble(),
       child: adWidget,
     );
-    return Center(
-      child: FutureBuilder<TSE>(
-        future: futureTSE,
-        builder: (context, snapshot) {
-          if (snapshot.hasData) {
-            var data = snapshot.data!;
-            var widgetArr = <Widget>[];
-            if (data.tickTime.toString().length > 10) {
-              widgetArr.add(generateRow('Date', data.tickTime.toString().substring(0, 10)));
-            } else {
-              return const Text(
-                'Loading...',
-                style: TextStyle(
-                  fontSize: 30,
-                ),
-                textAlign: TextAlign.center,
-              );
-            }
-            widgetArr.add(generateRow('Close', commaNumber(data.close.toString())));
-            widgetArr.add(generateRow('Open', commaNumber(data.open.toString())));
-            widgetArr.add(generateRow('High', commaNumber(data.high.toString())));
-            widgetArr.add(generateRow('Low', commaNumber(data.low.toString())));
-            widgetArr.add(generateRow('Volume', commaNumber(data.volume.toString())));
-            widgetArr.add(generateRow('Yesterday Volume', commaNumber(data.yesterdayVolume.toString())));
-            widgetArr.add(generateRow('Change Type', data.chgType.toString()));
-            widgetArr.add(generateRow('Percent Change', data.pctChg.toString()));
-            widgetArr.add(generateRow('Price Change', commaNumber(data.priceChg.toString())));
-            return Column(
-              children: [
-                const SizedBox(
-                  height: 10,
-                ),
-                adContainer,
-                ListView(
-                  shrinkWrap: true,
-                  children: widgetArr,
-                ),
-              ],
+    return FutureBuilder<TSE>(
+      future: futureTSE,
+      builder: (context, snapshot) {
+        if (snapshot.hasData) {
+          var data = snapshot.data!;
+          var widgetArr = <Widget>[];
+          if (data.tickTime.toString().length > 10) {
+            widgetArr.add(generateRow('Date', data.tickTime.toString().substring(0, 10), Colors.black));
+          } else {
+            return const Text(
+              'Loading...',
+              style: TextStyle(
+                fontSize: 30,
+              ),
+              textAlign: TextAlign.center,
             );
           }
-          return const CircularProgressIndicator();
-        },
-      ),
+          String type;
+          Color tmp;
+          if (data.chgType.toString() == 'Down') {
+            tmp = Colors.green;
+            type = '↘️';
+          } else {
+            tmp = Colors.red;
+            type = '↗️';
+          }
+          widgetArr.add(generateRow('Close', commaNumber(data.close.toString()), Colors.black));
+          widgetArr.add(SizedBox(
+            height: 40,
+          ));
+          // widgetArr.add(generateRow('Volume', commaNumber(data.volume.toString()), Colors.black));
+          widgetArr.add(generateRow('Open', commaNumber(data.open.toString()), Colors.black));
+          widgetArr.add(generateRow('High', commaNumber(data.high.toString()), Colors.black));
+          widgetArr.add(generateRow('Low', commaNumber(data.low.toString()), Colors.black));
+          widgetArr.add(SizedBox(
+            height: 40,
+          ));
+          // widgetArr.add(generateRow('Yesterday Volume', commaNumber(data.yesterdayVolume.toString())));
+          widgetArr.add(generateRow('Change Type', type, tmp));
+          widgetArr.add(generateRow('Percent Change', data.pctChg.toString(), tmp));
+          widgetArr.add(generateRow('Price Change', commaNumber(data.priceChg.toString()), tmp));
+          return Column(
+            children: [
+              const SizedBox(
+                height: 10,
+              ),
+              adContainer,
+              ListView(
+                shrinkWrap: true,
+                children: widgetArr,
+              ),
+            ],
+          );
+        }
+        return const CircularProgressIndicator();
+      },
     );
   }
 }
@@ -101,7 +114,7 @@ String mathFunc(Match match) {
   return '${match[1]},';
 }
 
-Widget generateRow(String columnName, String value) {
+Widget generateRow(String columnName, String value, Color textColor) {
   return SizedBox(
     height: 50,
     child: Padding(
@@ -121,7 +134,7 @@ Widget generateRow(String columnName, String value) {
             flex: 2,
             child: Text(
               value,
-              style: const TextStyle(fontSize: 20),
+              style: TextStyle(fontSize: 20, color: textColor),
               textAlign: TextAlign.left,
             ),
           ),

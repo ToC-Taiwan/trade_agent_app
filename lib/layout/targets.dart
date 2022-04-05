@@ -62,13 +62,13 @@ class _TargetspageState extends State<Targetspage> {
                       Expanded(
                         child: AutoSizeText(
                           i.stock!.number!,
-                          style: const TextStyle(fontSize: 22, color: Colors.teal),
+                          style: const TextStyle(fontSize: 22, color: Colors.black),
                         ),
                       ),
                       Expanded(
                         child: AutoSizeText(
                           i.stock!.name!,
-                          style: const TextStyle(fontSize: 22, color: Colors.blue, fontWeight: FontWeight.bold),
+                          style: const TextStyle(fontSize: 22, color: Color.fromARGB(255, 0, 46, 184), fontWeight: FontWeight.bold),
                         ),
                       ),
                       Expanded(
@@ -80,11 +80,11 @@ class _TargetspageState extends State<Targetspage> {
                             children: [
                               AutoSizeText(
                                 commaNumber('${i.volume! ~/ 1000}k'),
-                                style: const TextStyle(fontSize: 18, color: Colors.red),
+                                style: const TextStyle(fontSize: 14, color: Colors.red),
                               ),
                               AutoSizeText(
                                 i.stock!.lastClose!.toString(),
-                                style: const TextStyle(fontSize: 20, color: Colors.black, fontWeight: FontWeight.bold),
+                                style: const TextStyle(fontSize: 22, color: Colors.black, fontWeight: FontWeight.bold),
                               ),
                             ],
                           ),
@@ -109,7 +109,13 @@ class _TargetspageState extends State<Targetspage> {
                 children: [
                   TextFormField(
                     // controller: emailController,
-                    decoration: const InputDecoration(icon: Icon(Icons.search), border: UnderlineInputBorder(), labelText: 'Search', hintText: 'Stock Number'),
+                    keyboardType: TextInputType.number,
+                    decoration: const InputDecoration(
+                      icon: Icon(Icons.search),
+                      border: UnderlineInputBorder(),
+                      labelText: 'Search',
+                      hintText: 'Stock Number',
+                    ),
                     textInputAction: TextInputAction.search,
                     onChanged: (val) {
                       if (val.isNotEmpty) {
@@ -154,7 +160,7 @@ Widget buildTile(int cross, main, Widget child, {Function()? onTap}) {
     crossAxisCellCount: cross,
     mainAxisCellCount: main,
     child: Material(
-      color: Colors.grey[200],
+      color: Colors.grey[100],
       elevation: 3,
       borderRadius: BorderRadius.circular(12),
       shadowColor: Colors.pink.shade50,

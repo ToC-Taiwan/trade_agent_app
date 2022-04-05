@@ -23,319 +23,325 @@ class _SettingsPageState extends State<SettingsPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: FutureBuilder<Config>(
-        future: futureConfig,
-        builder: (context, snapshot) {
-          if (snapshot.hasData) {
-            var data = snapshot.data!;
-            if (data.server == null) {
-              return const Text(
-                'Loading...',
-                style: TextStyle(
-                  fontSize: 30,
-                ),
-                textAlign: TextAlign.center,
+    return Scaffold(
+      appBar: AppBar(
+        centerTitle: false,
+        title: const Text('Settings'),
+      ),
+      body: Center(
+        child: FutureBuilder<Config>(
+          future: futureConfig,
+          builder: (context, snapshot) {
+            if (snapshot.hasData) {
+              var data = snapshot.data!;
+              if (data.server == null) {
+                return const Text(
+                  'Loading...',
+                  style: TextStyle(
+                    fontSize: 30,
+                  ),
+                  textAlign: TextAlign.center,
+                );
+              }
+              return ListView(
+                children: [
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  ExpansionTile(
+                    title: const Text(
+                      'Server',
+                      style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
+                    ),
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(left: 10, right: 10),
+                        child: ListTile(
+                          title: const Text('Run Mode'),
+                          trailing: Text(data.server!.runMode!),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 10, right: 10),
+                        child: ListTile(
+                          title: const Text('HTTP Port'),
+                          trailing: Text(data.server!.httpPort!),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 10, right: 10),
+                        child: ListTile(
+                          title: const Text('Sinopac MQ SRV Host'),
+                          trailing: Text(data.server!.sinopacSrvHost!),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 10, right: 10),
+                        child: ListTile(
+                          title: const Text('Sinopac MQ SRV Port'),
+                          trailing: Text(data.server!.sinopacSrvPort!),
+                        ),
+                      )
+                    ],
+                  ),
+                  ExpansionTile(
+                    title: const Text(
+                      'Database',
+                      style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
+                    ),
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(left: 10, right: 10),
+                        child: ListTile(
+                          title: const Text('Host'),
+                          trailing: Text(data.database!.host!),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 10, right: 10),
+                        child: ListTile(
+                          title: const Text('Port'),
+                          trailing: Text(data.database!.port!),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 10, right: 10),
+                        child: ListTile(
+                          title: const Text('User'),
+                          trailing: Text(data.database!.user!),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 10, right: 10),
+                        child: ListTile(
+                          title: const Text('Database'),
+                          trailing: Text(data.database!.database!),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 10, right: 10),
+                        child: ListTile(
+                          title: const Text('Time Zone'),
+                          trailing: Text(data.database!.timeZone!),
+                        ),
+                      )
+                    ],
+                  ),
+                  ExpansionTile(
+                    title: const Text(
+                      'MQTT',
+                      style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
+                    ),
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(left: 10, right: 10),
+                        child: ListTile(
+                          title: const Text('Host'),
+                          trailing: Text(data.mqtt!.host!),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 10, right: 10),
+                        child: ListTile(
+                          title: const Text('Port'),
+                          trailing: Text(data.mqtt!.port!),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 10, right: 10),
+                        child: ListTile(
+                          title: const Text('User'),
+                          trailing: Text(data.mqtt!.user!),
+                        ),
+                      ),
+                    ],
+                  ),
+                  ExpansionTile(
+                    title: const Text(
+                      'Trade Switch',
+                      style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
+                    ),
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(left: 10, right: 10),
+                        child: ListTile(
+                          title: const Text('Simulation'),
+                          trailing: Text(data.tradeSwitch!.simulation!.toString()),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 10, right: 10),
+                        child: ListTile(
+                          title: const Text('Buy'),
+                          trailing: Text(data.tradeSwitch!.buy!.toString()),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 10, right: 10),
+                        child: ListTile(
+                          title: const Text('Sell'),
+                          trailing: Text(data.tradeSwitch!.sell!.toString()),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 10, right: 10),
+                        child: ListTile(
+                          title: const Text('Sell First'),
+                          trailing: Text(data.tradeSwitch!.sellFirst!.toString()),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 10, right: 10),
+                        child: ListTile(
+                          title: const Text('Buy Later'),
+                          trailing: Text(data.tradeSwitch!.buyLater!.toString()),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 10, right: 10),
+                        child: ListTile(
+                          title: const Text('Mean Time Forward'),
+                          trailing: Text(data.tradeSwitch!.meanTimeForward!.toString()),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 10, right: 10),
+                        child: ListTile(
+                          title: const Text('Mean Time Reverse'),
+                          trailing: Text(data.tradeSwitch!.meanTimeReverse!.toString()),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 10, right: 10),
+                        child: ListTile(
+                          title: const Text('Forward MAX'),
+                          trailing: Text(data.tradeSwitch!.forwardMax!.toString()),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 10, right: 10),
+                        child: ListTile(
+                          title: const Text('Reverse MAX'),
+                          trailing: Text(data.tradeSwitch!.reverseMax!.toString()),
+                        ),
+                      ),
+                    ],
+                  ),
+                  ExpansionTile(
+                    title: const Text(
+                      'Trade',
+                      style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
+                    ),
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(left: 10, right: 10),
+                        child: ListTile(
+                          title: const Text('History Close Period'),
+                          trailing: Text(data.trade!.historyClosePeriod!.toString()),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 10, right: 10),
+                        child: ListTile(
+                          title: const Text('History Tick Period'),
+                          trailing: Text(data.trade!.historyTickPeriod!.toString()),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 10, right: 10),
+                        child: ListTile(
+                          title: const Text('History Kbar Period'),
+                          trailing: Text(data.trade!.historyKbarPeriod!.toString()),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 10, right: 10),
+                        child: ListTile(
+                          title: const Text('Hold Time From Open'),
+                          trailing: Text(data.trade!.holdTimeFromOpen!.toString()),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 10, right: 10),
+                        child: ListTile(
+                          title: const Text('Total Open Time'),
+                          trailing: Text(data.trade!.totalOpenTime!.toString()),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 10, right: 10),
+                        child: ListTile(
+                          title: const Text('Trade IN Wait Time'),
+                          trailing: Text(data.trade!.tradeInWaitTime!.toString()),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 10, right: 10),
+                        child: ListTile(
+                          title: const Text('Trade OUT Wait Time'),
+                          trailing: Text(data.trade!.tradeOutWaitTime!.toString()),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 10, right: 10),
+                        child: ListTile(
+                          title: const Text('Trade IN End Time'),
+                          trailing: Text(data.trade!.tradeInEndTime!.toString()),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 10, right: 10),
+                        child: ListTile(
+                          title: const Text('Trade OUT Wait Time'),
+                          trailing: Text(data.trade!.tradeOutEndTime!.toString()),
+                        ),
+                      ),
+                    ],
+                  ),
+                  ExpansionTile(
+                    title: const Text(
+                      'Quota',
+                      style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
+                    ),
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(left: 10, right: 10),
+                        child: ListTile(
+                          title: const Text('Trade Quota'),
+                          trailing: Text(data.quota!.tradeQuota!.toString()),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 10, right: 10),
+                        child: ListTile(
+                          title: const Text('Trade Tax Ratio'),
+                          trailing: Text(data.quota!.tradeTaxRatio!.toString()),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 10, right: 10),
+                        child: ListTile(
+                          title: const Text('Trade Fee Ratio'),
+                          trailing: Text(data.quota!.tradeFeeRatio!.toString()),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 10, right: 10),
+                        child: ListTile(
+                          title: const Text('Fee Discount'),
+                          trailing: Text(data.quota!.feeDiscount!.toString()),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
               );
+            } else if (snapshot.hasError) {
+              return Text('${snapshot.error}');
             }
-            return ListView(
-              children: [
-                const SizedBox(
-                  height: 20,
-                ),
-                ExpansionTile(
-                  title: const Text(
-                    'Server',
-                    style: TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.only(left: 10, right: 10),
-                      child: ListTile(
-                        title: const Text('Run Mode'),
-                        trailing: Text(data.server!.runMode!),
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(left: 10, right: 10),
-                      child: ListTile(
-                        title: const Text('HTTP Port'),
-                        trailing: Text(data.server!.httpPort!),
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(left: 10, right: 10),
-                      child: ListTile(
-                        title: const Text('Sinopac MQ SRV Host'),
-                        trailing: Text(data.server!.sinopacSrvHost!),
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(left: 10, right: 10),
-                      child: ListTile(
-                        title: const Text('Sinopac MQ SRV Port'),
-                        trailing: Text(data.server!.sinopacSrvPort!),
-                      ),
-                    )
-                  ],
-                ),
-                ExpansionTile(
-                  title: const Text(
-                    'Database',
-                    style: TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.only(left: 10, right: 10),
-                      child: ListTile(
-                        title: const Text('Host'),
-                        trailing: Text(data.database!.host!),
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(left: 10, right: 10),
-                      child: ListTile(
-                        title: const Text('Port'),
-                        trailing: Text(data.database!.port!),
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(left: 10, right: 10),
-                      child: ListTile(
-                        title: const Text('User'),
-                        trailing: Text(data.database!.user!),
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(left: 10, right: 10),
-                      child: ListTile(
-                        title: const Text('Database'),
-                        trailing: Text(data.database!.database!),
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(left: 10, right: 10),
-                      child: ListTile(
-                        title: const Text('Time Zone'),
-                        trailing: Text(data.database!.timeZone!),
-                      ),
-                    )
-                  ],
-                ),
-                ExpansionTile(
-                  title: const Text(
-                    'MQTT',
-                    style: TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.only(left: 10, right: 10),
-                      child: ListTile(
-                        title: const Text('Host'),
-                        trailing: Text(data.mqtt!.host!),
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(left: 10, right: 10),
-                      child: ListTile(
-                        title: const Text('Port'),
-                        trailing: Text(data.mqtt!.port!),
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(left: 10, right: 10),
-                      child: ListTile(
-                        title: const Text('User'),
-                        trailing: Text(data.mqtt!.user!),
-                      ),
-                    ),
-                  ],
-                ),
-                ExpansionTile(
-                  title: const Text(
-                    'Trade Switch',
-                    style: TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.only(left: 10, right: 10),
-                      child: ListTile(
-                        title: const Text('Simulation'),
-                        trailing: Text(data.tradeSwitch!.simulation!.toString()),
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(left: 10, right: 10),
-                      child: ListTile(
-                        title: const Text('Buy'),
-                        trailing: Text(data.tradeSwitch!.buy!.toString()),
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(left: 10, right: 10),
-                      child: ListTile(
-                        title: const Text('Sell'),
-                        trailing: Text(data.tradeSwitch!.sell!.toString()),
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(left: 10, right: 10),
-                      child: ListTile(
-                        title: const Text('Sell First'),
-                        trailing: Text(data.tradeSwitch!.sellFirst!.toString()),
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(left: 10, right: 10),
-                      child: ListTile(
-                        title: const Text('Buy Later'),
-                        trailing: Text(data.tradeSwitch!.buyLater!.toString()),
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(left: 10, right: 10),
-                      child: ListTile(
-                        title: const Text('Mean Time Forward'),
-                        trailing: Text(data.tradeSwitch!.meanTimeForward!.toString()),
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(left: 10, right: 10),
-                      child: ListTile(
-                        title: const Text('Mean Time Reverse'),
-                        trailing: Text(data.tradeSwitch!.meanTimeReverse!.toString()),
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(left: 10, right: 10),
-                      child: ListTile(
-                        title: const Text('Forward MAX'),
-                        trailing: Text(data.tradeSwitch!.forwardMax!.toString()),
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(left: 10, right: 10),
-                      child: ListTile(
-                        title: const Text('Reverse MAX'),
-                        trailing: Text(data.tradeSwitch!.reverseMax!.toString()),
-                      ),
-                    ),
-                  ],
-                ),
-                ExpansionTile(
-                  title: const Text(
-                    'Trade',
-                    style: TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.only(left: 10, right: 10),
-                      child: ListTile(
-                        title: const Text('History Close Period'),
-                        trailing: Text(data.trade!.historyClosePeriod!.toString()),
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(left: 10, right: 10),
-                      child: ListTile(
-                        title: const Text('History Tick Period'),
-                        trailing: Text(data.trade!.historyTickPeriod!.toString()),
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(left: 10, right: 10),
-                      child: ListTile(
-                        title: const Text('History Kbar Period'),
-                        trailing: Text(data.trade!.historyKbarPeriod!.toString()),
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(left: 10, right: 10),
-                      child: ListTile(
-                        title: const Text('Hold Time From Open'),
-                        trailing: Text(data.trade!.holdTimeFromOpen!.toString()),
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(left: 10, right: 10),
-                      child: ListTile(
-                        title: const Text('Total Open Time'),
-                        trailing: Text(data.trade!.totalOpenTime!.toString()),
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(left: 10, right: 10),
-                      child: ListTile(
-                        title: const Text('Trade IN Wait Time'),
-                        trailing: Text(data.trade!.tradeInWaitTime!.toString()),
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(left: 10, right: 10),
-                      child: ListTile(
-                        title: const Text('Trade OUT Wait Time'),
-                        trailing: Text(data.trade!.tradeOutWaitTime!.toString()),
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(left: 10, right: 10),
-                      child: ListTile(
-                        title: const Text('Trade IN End Time'),
-                        trailing: Text(data.trade!.tradeInEndTime!.toString()),
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(left: 10, right: 10),
-                      child: ListTile(
-                        title: const Text('Trade OUT Wait Time'),
-                        trailing: Text(data.trade!.tradeOutEndTime!.toString()),
-                      ),
-                    ),
-                  ],
-                ),
-                ExpansionTile(
-                  title: const Text(
-                    'Quota',
-                    style: TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.only(left: 10, right: 10),
-                      child: ListTile(
-                        title: const Text('Trade Quota'),
-                        trailing: Text(data.quota!.tradeQuota!.toString()),
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(left: 10, right: 10),
-                      child: ListTile(
-                        title: const Text('Trade Tax Ratio'),
-                        trailing: Text(data.quota!.tradeTaxRatio!.toString()),
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(left: 10, right: 10),
-                      child: ListTile(
-                        title: const Text('Trade Fee Ratio'),
-                        trailing: Text(data.quota!.tradeFeeRatio!.toString()),
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(left: 10, right: 10),
-                      child: ListTile(
-                        title: const Text('Fee Discount'),
-                        trailing: Text(data.quota!.feeDiscount!.toString()),
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            );
-          } else if (snapshot.hasError) {
-            return Text('${snapshot.error}');
-          }
-          return const CircularProgressIndicator();
-        },
+            return const CircularProgressIndicator();
+          },
+        ),
       ),
     );
   }

@@ -23,127 +23,61 @@ class _StrategyPage extends State<StrategyPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Strategy'),
-        actions: [
-          PopupMenuButton(
-            icon: const Icon(Icons.add),
-            itemBuilder: (context) {
-              return [
-                PopupMenuItem(
-                  child: TextButton(
-                    onPressed: () {
-                      addTargets('1', context);
-                    },
-                    child: const Text(
-                      'Add 0 - 10',
-                      style: TextStyle(
-                        color: Colors.red,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
+    return Center(
+      child: FutureBuilder<List<Strategy>>(
+        future: futureStrategy,
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            if (snapshot.data!.isEmpty) {
+              return const Text(
+                'Analyzing...',
+                style: TextStyle(
+                  fontSize: 30,
                 ),
-                PopupMenuItem(
-                  child: TextButton(
-                    onPressed: () {
-                      addTargets('2', context);
-                    },
-                    child: const Text(
-                      'Add 10 - 50',
-                      style: TextStyle(
-                        color: Colors.red,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-                ),
-                PopupMenuItem(
-                  child: TextButton(
-                    onPressed: () {
-                      addTargets('3', context);
-                    },
-                    child: const Text(
-                      'Add 50 - 100',
-                      style: TextStyle(
-                        color: Colors.red,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-                ),
-                PopupMenuItem(
-                  child: TextButton(
-                    onPressed: () {
-                      addTargets('4', context);
-                    },
-                    child: const Text(
-                      'Add 100 - 500',
-                      style: TextStyle(
-                        color: Colors.red,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-                )
-              ];
-            },
-          )
-        ],
-      ),
-      body: Center(
-        child: FutureBuilder<List<Strategy>>(
-          future: futureStrategy,
-          builder: (context, snapshot) {
-            if (snapshot.hasData) {
-              if (snapshot.data!.isEmpty) {
-                return const Text(
-                  'Loading...',
-                  style: TextStyle(
-                    fontSize: 30,
-                  ),
-                  textAlign: TextAlign.center,
-                );
-              }
-              var data = snapshot.data;
-              return Center(
-                child: ListView.builder(
-                  itemCount: data!.length,
-                  itemBuilder: (context, index) {
-                    return InkWell(
-                      child: Card(
-                        child: ListTile(
-                          title: Text(data[index].date!),
-                          subtitle: Text(
-                            data[index].stocks!.length.toString(),
-                            textAlign: TextAlign.end,
-                          ),
-                        ),
-                      ),
-                      onTap: () {
-                        showDialog(
-                          context: context,
-                          builder: (context) {
-                            return AlertDialog(
-                              title: Text(data[index].date!),
-                              content: SingleChildScrollView(
-                                child: Column(
-                                  children: generateStockRow(data[index].stocks!, context),
-                                ),
-                              ),
-                            );
-                          },
-                        );
-                      },
-                    );
-                  },
-                ),
+                textAlign: TextAlign.center,
               );
             }
-            return const CircularProgressIndicator();
-          },
-        ),
+            var data = snapshot.data;
+            return Center(
+              child: ListView.builder(
+                itemCount: data!.length,
+                itemBuilder: (context, index) {
+                  return InkWell(
+                    child: Card(
+                      child: ListTile(
+                        title: Text(
+                          data[index].date!,
+                          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                        ),
+                        subtitle: Text(
+                          data[index].stocks!.length.toString(),
+                          textAlign: TextAlign.end,
+                          style: const TextStyle(fontSize: 20, color: Colors.red),
+                        ),
+                      ),
+                    ),
+                    onTap: () {
+                      showDialog(
+                        context: context,
+                        builder: (context) {
+                          return AlertDialog(
+                            title: Text(data[index].date!),
+                            content: SingleChildScrollView(
+                              child: Column(
+                                children: generateStockRow(data[index].stocks!, context),
+                              ),
+                            ),
+                          );
+                        },
+                      );
+                    },
+                  );
+                },
+              ),
+            );
+          }
+          return const CircularProgressIndicator();
+        },
       ),
     );
   }
