@@ -1,9 +1,9 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
+import 'package:http/http.dart' as http;
 import 'package:trade_agent_v2/basic/ad_id.dart';
 import 'package:trade_agent_v2/basic/url.dart';
 
@@ -145,13 +145,9 @@ Widget generateRow(String columnName, String value, Color textColor) {
 }
 
 Future<TSE> fetchTSE() async {
-  var client = HttpClient();
-  client.badCertificateCallback = (cert, host, port) => true;
-  var request = await client.getUrl(Uri.parse('$tradeAgentURLPrefix/tse/real-time'));
-  var result = await request.close();
-  if (result.statusCode == 200) {
-    var data = await result.transform(utf8.decoder).join();
-    return TSE.fromJson(jsonDecode(data));
+  final response = await http.get(Uri.parse('$tradeAgentURLPrefix/tse/real-time'));
+  if (response.statusCode == 200) {
+    return TSE.fromJson(jsonDecode(response.body));
   } else {
     return TSE();
   }

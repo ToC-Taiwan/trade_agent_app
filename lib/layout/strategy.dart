@@ -1,8 +1,8 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 import 'package:trade_agent_v2/basic/url.dart';
 
 class StrategyPage extends StatefulWidget {
@@ -148,16 +148,18 @@ Widget generateRow(String columnName, String value) {
 }
 
 void addTargets(String opt, BuildContext context) async {
-  var client = HttpClient();
-  client.badCertificateCallback = (cert, host, port) => true;
-  var request = await client.postUrl(Uri.parse('$tradeAgentURLPrefix/targets'));
-  request.headers.set('Content-Type', 'application/json; charset=UTF-8');
-  request.headers.set('price_range', opt);
-  var result = await request.close();
-  if (result.statusCode == 200) {
-    var data = await result.transform(utf8.decoder).join();
+  final response = await http.post(
+    Uri.parse('$tradeAgentURLPrefix/targets'),
+    headers: <String, String>{
+      'Content-Type': 'application/json; charset=UTF-8',
+      'price_range': opt,
+    },
+  );
+  if (response.statusCode == 200) {
+    // If the server did return a 201 CREATED response,
+    // then parse the JSON.
     num count;
-    count = jsonDecode(data)['total_add'];
+    count = jsonDecode(response.body)['total_add'];
     await showDialog(
       context: context,
       builder: (context) {
@@ -181,13 +183,9 @@ void addTargets(String opt, BuildContext context) async {
 
 Future<List<Strategy>> fetchStrategy() async {
   var straregyArr = <Strategy>[];
-  var client = HttpClient();
-  client.badCertificateCallback = (cert, host, port) => true;
-  var request = await client.getUrl(Uri.parse('$tradeAgentURLPrefix/targets/quater'));
-  var result = await request.close();
-  if (result.statusCode == 200) {
-    var data = await result.transform(utf8.decoder).join();
-    for (final Map<String, dynamic> i in jsonDecode(data)) {
+  final response = await http.get(Uri.parse('$tradeAgentURLPrefix/targets/quater'));
+  if (response.statusCode == 200) {
+    for (final Map<String, dynamic> i in jsonDecode(response.body)) {
       straregyArr.add(Strategy.fromJson(i));
     }
     return straregyArr;
