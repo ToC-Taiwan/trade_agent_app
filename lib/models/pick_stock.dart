@@ -4,7 +4,12 @@ import 'package:trade_agent_v2/models/base.dart';
 @Entity(tableName: 'pick_stock')
 class PickStock extends BaseObject {
   PickStock(
-    this.stockNum, {
+    this.stockNum,
+    this.stockName,
+    this.isTarget,
+    this.priceChange,
+    this.priceChangeRate,
+    this.price, {
     int? id,
     int? createTime,
     int? updateTime,
@@ -12,4 +17,19 @@ class PickStock extends BaseObject {
 
   @ColumnInfo(name: 'stock_num')
   final String stockNum;
+
+  @ColumnInfo(name: 'stock_name')
+  final String stockName;
+
+  @ColumnInfo(name: 'price')
+  final String price;
+
+  @ColumnInfo(name: 'price_change_rate')
+  final String priceChangeRate;
+
+  @ColumnInfo(name: 'price_change')
+  final String priceChange;
+
+  @ColumnInfo(name: 'is_target')
+  final int isTarget;
 }

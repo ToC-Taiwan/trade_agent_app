@@ -26,6 +26,7 @@ void main() async {
   );
 
   // floor
+  // final db = await $FloorAppDatabase.databaseBuilder('app_database_tr.db').addMigrations([migration1to2]).build();
   final db = await $FloorAppDatabase.databaseBuilder('app_database_tr.db').build();
 
   runApp(

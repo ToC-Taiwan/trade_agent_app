@@ -169,6 +169,26 @@ class S {
       args: [],
     );
   }
+
+  /// `No Pick Stock`
+  String get no_pick_stock {
+    return Intl.message(
+      'No Pick Stock',
+      name: 'no_pick_stock',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Click + to add stock`
+  String get click_plus_to_add_stock {
+    return Intl.message(
+      'Click + to add stock',
+      name: 'click_plus_to_add_stock',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

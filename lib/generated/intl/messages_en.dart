@@ -24,11 +24,14 @@ class MessageLookup extends MessageLookupByLibrary {
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
         "balance": MessageLookupByLibrary.simpleMessage("Balance"),
         "cancel": MessageLookupByLibrary.simpleMessage("Cancel"),
+        "click_plus_to_add_stock":
+            MessageLookupByLibrary.simpleMessage("Click + to add stock"),
         "delete": MessageLookupByLibrary.simpleMessage("Delete"),
         "delete_all_pick_stock":
             MessageLookupByLibrary.simpleMessage("Delete All Pick Stock"),
         "delete_all_pick_stock_confirm": MessageLookupByLibrary.simpleMessage(
             "Are you sure you want to delete all pick stock?"),
+        "no_pick_stock": MessageLookupByLibrary.simpleMessage("No Pick Stock"),
         "pick_stock": MessageLookupByLibrary.simpleMessage("Pick Stock"),
         "search": MessageLookupByLibrary.simpleMessage("Search"),
         "settings": MessageLookupByLibrary.simpleMessage("Settings"),

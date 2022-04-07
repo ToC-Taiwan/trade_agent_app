@@ -90,7 +90,14 @@ class _PickStockPageState extends State<PickStockPage> {
                         style: TextStyle(color: Colors.black),
                       ),
                       onPressed: () {
-                        var t = PickStock(textFieldController.text);
+                        var t = PickStock(
+                          textFieldController.text,
+                          textFieldController.text,
+                          1,
+                          textFieldController.text,
+                          textFieldController.text,
+                          textFieldController.text,
+                        );
                         widget.db.pickStockDao.insertPickStock(t);
                         setState(() {
                           stockArray = widget.db.pickStockDao.getAllPickStock();
@@ -116,13 +123,51 @@ class _PickStockPageState extends State<PickStockPage> {
         future: stockArray,
         builder: (context, snapshot) {
           if (snapshot.hasData) {
+            if (snapshot.data!.isEmpty) {
+              return Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      S.of(context).no_pick_stock,
+                      style: const TextStyle(fontSize: 30),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(top: 10),
+                      child: Text(
+                        S.of(context).click_plus_to_add_stock,
+                        style: const TextStyle(fontSize: 22, color: Colors.grey),
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            }
             return ListView.builder(
               shrinkWrap: true,
               itemCount: snapshot.data!.length,
               itemBuilder: (context, index) {
                 return ListTile(
-                  title: Text(snapshot.data![index].stockNum),
-                  subtitle: Text(snapshot.data![index].stockNum),
+                  title: Row(
+                    children: [
+                      Expanded(child: Text(snapshot.data![index].stockNum)),
+                      Expanded(
+                          child: Text(
+                        snapshot.data![index].stockNum,
+                        textAlign: TextAlign.end,
+                      )),
+                    ],
+                  ),
+                  subtitle: Row(
+                    children: [
+                      Expanded(child: Text(snapshot.data![index].stockNum)),
+                      Expanded(
+                          child: Text(
+                        snapshot.data![index].isTarget.toString(),
+                        textAlign: TextAlign.end,
+                      )),
+                    ],
+                  ),
                   onLongPress: () {
                     showDialog(
                       context: context,

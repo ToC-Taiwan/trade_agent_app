@@ -82,7 +82,7 @@ class _$AppDatabase extends AppDatabase {
       },
       onCreate: (database, version) async {
         await database.execute(
-            'CREATE TABLE IF NOT EXISTS `pick_stock` (`stock_num` TEXT NOT NULL, `id` INTEGER PRIMARY KEY AUTOINCREMENT, `create_time` INTEGER NOT NULL, `update_time` INTEGER NOT NULL)');
+            'CREATE TABLE IF NOT EXISTS `pick_stock` (`stock_num` TEXT NOT NULL, `stock_name` TEXT NOT NULL, `price` TEXT NOT NULL, `price_change_rate` TEXT NOT NULL, `price_change` TEXT NOT NULL, `is_target` INTEGER NOT NULL, `id` INTEGER PRIMARY KEY AUTOINCREMENT, `create_time` INTEGER NOT NULL, `update_time` INTEGER NOT NULL)');
 
         await callback?.onCreate?.call(database, version);
       },
@@ -104,6 +104,11 @@ class _$PickStockDao extends PickStockDao {
             'pick_stock',
             (PickStock item) => <String, Object?>{
                   'stock_num': item.stockNum,
+                  'stock_name': item.stockName,
+                  'price': item.price,
+                  'price_change_rate': item.priceChangeRate,
+                  'price_change': item.priceChange,
+                  'is_target': item.isTarget,
                   'id': item.id,
                   'create_time': item.createTime,
                   'update_time': item.updateTime
@@ -114,6 +119,11 @@ class _$PickStockDao extends PickStockDao {
             ['id'],
             (PickStock item) => <String, Object?>{
                   'stock_num': item.stockNum,
+                  'stock_name': item.stockName,
+                  'price': item.price,
+                  'price_change_rate': item.priceChangeRate,
+                  'price_change': item.priceChange,
+                  'is_target': item.isTarget,
                   'id': item.id,
                   'create_time': item.createTime,
                   'update_time': item.updateTime
@@ -134,6 +144,11 @@ class _$PickStockDao extends PickStockDao {
     return _queryAdapter.queryList('SELECT * FROM pick_stock',
         mapper: (Map<String, Object?> row) => PickStock(
             row['stock_num'] as String,
+            row['stock_name'] as String,
+            row['is_target'] as int,
+            row['price_change'] as String,
+            row['price_change_rate'] as String,
+            row['price'] as String,
             id: row['id'] as int?,
             createTime: row['create_time'] as int?,
             updateTime: row['update_time'] as int?));

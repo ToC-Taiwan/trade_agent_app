@@ -10,5 +10,7 @@
   "delete_all_pick_stock": "刪除全部自選股",
   "delete_all_pick_stock_confirm": "確定刪除全部自選股嗎？",
   "cancel": "取消",
-  "delete": "刪除"
+  "delete": "刪除",
+  "no_pick_stock": "沒有自選股",
+  "click_plus_to_add_stock": "點選 + 新增自選股"
 }

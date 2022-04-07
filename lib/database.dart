@@ -11,3 +11,9 @@ part 'database.g.dart';
 abstract class AppDatabase extends FloorDatabase {
   PickStockDao get pickStockDao;
 }
+
+// create migration
+// final migration1to2 = Migration(1, 2, (database) async {
+//   await database.execute('ALTER TABLE pick_stock ADD COLUMN test_a TEXT');
+//   await database.execute('UPDATE pick_stock SET test_a="mirgration_empty" WHERE id!=0');
+// });
