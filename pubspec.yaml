@@ -18,6 +18,7 @@ dependencies:
   curved_navigation_bar: ^1.0.3
   http: ^0.13.4
   floor: ^1.2.0
+  firebase_core: ^1.14.0
 
 dev_dependencies:
   flutter_test:

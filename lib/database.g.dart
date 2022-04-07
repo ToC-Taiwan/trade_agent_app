@@ -98,7 +98,7 @@ class _$AppDatabase extends AppDatabase {
 
 class _$PickStockDao extends PickStockDao {
   _$PickStockDao(this.database, this.changeListener)
-      : _queryAdapter = QueryAdapter(database),
+      : _queryAdapter = QueryAdapter(database, changeListener),
         _pickStockInsertionAdapter = InsertionAdapter(
             database,
             'pick_stock',
@@ -107,7 +107,8 @@ class _$PickStockDao extends PickStockDao {
                   'id': item.id,
                   'create_time': item.createTime,
                   'update_time': item.updateTime
-                });
+                },
+            changeListener);
 
   final sqflite.DatabaseExecutor database;
 
@@ -119,7 +120,7 @@ class _$PickStockDao extends PickStockDao {
 
   @override
   Future<List<PickStock>> getAllPickStock() async {
-    return _queryAdapter.queryList('SELECT * FROM time_line',
+    return _queryAdapter.queryList('SELECT * FROM pick_stock',
         mapper: (Map<String, Object?> row) => PickStock(
             row['stock_num'] as String,
             id: row['id'] as int?,
@@ -128,7 +129,20 @@ class _$PickStockDao extends PickStockDao {
   }
 
   @override
-  Future<void> insertPickStock(PickStock t) async {
-    await _pickStockInsertionAdapter.insert(t, OnConflictStrategy.abort);
+  Stream<PickStock?> getPickStockByID(int id) {
+    return _queryAdapter.queryStream('SELECT * FROM pick_stock WHERE id = ?1',
+        mapper: (Map<String, Object?> row) => PickStock(
+            row['stock_num'] as String,
+            id: row['id'] as int?,
+            createTime: row['create_time'] as int?,
+            updateTime: row['update_time'] as int?),
+        arguments: [id],
+        queryableName: 'pick_stock',
+        isView: false);
+  }
+
+  @override
+  Future<void> insertPickStock(PickStock record) async {
+    await _pickStockInsertionAdapter.insert(record, OnConflictStrategy.abort);
   }
 }
