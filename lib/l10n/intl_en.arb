@@ -1,0 +1,10 @@
+{
+  "targets": "Targets",
+  "strategy": "Strategy",
+  "pick_stock": "Pick Stock",
+  "tse": "TSE",
+  "balance": "Balance",
+  "settings": "Settings",
+  "search": "Search",
+  "stock_number": "Stock Number"
+}

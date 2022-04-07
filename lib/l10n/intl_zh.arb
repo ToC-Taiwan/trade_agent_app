@@ -1,0 +1,10 @@
+{
+  "targets": "交易目標",
+  "strategy": "策略選股",
+  "pick_stock": "自選股",
+  "tse": "加權指數",
+  "balance": "損益",
+  "settings": "設定",
+  "search": "搜尋",
+  "stock_number": "股票代號"
+}

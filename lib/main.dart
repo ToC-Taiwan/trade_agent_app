@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
+import 'package:trade_agent_v2/database.dart';
+import 'package:trade_agent_v2/generated/l10n.dart';
 import 'package:trade_agent_v2/intro.dart';
 
 void main() async {
@@ -15,13 +18,19 @@ void main() async {
     ),
   );
 
+  // floor
+  final db = await $FloorAppDatabase.databaseBuilder('app_database_tr.db').build();
+
   runApp(
-    const MyApp(),
+    MyApp(
+      db: db,
+    ),
   );
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
+  const MyApp({Key? key, required this.db}) : super(key: key);
+  final AppDatabase db;
 
   void hideKeyboard(BuildContext context) {
     var currentFocus = FocusScope.of(context);
@@ -36,8 +45,17 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: createMaterialColor(const Color.fromARGB(255, 255, 255, 255)),
       ),
-      home: const IntroPage(),
+      home: IntroPage(
+        db: db,
+      ),
       debugShowCheckedModeBanner: false,
+      localizationsDelegates: const [
+        S.delegate,
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+      supportedLocales: S.delegate.supportedLocales,
       builder: (context, child) => Scaffold(
         // Global GestureDetector that will dismiss the keyboard
         body: GestureDetector(

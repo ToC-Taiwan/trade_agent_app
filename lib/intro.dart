@@ -1,9 +1,11 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:trade_agent_v2/database.dart';
 import 'package:trade_agent_v2/homepage.dart';
 
 class IntroPage extends StatefulWidget {
-  const IntroPage({Key? key}) : super(key: key);
+  const IntroPage({Key? key, required this.db}) : super(key: key);
+  final AppDatabase db;
 
   @override
   _IntroPageState createState() => _IntroPageState();
@@ -27,8 +29,9 @@ class _IntroPageState extends State<IntroPage> with TickerProviderStateMixin {
             (value) => _lottieAnimation.forward().then(
                   (value) => Navigator.of(context).pushAndRemoveUntil(
                       MaterialPageRoute(
-                        builder: (context) => const MyHomePage(
+                        builder: (context) => MyHomePage(
                           title: 'Trade Agent V2',
+                          db: widget.db,
                         ),
                       ),
                       (route) => false),

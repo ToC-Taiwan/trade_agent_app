@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:http/http.dart' as http;
 import 'package:trade_agent_v2/basic/url.dart';
+import 'package:trade_agent_v2/generated/l10n.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class Targetspage extends StatefulWidget {
@@ -110,11 +111,11 @@ class _TargetspageState extends State<Targetspage> {
                   TextFormField(
                     // controller: emailController,
                     keyboardType: TextInputType.number,
-                    decoration: const InputDecoration(
-                      icon: Icon(Icons.search),
-                      border: UnderlineInputBorder(),
-                      labelText: 'Search',
-                      hintText: 'Stock Number',
+                    decoration: InputDecoration(
+                      icon: const Icon(Icons.search),
+                      border: const UnderlineInputBorder(),
+                      labelText: S.of(context).search,
+                      hintText: S.of(context).stock_number,
                     ),
                     textInputAction: TextInputAction.search,
                     onChanged: (val) {

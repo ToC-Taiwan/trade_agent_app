@@ -7,12 +7,17 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:trade_agent_v2/database.dart';
 import 'package:trade_agent_v2/main.dart';
 
-void main() {
+void main() async {
+  final db = await $FloorAppDatabase.databaseBuilder('app_database.db').build();
+
   testWidgets('Counter increments smoke test', (tester) async {
     // Build our app and trigger a frame.
-    await tester.pumpWidget(const MyApp());
+    await tester.pumpWidget(MyApp(
+      db: db,
+    ));
 
     // Verify that our counter starts at 0.
     expect(find.text('0'), findsOneWidget);
