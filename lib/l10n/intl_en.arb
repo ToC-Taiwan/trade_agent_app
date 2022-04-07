@@ -6,5 +6,9 @@
   "balance": "Balance",
   "settings": "Settings",
   "search": "Search",
-  "stock_number": "Stock Number"
+  "stock_number": "Stock Number",
+  "delete_all_pick_stock": "Delete All Pick Stock",
+  "delete_all_pick_stock_confirm": "Are you sure you want to delete all pick stock?",
+  "cancel": "Cancel",
+  "delete": "Delete"
 }

@@ -4,6 +4,8 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:trade_agent_v2/basic/url.dart';
+import 'package:trade_agent_v2/generated/l10n.dart';
+import 'package:trade_agent_v2/utils/app_bar.dart';
 
 class BalancePage extends StatefulWidget {
   const BalancePage({Key? key}) : super(key: key);
@@ -23,112 +25,118 @@ class _BalancePageState extends State<BalancePage> {
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<List<Balance>>(
-      future: futureBalance,
-      builder: (context, snapshot) {
-        if (snapshot.hasData) {
-          var dataArr = <Balance>[];
-          List<Widget> rows = [];
-          dataArr = snapshot.data!;
-          num total = 0;
-          num lastTotal = 0;
-          dataArr.asMap().forEach((i, value) {
-            rows.add(generateBalanceRow(value));
-            total += value.total!;
-            if (i == dataArr.length - 1) {
-              lastTotal = value.total!;
-            }
-          });
-          return Column(
-            children: [
-              Expanded(
-                flex: 3,
-                child: ListView(
-                  shrinkWrap: true,
-                  children: [
-                    const SizedBox(
-                      child: Padding(
-                        padding: EdgeInsets.only(top: 30),
-                        child: Center(
-                          child: Text(
-                            'Latest',
-                            style: TextStyle(fontSize: 30),
+    return Scaffold(
+      appBar: trAppbar(
+        context,
+        S.of(context).balance,
+      ),
+      body: FutureBuilder<List<Balance>>(
+        future: futureBalance,
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            var dataArr = <Balance>[];
+            var rows = <Widget>[];
+            dataArr = snapshot.data!;
+            num total = 0;
+            num lastTotal = 0;
+            dataArr.asMap().forEach((i, value) {
+              rows.add(generateBalanceRow(value));
+              total += value.total!;
+              if (i == dataArr.length - 1) {
+                lastTotal = value.total!;
+              }
+            });
+            return Column(
+              children: [
+                Expanded(
+                  flex: 3,
+                  child: ListView(
+                    shrinkWrap: true,
+                    children: [
+                      const SizedBox(
+                        child: Padding(
+                          padding: EdgeInsets.only(top: 30),
+                          child: Center(
+                            child: Text(
+                              'Latest',
+                              style: TextStyle(fontSize: 30),
+                            ),
                           ),
                         ),
                       ),
-                    ),
-                    SizedBox(
-                      child: Padding(
-                        padding: const EdgeInsets.only(top: 30),
-                        child: Center(
-                          child: Text(
-                            commaNumber(lastTotal.toString()),
-                            style: const TextStyle(fontSize: 60),
+                      SizedBox(
+                        child: Padding(
+                          padding: const EdgeInsets.only(top: 30),
+                          child: Center(
+                            child: Text(
+                              commaNumber(lastTotal.toString()),
+                              style: const TextStyle(fontSize: 60),
+                            ),
                           ),
                         ),
                       ),
-                    ),
-                    const SizedBox(
-                      child: Padding(
-                        padding: EdgeInsets.only(top: 30),
-                        child: Center(
-                          child: Text(
-                            'Total',
-                            style: TextStyle(fontSize: 30),
+                      const SizedBox(
+                        child: Padding(
+                          padding: EdgeInsets.only(top: 30),
+                          child: Center(
+                            child: Text(
+                              'Total',
+                              style: TextStyle(fontSize: 30),
+                            ),
                           ),
                         ),
                       ),
-                    ),
-                    SizedBox(
-                      child: Padding(
-                        padding: const EdgeInsets.only(top: 30),
-                        child: Center(
-                          child: Text(
-                            commaNumber(total.toString()),
-                            style: const TextStyle(fontSize: 60),
+                      SizedBox(
+                        child: Padding(
+                          padding: const EdgeInsets.only(top: 30),
+                          child: Center(
+                            child: Text(
+                              commaNumber(total.toString()),
+                              style: const TextStyle(fontSize: 60),
+                            ),
                           ),
                         ),
-                      ),
-                    )
-                  ],
+                      )
+                    ],
+                  ),
                 ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(top: 18, left: 20),
-                child: Row(
-                  children: const [
-                    Expanded(
-                        flex: 2,
-                        child: Text(
-                          'Date',
-                          style: TextStyle(fontWeight: FontWeight.bold),
-                        )),
-                    Expanded(
-                        child: Text(
-                      'C',
-                    )),
-                    Expanded(child: Text('O')),
-                    Expanded(child: Text('D')),
-                    Expanded(
-                        child: Text(
-                      'Total',
-                    )),
-                  ],
+                Padding(
+                  padding: const EdgeInsets.only(top: 18, left: 20),
+                  child: Row(
+                    children: const [
+                      Expanded(
+                          flex: 2,
+                          child: Text(
+                            'Date',
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                          )),
+                      Expanded(
+                          child: Text(
+                        'C',
+                      )),
+                      Expanded(child: Text('O')),
+                      Expanded(child: Text('D')),
+                      Expanded(
+                          child: Text(
+                        'Total',
+                      )),
+                    ],
+                  ),
                 ),
-              ),
-              Expanded(
-                flex: 2,
-                child: ListView(
-                  children: rows.reversed.toList(),
+                Expanded(
+                  flex: 2,
+                  child: ListView(
+                    children: rows.reversed.toList(),
+                  ),
                 ),
-              ),
-            ],
-          );
-        } else if (snapshot.hasError) {
-          return Text('${snapshot.error}');
-        }
-        return const CircularProgressIndicator();
-      },
+              ],
+            );
+          } else if (snapshot.hasError) {
+            return Text('${snapshot.error}');
+          }
+          return const CircularProgressIndicator();
+        },
+      ),
     );
   }
 }
@@ -170,7 +178,7 @@ Widget generateBalanceRow(Balance balance) {
             flex: 2,
             child: Text(
               balance.tradeDay!.substring(0, 10),
-              style: TextStyle(fontWeight: FontWeight.bold),
+              style: const TextStyle(fontWeight: FontWeight.bold),
             )),
         Expanded(
             child: Text(

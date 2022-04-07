@@ -629,8 +629,8 @@ class TargetCond {
     limitPriceLow = json['limit_price_low'];
     limitPriceHigh = json['limit_price_high'];
     limitVolume = json['limit_volume'];
-    blackStock = json['black_stock'].cast<String>();
-    blackCategory = json['black_category'].cast<String>();
+    blackStock = List.from(json['black_stock']);
+    blackCategory = List.from(json['black_category']);
     realTimeTargetsCount = json['real_time_targets_count'];
   }
 

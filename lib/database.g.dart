@@ -98,7 +98,7 @@ class _$AppDatabase extends AppDatabase {
 
 class _$PickStockDao extends PickStockDao {
   _$PickStockDao(this.database, this.changeListener)
-      : _queryAdapter = QueryAdapter(database, changeListener),
+      : _queryAdapter = QueryAdapter(database),
         _pickStockInsertionAdapter = InsertionAdapter(
             database,
             'pick_stock',
@@ -107,8 +107,17 @@ class _$PickStockDao extends PickStockDao {
                   'id': item.id,
                   'create_time': item.createTime,
                   'update_time': item.updateTime
-                },
-            changeListener);
+                }),
+        _pickStockDeletionAdapter = DeletionAdapter(
+            database,
+            'pick_stock',
+            ['id'],
+            (PickStock item) => <String, Object?>{
+                  'stock_num': item.stockNum,
+                  'id': item.id,
+                  'create_time': item.createTime,
+                  'update_time': item.updateTime
+                });
 
   final sqflite.DatabaseExecutor database;
 
@@ -117,6 +126,8 @@ class _$PickStockDao extends PickStockDao {
   final QueryAdapter _queryAdapter;
 
   final InsertionAdapter<PickStock> _pickStockInsertionAdapter;
+
+  final DeletionAdapter<PickStock> _pickStockDeletionAdapter;
 
   @override
   Future<List<PickStock>> getAllPickStock() async {
@@ -129,20 +140,17 @@ class _$PickStockDao extends PickStockDao {
   }
 
   @override
-  Stream<PickStock?> getPickStockByID(int id) {
-    return _queryAdapter.queryStream('SELECT * FROM pick_stock WHERE id = ?1',
-        mapper: (Map<String, Object?> row) => PickStock(
-            row['stock_num'] as String,
-            id: row['id'] as int?,
-            createTime: row['create_time'] as int?,
-            updateTime: row['update_time'] as int?),
-        arguments: [id],
-        queryableName: 'pick_stock',
-        isView: false);
+  Future<void> deleteAllPickStock() async {
+    await _queryAdapter.queryNoReturn('DELETE FROM pick_stock WHERE id !=0');
   }
 
   @override
   Future<void> insertPickStock(PickStock record) async {
     await _pickStockInsertionAdapter.insert(record, OnConflictStrategy.abort);
+  }
+
+  @override
+  Future<void> deletePickStock(PickStock record) async {
+    await _pickStockDeletionAdapter.delete(record);
   }
 }

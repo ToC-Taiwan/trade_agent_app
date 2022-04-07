@@ -4,6 +4,8 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:trade_agent_v2/basic/url.dart';
+import 'package:trade_agent_v2/generated/l10n.dart';
+import 'package:trade_agent_v2/utils/app_bar.dart';
 
 class StrategyPage extends StatefulWidget {
   const StrategyPage({Key? key}) : super(key: key);
@@ -23,18 +25,24 @@ class _StrategyPage extends State<StrategyPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: FutureBuilder<List<Strategy>>(
+    return Scaffold(
+      appBar: trAppbar(
+        context,
+        S.of(context).strategy,
+      ),
+      body: FutureBuilder<List<Strategy>>(
         future: futureStrategy,
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             if (snapshot.data!.isEmpty) {
-              return const Text(
-                'Analyzing...',
-                style: TextStyle(
-                  fontSize: 30,
+              return const Center(
+                child: Text(
+                  'Analyzing...',
+                  style: TextStyle(
+                    fontSize: 30,
+                  ),
+                  textAlign: TextAlign.center,
                 ),
-                textAlign: TextAlign.center,
               );
             }
             var data = snapshot.data;
@@ -47,7 +55,7 @@ class _StrategyPage extends State<StrategyPage> {
                       child: ListTile(
                         title: Text(
                           data[index].date!,
-                          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
                         ),
                         subtitle: Text(
                           data[index].stocks!.length.toString(),
@@ -156,10 +164,8 @@ void addTargets(String opt, BuildContext context) async {
     },
   );
   if (response.statusCode == 200) {
-    // If the server did return a 201 CREATED response,
-    // then parse the JSON.
     num count;
-    count = jsonDecode(response.body)['total_add'];
+    count = (jsonDecode(response.body) as Map<String, dynamic>)['total_add'];
     await showDialog(
       context: context,
       builder: (context) {
@@ -201,9 +207,9 @@ class Strategy {
     date = json['date'];
     if (json['stocks'] != null) {
       stocks = <Stocks>[];
-      json['stocks'].forEach((v) {
+      for (final v in json['stocks'] as List) {
         stocks!.add(Stocks.fromJson(v));
-      });
+      }
     }
   }
 

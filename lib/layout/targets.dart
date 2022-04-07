@@ -7,6 +7,7 @@ import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:http/http.dart' as http;
 import 'package:trade_agent_v2/basic/url.dart';
 import 'package:trade_agent_v2/generated/l10n.dart';
+import 'package:trade_agent_v2/utils/app_bar.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class Targetspage extends StatefulWidget {
@@ -42,105 +43,111 @@ class _TargetspageState extends State<Targetspage> {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      child: FutureBuilder<List<Target>>(
-        future: futureTargets,
-        builder: (context, snapshot) {
-          if (snapshot.hasData) {
-            var tmp = <Widget>[];
-            current = snapshot.data!;
-            for (final i in snapshot.data!) {
-              if (i.rank == -1) {
-                continue;
-              }
-              tmp.add(
-                buildTile(
-                  1,
-                  1,
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      Expanded(
-                        child: AutoSizeText(
-                          i.stock!.number!,
-                          style: const TextStyle(fontSize: 22, color: Colors.black),
-                        ),
-                      ),
-                      Expanded(
-                        child: AutoSizeText(
-                          i.stock!.name!,
-                          style: const TextStyle(fontSize: 22, color: Color.fromARGB(255, 0, 46, 184), fontWeight: FontWeight.bold),
-                        ),
-                      ),
-                      Expanded(
-                        flex: 2,
-                        child: Padding(
-                          padding: const EdgeInsets.only(left: 5, right: 5),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              AutoSizeText(
-                                commaNumber('${i.volume! ~/ 1000}k'),
-                                style: const TextStyle(fontSize: 14, color: Colors.red),
-                              ),
-                              AutoSizeText(
-                                i.stock!.lastClose!.toString(),
-                                style: const TextStyle(fontSize: 22, color: Colors.black, fontWeight: FontWeight.bold),
-                              ),
-                            ],
+    return Scaffold(
+      appBar: trAppbar(
+        context,
+        S.of(context).targets,
+      ),
+      body: SizedBox(
+        child: FutureBuilder<List<Target>>(
+          future: futureTargets,
+          builder: (context, snapshot) {
+            if (snapshot.hasData) {
+              var tmp = <Widget>[];
+              current = snapshot.data!;
+              for (final i in snapshot.data!) {
+                if (i.rank == -1) {
+                  continue;
+                }
+                tmp.add(
+                  buildTile(
+                    1,
+                    1,
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        Expanded(
+                          child: AutoSizeText(
+                            i.stock!.number!,
+                            style: const TextStyle(fontSize: 22, color: Colors.black),
                           ),
                         ),
-                      ),
-                      // Text(i.rank.toString()),
-                    ],
+                        Expanded(
+                          child: AutoSizeText(
+                            i.stock!.name!,
+                            style: const TextStyle(fontSize: 22, color: Color.fromARGB(255, 0, 46, 184), fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                        Expanded(
+                          flex: 2,
+                          child: Padding(
+                            padding: const EdgeInsets.only(left: 5, right: 5),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                AutoSizeText(
+                                  commaNumber('${i.volume! ~/ 1000}k'),
+                                  style: const TextStyle(fontSize: 14, color: Colors.red),
+                                ),
+                                AutoSizeText(
+                                  i.stock!.lastClose!.toString(),
+                                  style: const TextStyle(fontSize: 22, color: Colors.black, fontWeight: FontWeight.bold),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                        // Text(i.rank.toString()),
+                      ],
+                    ),
+                    onTap: () {
+                      var number = i.stock!.number!;
+                      setState(() {
+                        _launchInWebViewOrVC('https://tw.stock.yahoo.com/quote/$number.TW');
+                      });
+                    },
                   ),
-                  onTap: () {
-                    var number = i.stock!.number!;
-                    setState(() {
-                      _launchInWebViewOrVC('https://tw.stock.yahoo.com/quote/$number.TW');
-                    });
-                  },
+                );
+              }
+              return Padding(
+                padding: const EdgeInsets.all(8),
+                child: ListView(
+                  shrinkWrap: true,
+                  children: [
+                    TextFormField(
+                      // controller: emailController,
+                      keyboardType: TextInputType.number,
+                      decoration: InputDecoration(
+                        icon: const Icon(Icons.search),
+                        border: const UnderlineInputBorder(),
+                        labelText: S.of(context).search,
+                        hintText: S.of(context).stock_number,
+                      ),
+                      textInputAction: TextInputAction.search,
+                      onChanged: (val) {
+                        if (val.isNotEmpty) {
+                          _onItemClick(int.parse(val));
+                        } else {
+                          _onItemClick(-1);
+                        }
+                      },
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(top: 10),
+                      child: StaggeredGrid.count(
+                        crossAxisCount: 3,
+                        crossAxisSpacing: 12,
+                        mainAxisSpacing: 12,
+                        children: tmp,
+                      ),
+                    ),
+                  ],
                 ),
               );
             }
-            return Padding(
-              padding: const EdgeInsets.all(8),
-              child: ListView(
-                shrinkWrap: true,
-                children: [
-                  TextFormField(
-                    // controller: emailController,
-                    keyboardType: TextInputType.number,
-                    decoration: InputDecoration(
-                      icon: const Icon(Icons.search),
-                      border: const UnderlineInputBorder(),
-                      labelText: S.of(context).search,
-                      hintText: S.of(context).stock_number,
-                    ),
-                    textInputAction: TextInputAction.search,
-                    onChanged: (val) {
-                      if (val.isNotEmpty) {
-                        _onItemClick(int.parse(val));
-                      } else {
-                        _onItemClick(-1);
-                      }
-                    },
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(top: 10),
-                    child: StaggeredGrid.count(
-                      crossAxisCount: 3,
-                      crossAxisSpacing: 12,
-                      mainAxisSpacing: 12,
-                      children: tmp,
-                    ),
-                  ),
-                ],
-              ),
-            );
-          }
-          return const CircularProgressIndicator();
-        },
+            return const CircularProgressIndicator();
+          },
+        ),
       ),
     );
   }
@@ -156,7 +163,7 @@ String mathFunc(Match match) {
   return '${match[1]},';
 }
 
-Widget buildTile(int cross, main, Widget child, {Function()? onTap}) {
+Widget buildTile(int cross, int main, Widget child, {Function()? onTap}) {
   return StaggeredGridTile.count(
     crossAxisCellCount: cross,
     mainAxisCellCount: main,

@@ -6,6 +6,8 @@ import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:http/http.dart' as http;
 import 'package:trade_agent_v2/basic/ad_id.dart';
 import 'package:trade_agent_v2/basic/url.dart';
+import 'package:trade_agent_v2/generated/l10n.dart';
+import 'package:trade_agent_v2/utils/app_bar.dart';
 
 class TSEPage extends StatefulWidget {
   const TSEPage({Key? key}) : super(key: key);
@@ -45,62 +47,65 @@ class _TSEPageState extends State<TSEPage> {
       height: myBanner.size.height.toDouble(),
       child: adWidget,
     );
-    return FutureBuilder<TSE>(
-      future: futureTSE,
-      builder: (context, snapshot) {
-        if (snapshot.hasData) {
-          var data = snapshot.data!;
-          var widgetArr = <Widget>[];
-          if (data.tickTime.toString().length > 10) {
-            widgetArr.add(generateRow('Date', data.tickTime.toString().substring(0, 10), Colors.black));
-          } else {
-            return const Text(
-              'Loading...',
-              style: TextStyle(
-                fontSize: 30,
-              ),
-              textAlign: TextAlign.center,
+    return Scaffold(
+      appBar: trAppbar(
+        context,
+        S.of(context).tse,
+      ),
+      body: FutureBuilder<TSE>(
+        future: futureTSE,
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            var data = snapshot.data!;
+            if (data.tickTime.toString().length < 10) {
+              return const Text(
+                'Loading...',
+                style: TextStyle(
+                  fontSize: 30,
+                ),
+                textAlign: TextAlign.center,
+              );
+            }
+            String type;
+            Color tmp;
+            if (data.chgType.toString() == 'Down') {
+              tmp = Colors.green;
+              type = '↘️';
+            } else {
+              tmp = Colors.red;
+              type = '↗️';
+            }
+            return Column(
+              children: [
+                const SizedBox(
+                  height: 10,
+                ),
+                adContainer,
+                ListView(
+                  shrinkWrap: true,
+                  children: [
+                    generateRow('Date', data.tickTime.toString().substring(0, 10), Colors.black),
+                    generateRow('Close', commaNumber(data.close.toString()), Colors.black),
+                    const SizedBox(
+                      height: 40,
+                    ),
+                    generateRow('Open', commaNumber(data.open.toString()), Colors.black),
+                    generateRow('High', commaNumber(data.high.toString()), Colors.black),
+                    generateRow('Low', commaNumber(data.low.toString()), Colors.black),
+                    const SizedBox(
+                      height: 40,
+                    ),
+                    generateRow('Change Type', type, tmp),
+                    generateRow('Percent Change', data.pctChg.toString(), tmp),
+                    generateRow('Price Change', commaNumber(data.priceChg.toString()), tmp)
+                  ],
+                ),
+              ],
             );
           }
-          String type;
-          Color tmp;
-          if (data.chgType.toString() == 'Down') {
-            tmp = Colors.green;
-            type = '↘️';
-          } else {
-            tmp = Colors.red;
-            type = '↗️';
-          }
-          widgetArr.add(generateRow('Close', commaNumber(data.close.toString()), Colors.black));
-          widgetArr.add(SizedBox(
-            height: 40,
-          ));
-          // widgetArr.add(generateRow('Volume', commaNumber(data.volume.toString()), Colors.black));
-          widgetArr.add(generateRow('Open', commaNumber(data.open.toString()), Colors.black));
-          widgetArr.add(generateRow('High', commaNumber(data.high.toString()), Colors.black));
-          widgetArr.add(generateRow('Low', commaNumber(data.low.toString()), Colors.black));
-          widgetArr.add(SizedBox(
-            height: 40,
-          ));
-          // widgetArr.add(generateRow('Yesterday Volume', commaNumber(data.yesterdayVolume.toString())));
-          widgetArr.add(generateRow('Change Type', type, tmp));
-          widgetArr.add(generateRow('Percent Change', data.pctChg.toString(), tmp));
-          widgetArr.add(generateRow('Price Change', commaNumber(data.priceChg.toString()), tmp));
-          return Column(
-            children: [
-              const SizedBox(
-                height: 10,
-              ),
-              adContainer,
-              ListView(
-                shrinkWrap: true,
-                children: widgetArr,
-              ),
-            ],
-          );
-        }
-        return const CircularProgressIndicator();
-      },
+          return const CircularProgressIndicator();
+        },
+      ),
     );
   }
 }

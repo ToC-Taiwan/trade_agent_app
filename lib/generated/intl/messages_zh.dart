@@ -23,6 +23,12 @@ class MessageLookup extends MessageLookupByLibrary {
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
         "balance": MessageLookupByLibrary.simpleMessage("損益"),
+        "cancel": MessageLookupByLibrary.simpleMessage("取消"),
+        "delete": MessageLookupByLibrary.simpleMessage("刪除"),
+        "delete_all_pick_stock":
+            MessageLookupByLibrary.simpleMessage("刪除全部自選股"),
+        "delete_all_pick_stock_confirm":
+            MessageLookupByLibrary.simpleMessage("確定刪除全部自選股嗎？"),
         "pick_stock": MessageLookupByLibrary.simpleMessage("自選股"),
         "search": MessageLookupByLibrary.simpleMessage("搜尋"),
         "settings": MessageLookupByLibrary.simpleMessage("設定"),

@@ -129,6 +129,46 @@ class S {
       args: [],
     );
   }
+
+  /// `Delete All Pick Stock`
+  String get delete_all_pick_stock {
+    return Intl.message(
+      'Delete All Pick Stock',
+      name: 'delete_all_pick_stock',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Are you sure you want to delete all pick stock?`
+  String get delete_all_pick_stock_confirm {
+    return Intl.message(
+      'Are you sure you want to delete all pick stock?',
+      name: 'delete_all_pick_stock_confirm',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Cancel`
+  String get cancel {
+    return Intl.message(
+      'Cancel',
+      name: 'cancel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Delete`
+  String get delete {
+    return Intl.message(
+      'Delete',
+      name: 'delete',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {
