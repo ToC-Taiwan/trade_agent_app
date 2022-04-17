@@ -9,9 +9,15 @@ abstract class PickStockDao {
   @Query('DELETE FROM pick_stock WHERE id !=0')
   Future<void> deleteAllPickStock();
 
+  @Update(onConflict: OnConflictStrategy.replace)
+  Future<void> updatePickStock(PickStock record);
+
+  @update
+  Future<int> updatePickStocks(List<PickStock> record);
+
   @delete
   Future<void> deletePickStock(PickStock record);
 
-  @Insert()
+  @Insert(onConflict: OnConflictStrategy.replace)
   Future<void> insertPickStock(PickStock record);
 }

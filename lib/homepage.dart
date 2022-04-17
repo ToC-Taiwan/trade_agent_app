@@ -18,8 +18,8 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _page = 2;
   final GlobalKey<CurvedNavigationBarState> _bottomNavigationKey = GlobalKey();
+  int _page = 2;
   List pages = [];
 
   @override
@@ -51,10 +51,9 @@ class _MyHomePageState extends State<MyHomePage> {
           Icon(Icons.dashboard_customize, size: 30),
           Icon(Icons.today_outlined, size: 30),
           Icon(Icons.money, size: 30),
-          // Icon(Icons.computer, size: 30),
         ],
         color: const Color.fromARGB(255, 217, 217, 217),
-        buttonBackgroundColor: Colors.red[100],
+        buttonBackgroundColor: const Color.fromARGB(255, 255, 221, 68),
         backgroundColor: Colors.white,
         animationCurve: Curves.easeInOut,
         animationDuration: const Duration(milliseconds: 150),

@@ -7,6 +7,7 @@ import 'package:trade_agent_v2/database.dart';
 import 'package:trade_agent_v2/firebase_options.dart';
 import 'package:trade_agent_v2/generated/l10n.dart';
 import 'package:trade_agent_v2/intro.dart';
+import 'package:trade_agent_v2/models/basic.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -28,6 +29,10 @@ void main() async {
   // floor
   // final db = await $FloorAppDatabase.databaseBuilder('app_database_tr.db').addMigrations([migration1to2]).build();
   final db = await $FloorAppDatabase.databaseBuilder('app_database_tr.db').build();
+  var version = await db.basicDao.getBasicByKey('version');
+  if (version == null) {
+    await db.basicDao.insertBasic(Basic('version', '3.0.0'));
+  }
 
   runApp(
     MyApp(

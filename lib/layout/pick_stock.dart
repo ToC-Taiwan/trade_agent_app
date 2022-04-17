@@ -1,8 +1,13 @@
+import 'dart:async';
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:trade_agent_v2/basic/url.dart';
 import 'package:trade_agent_v2/database.dart';
 import 'package:trade_agent_v2/generated/l10n.dart';
 import 'package:trade_agent_v2/models/pick_stock.dart';
 import 'package:trade_agent_v2/utils/app_bar.dart';
+import 'package:web_socket_channel/io.dart';
 
 class PickStockPage extends StatefulWidget {
   const PickStockPage({Key? key, required this.db}) : super(key: key);
@@ -13,12 +18,80 @@ class PickStockPage extends StatefulWidget {
 }
 
 class _PickStockPageState extends State<PickStockPage> {
+  TextEditingController textFieldController = TextEditingController();
   late Future<List<PickStock>> stockArray;
+  final _channel = IOWebSocketChannel.connect(Uri.parse(tradeAgentWSURLPrefix));
+
+  List<PickStock> stockList = [];
 
   @override
   void initState() {
     super.initState();
     stockArray = widget.db.pickStockDao.getAllPickStock();
+    _channel.stream.listen((message) {
+      for (final Map<String, dynamic> i in jsonDecode(message)) {
+        for (final j in stockList) {
+          if (i['stock_num'] == j.stockNum) {
+            if (i['price_change'] is int) {
+              var tmp = i['price_change'] as int;
+              i['price_change'] = tmp.toDouble();
+            }
+            if (i['price_change_rate'] is int) {
+              var tmp = i['price_change_rate'] as int;
+              i['price_change_rate'] = tmp.toDouble();
+            }
+            if (i['price'] is int) {
+              var tmp = i['price'] as int;
+              i['price'] = tmp.toDouble();
+            }
+            var tmp = PickStock(
+              i['stock_num'],
+              i['stock_name'],
+              0,
+              i['price_change'],
+              i['price_change_rate'],
+              i['price'],
+              id: j.id,
+              createTime: j.createTime,
+              updateTime: j.updateTime,
+            );
+            if (i['wrong']) {
+              widget.db.pickStockDao.deletePickStock(tmp);
+              showDialog(
+                context: context,
+                builder: (context) => AlertDialog(
+                  title: Text(S.of(context).warning),
+                  content: Text('${tmp.stockNum} ${S.of(context).stock_dose_not_exist}'),
+                  actions: [
+                    ElevatedButton(
+                      child: Text(
+                        S.of(context).ok,
+                        style: const TextStyle(color: Colors.black),
+                      ),
+                      onPressed: () => Navigator.pop(context),
+                    ),
+                  ],
+                ),
+              );
+            } else {
+              widget.db.pickStockDao.updatePickStock(tmp);
+            }
+            break;
+          }
+        }
+      }
+      setState(() {
+        stockArray = widget.db.pickStockDao.getAllPickStock();
+      });
+    });
+    // _channel.sink.add(jsonEncode({'topic': 'pick_stock'}));
+  }
+
+  @override
+  void dispose() {
+    textFieldController.dispose();
+    _channel.sink.close();
+    super.dispose();
   }
 
   @override
@@ -33,20 +106,26 @@ class _PickStockPageState extends State<PickStockPage> {
               title: Text(S.of(context).delete_all_pick_stock),
               content: Text(S.of(context).delete_all_pick_stock_confirm),
               actions: [
-                OutlinedButton(
+                ElevatedButton(
                   child: Text(
                     S.of(context).cancel,
                     style: const TextStyle(color: Colors.black),
                   ),
                   onPressed: () => Navigator.pop(context),
                 ),
-                OutlinedButton(
+                ElevatedButton(
                   child: Text(
                     S.of(context).delete,
                     style: const TextStyle(color: Colors.black),
                   ),
                   onPressed: () {
                     widget.db.pickStockDao.deleteAllPickStock();
+                    stockList = [];
+                    _channel.sink.add(jsonEncode({
+                      'data': {
+                        'pick_stock_list': [],
+                      }
+                    }));
                     setState(() {
                       stockArray = widget.db.pickStockDao.getAllPickStock();
                     });
@@ -62,48 +141,76 @@ class _PickStockPageState extends State<PickStockPage> {
         padding: const EdgeInsets.only(right: 10),
         child: IconButton(
           icon: const Icon(Icons.add),
-          onPressed: () async {
-            var textFieldController = TextEditingController();
-            await showDialog(
+          onPressed: () {
+            showDialog(
               context: context,
               builder: (context) {
                 return AlertDialog(
-                  title: const Text('Type the stock number'),
+                  title: Text(S.of(context).type_stock_number),
                   content: TextField(
-                    onChanged: (value) {},
+                    // onChanged: (value) {},
                     controller: textFieldController,
-                    decoration: const InputDecoration(hintText: 'Stock Number'),
+                    decoration: InputDecoration(
+                      hintText: S.of(context).stock_number,
+                    ),
+                    keyboardType: TextInputType.number,
+                    autofocus: true,
                   ),
                   actions: <Widget>[
-                    OutlinedButton(
-                      child: const Text(
-                        'Cancel',
-                        style: TextStyle(color: Colors.black),
+                    ElevatedButton(
+                      child: Text(
+                        S.of(context).cancel,
+                        style: const TextStyle(color: Colors.black),
                       ),
                       onPressed: () {
+                        textFieldController.clear();
                         Navigator.pop(context);
                       },
                     ),
-                    OutlinedButton(
-                      child: const Text(
-                        'Add',
-                        style: TextStyle(color: Colors.black),
-                      ),
+                    ElevatedButton(
                       onPressed: () {
+                        if (textFieldController.text.isEmpty) {
+                          showDialog(
+                            context: context,
+                            builder: (context) => AlertDialog(
+                              title: Text(S.of(context).warning),
+                              content: Text(S.of(context).input_must_not_empty),
+                              actions: [
+                                ElevatedButton(
+                                  child: Text(
+                                    S.of(context).ok,
+                                    style: const TextStyle(color: Colors.black),
+                                  ),
+                                  onPressed: () => Navigator.pop(context),
+                                ),
+                              ],
+                            ),
+                          );
+                          return;
+                        }
                         var t = PickStock(
                           textFieldController.text,
                           textFieldController.text,
                           1,
-                          textFieldController.text,
-                          textFieldController.text,
-                          textFieldController.text,
+                          0,
+                          0,
+                          0,
                         );
-                        widget.db.pickStockDao.insertPickStock(t);
-                        setState(() {
-                          stockArray = widget.db.pickStockDao.getAllPickStock();
-                        });
+                        var exist =
+                            stockList.firstWhere((element) => element.stockNum == textFieldController.text, orElse: () => PickStock('', '', 0, 0, 0, 0));
+                        if (exist.stockNum == '') {
+                          widget.db.pickStockDao.insertPickStock(t);
+                          setState(() {
+                            stockArray = widget.db.pickStockDao.getAllPickStock();
+                          });
+                        }
+                        textFieldController.clear();
                         Navigator.pop(context);
                       },
+                      child: Text(
+                        S.of(context).add,
+                        style: const TextStyle(color: Colors.black),
+                      ),
                     ),
                   ],
                 );
@@ -124,6 +231,11 @@ class _PickStockPageState extends State<PickStockPage> {
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             if (snapshot.data!.isEmpty) {
+              _channel.sink.add(jsonEncode({
+                'data': {
+                  'pick_stock_list': [],
+                }
+              }));
               return Center(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -142,30 +254,75 @@ class _PickStockPageState extends State<PickStockPage> {
                   ],
                 ),
               );
+            } else {
+              var numList = [];
+              stockList = [];
+              for (final s in snapshot.data!) {
+                stockList.add(s);
+                numList.add(s.stockNum);
+              }
+              _channel.sink.add(jsonEncode({
+                'data': {
+                  'pick_stock_list': numList,
+                }
+              }));
             }
-            return ListView.builder(
+            return ListView.separated(
+              separatorBuilder: (context, index) => const Divider(
+                height: 0,
+                color: Colors.grey,
+              ),
               shrinkWrap: true,
               itemCount: snapshot.data!.length,
               itemBuilder: (context, index) {
+                var textColor = Colors.black;
+                if (snapshot.data![index].priceChangeRate < 0) {
+                  textColor = Colors.green;
+                } else if (snapshot.data![index].priceChangeRate > 0) {
+                  textColor = Colors.red;
+                }
+                var sign = '';
+                if (snapshot.data![index].priceChangeRate > 0) {
+                  sign = '+';
+                }
                 return ListTile(
                   title: Row(
                     children: [
-                      Expanded(child: Text(snapshot.data![index].stockNum)),
                       Expanded(
-                          child: Text(
-                        snapshot.data![index].stockNum,
-                        textAlign: TextAlign.end,
-                      )),
+                        child: Text(
+                          snapshot.data![index].stockName,
+                          style: TextStyle(fontSize: 23, color: textColor, fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                      Expanded(
+                        child: Text(
+                          snapshot.data![index].price.toString(),
+                          textAlign: TextAlign.end,
+                          style: TextStyle(fontSize: 23, color: textColor, fontWeight: FontWeight.bold),
+                        ),
+                      ),
                     ],
                   ),
                   subtitle: Row(
                     children: [
-                      Expanded(child: Text(snapshot.data![index].stockNum)),
                       Expanded(
-                          child: Text(
-                        snapshot.data![index].isTarget.toString(),
-                        textAlign: TextAlign.end,
-                      )),
+                        child: Text(
+                          snapshot.data![index].stockNum,
+                          // style: TextStyle(
+                          //   color: textColor,
+                          // ),
+                        ),
+                      ),
+                      Expanded(
+                        child: Text(
+                          '$sign${snapshot.data![index].priceChange}($sign${snapshot.data![index].priceChangeRate}%)',
+                          textAlign: TextAlign.end,
+                          style: TextStyle(
+                            color: textColor,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
                     ],
                   ),
                   onLongPress: () {
@@ -173,10 +330,10 @@ class _PickStockPageState extends State<PickStockPage> {
                       context: context,
                       builder: (context) {
                         return AlertDialog(
-                          title: const Text('Delete'),
-                          content: const Text('Are you sure you want to delete this stock?'),
+                          title: Text(S.of(context).delete),
+                          content: Text(S.of(context).delete_pick_stock_confirm),
                           actions: <Widget>[
-                            OutlinedButton(
+                            ElevatedButton(
                               child: const Text(
                                 'Cancel',
                                 style: TextStyle(color: Colors.black),
@@ -185,7 +342,7 @@ class _PickStockPageState extends State<PickStockPage> {
                                 Navigator.pop(context);
                               },
                             ),
-                            OutlinedButton(
+                            ElevatedButton(
                               child: const Text(
                                 'Delete',
                                 style: TextStyle(color: Colors.black),

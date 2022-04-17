@@ -150,6 +150,26 @@ class S {
     );
   }
 
+  /// `Are you sure you want to delete this stock`
+  String get delete_pick_stock_confirm {
+    return Intl.message(
+      'Are you sure you want to delete this stock',
+      name: 'delete_pick_stock_confirm',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Add`
+  String get add {
+    return Intl.message(
+      'Add',
+      name: 'add',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Cancel`
   String get cancel {
     return Intl.message(
@@ -185,6 +205,136 @@ class S {
     return Intl.message(
       'Click + to add stock',
       name: 'click_plus_to_add_stock',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Type Stock Number`
+  String get type_stock_number {
+    return Intl.message(
+      'Type Stock Number',
+      name: 'type_stock_number',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Warning`
+  String get warning {
+    return Intl.message(
+      'Warning',
+      name: 'warning',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Input is empty`
+  String get input_must_not_empty {
+    return Intl.message(
+      'Input is empty',
+      name: 'input_must_not_empty',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `OK`
+  String get ok {
+    return Intl.message(
+      'OK',
+      name: 'ok',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Stock dose not exist`
+  String get stock_dose_not_exist {
+    return Intl.message(
+      'Stock dose not exist',
+      name: 'stock_dose_not_exist',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Language`
+  String get language {
+    return Intl.message(
+      'Language',
+      name: 'language',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Version`
+  String get version {
+    return Intl.message(
+      'Version',
+      name: 'version',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Remove Ads`
+  String get remove_ads {
+    return Intl.message(
+      'Remove Ads',
+      name: 'remove_ads',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `About Me`
+  String get about_me {
+    return Intl.message(
+      'About Me',
+      name: 'about_me',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Terms and Conditions of Use`
+  String get terms_and_conditions_of_use {
+    return Intl.message(
+      'Terms and Conditions of Use',
+      name: 'terms_and_conditions_of_use',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Notification`
+  String get notification {
+    return Intl.message(
+      'Notification',
+      name: 'notification',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Settings of Notification`
+  String get settings_of_notification {
+    return Intl.message(
+      'Settings of Notification',
+      name: 'settings_of_notification',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Trade Configuration`
+  String get trade_configuration {
+    return Intl.message(
+      'Trade Configuration',
+      name: 'trade_configuration',
       desc: '',
       args: [],
     );

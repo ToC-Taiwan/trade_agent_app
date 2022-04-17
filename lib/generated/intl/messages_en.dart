@@ -22,6 +22,8 @@ class MessageLookup extends MessageLookupByLibrary {
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
+        "about_me": MessageLookupByLibrary.simpleMessage("About Me"),
+        "add": MessageLookupByLibrary.simpleMessage("Add"),
         "balance": MessageLookupByLibrary.simpleMessage("Balance"),
         "cancel": MessageLookupByLibrary.simpleMessage("Cancel"),
         "click_plus_to_add_stock":
@@ -31,13 +33,33 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Delete All Pick Stock"),
         "delete_all_pick_stock_confirm": MessageLookupByLibrary.simpleMessage(
             "Are you sure you want to delete all pick stock?"),
+        "delete_pick_stock_confirm": MessageLookupByLibrary.simpleMessage(
+            "Are you sure you want to delete this stock"),
+        "input_must_not_empty":
+            MessageLookupByLibrary.simpleMessage("Input is empty"),
+        "language": MessageLookupByLibrary.simpleMessage("Language"),
         "no_pick_stock": MessageLookupByLibrary.simpleMessage("No Pick Stock"),
+        "notification": MessageLookupByLibrary.simpleMessage("Notification"),
+        "ok": MessageLookupByLibrary.simpleMessage("OK"),
         "pick_stock": MessageLookupByLibrary.simpleMessage("Pick Stock"),
+        "remove_ads": MessageLookupByLibrary.simpleMessage("Remove Ads"),
         "search": MessageLookupByLibrary.simpleMessage("Search"),
         "settings": MessageLookupByLibrary.simpleMessage("Settings"),
+        "settings_of_notification":
+            MessageLookupByLibrary.simpleMessage("Settings of Notification"),
+        "stock_dose_not_exist":
+            MessageLookupByLibrary.simpleMessage("Stock dose not exist"),
         "stock_number": MessageLookupByLibrary.simpleMessage("Stock Number"),
         "strategy": MessageLookupByLibrary.simpleMessage("Strategy"),
         "targets": MessageLookupByLibrary.simpleMessage("Targets"),
-        "tse": MessageLookupByLibrary.simpleMessage("TSE")
+        "terms_and_conditions_of_use":
+            MessageLookupByLibrary.simpleMessage("Terms and Conditions of Use"),
+        "trade_configuration":
+            MessageLookupByLibrary.simpleMessage("Trade Configuration"),
+        "tse": MessageLookupByLibrary.simpleMessage("TSE"),
+        "type_stock_number":
+            MessageLookupByLibrary.simpleMessage("Type Stock Number"),
+        "version": MessageLookupByLibrary.simpleMessage("Version"),
+        "warning": MessageLookupByLibrary.simpleMessage("Warning")
       };
 }

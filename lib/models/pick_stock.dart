@@ -22,13 +22,13 @@ class PickStock extends BaseObject {
   final String stockName;
 
   @ColumnInfo(name: 'price')
-  final String price;
+  final double price;
 
   @ColumnInfo(name: 'price_change_rate')
-  final String priceChangeRate;
+  final double priceChangeRate;
 
   @ColumnInfo(name: 'price_change')
-  final String priceChange;
+  final double priceChange;
 
   @ColumnInfo(name: 'is_target')
   final int isTarget;

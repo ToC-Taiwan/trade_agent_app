@@ -15,10 +15,9 @@ AppBar trAppbar(BuildContext context, String title, {List<Widget>? actions}) {
       padding: const EdgeInsets.only(right: 10),
       child: IconButton(
         icon: const Icon(Icons.settings),
-        onPressed: () => Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => const SettingsPage()),
-        ),
+        onPressed: () {
+          Navigator.of(context).push(_createRoute());
+        },
       ),
     ),
   ];
@@ -27,5 +26,23 @@ AppBar trAppbar(BuildContext context, String title, {List<Widget>? actions}) {
     elevation: 1,
     title: Text(title),
     actions: actions ?? normalAction,
+  );
+}
+
+Route _createRoute() {
+  return PageRouteBuilder(
+    pageBuilder: (context, animation, secondaryAnimation) => const SettingsPage(),
+    transitionsBuilder: (context, animation, secondaryAnimation, child) {
+      const begin = Offset(0, 1);
+      const end = Offset.zero;
+      const curve = Curves.ease;
+
+      var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+
+      return SlideTransition(
+        position: animation.drive(tween),
+        child: child,
+      );
+    },
   );
 }

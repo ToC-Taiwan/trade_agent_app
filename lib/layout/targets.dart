@@ -4,7 +4,9 @@ import 'dart:convert';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:http/http.dart' as http;
+import 'package:trade_agent_v2/basic/ad_id.dart';
 import 'package:trade_agent_v2/basic/url.dart';
 import 'package:trade_agent_v2/generated/l10n.dart';
 import 'package:trade_agent_v2/utils/app_bar.dart';
@@ -18,12 +20,25 @@ class Targetspage extends StatefulWidget {
 }
 
 class _TargetspageState extends State<Targetspage> {
+  final BannerAd myBanner = BannerAd(
+    adUnitId: bannerAdUnitID,
+    size: AdSize.banner,
+    request: const AdRequest(),
+    listener: BannerAdListener(
+      onAdFailedToLoad: (ad, _) {
+        // Dispose the ad here to free resources.
+        ad.dispose();
+      },
+    ),
+  );
+
   List<Target> current = [];
   late Future<List<Target>> futureTargets;
 
   @override
   void initState() {
     super.initState();
+    myBanner.load();
     futureTargets = fetchTargets(current, -1);
   }
 
@@ -41,8 +56,18 @@ class _TargetspageState extends State<Targetspage> {
     );
   }
 
+  bool adExist = false;
+
   @override
   Widget build(BuildContext context) {
+    final adWidget = AdWidget(ad: myBanner);
+    final adContainer = Container(
+      padding: const EdgeInsets.only(top: 5),
+      alignment: Alignment.center,
+      width: myBanner.size.width.toDouble(),
+      height: myBanner.size.height.toDouble(),
+      child: adWidget,
+    );
     return Scaffold(
       appBar: trAppbar(
         context,
@@ -58,6 +83,18 @@ class _TargetspageState extends State<Targetspage> {
               for (final i in snapshot.data!) {
                 if (i.rank == -1) {
                   continue;
+                }
+                if (i.rank! % 12 == 0 && !adExist) {
+                  adExist = true;
+                  tmp.add(
+                    buildTile(
+                        2,
+                        2,
+                        Padding(
+                          padding: const EdgeInsets.all(18),
+                          child: adContainer,
+                        )),
+                  );
                 }
                 tmp.add(
                   buildTile(
@@ -103,7 +140,7 @@ class _TargetspageState extends State<Targetspage> {
                     onTap: () {
                       var number = i.stock!.number!;
                       setState(() {
-                        _launchInWebViewOrVC('https://tw.stock.yahoo.com/quote/$number.TW');
+                        _launchInWebViewOrVC('https://tw.stock.yahoo.com/quote/$number.TW/technical-analysis');
                       });
                     },
                   ),
