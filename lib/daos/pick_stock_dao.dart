@@ -6,6 +6,9 @@ abstract class PickStockDao {
   @Query('SELECT * FROM pick_stock')
   Future<List<PickStock>> getAllPickStock();
 
+  @Query('SELECT * FROM pick_stock WHERE stock_num = :stockNum')
+  Future<PickStock?> getPickStockByStockNum(String stockNum);
+
   @Query('DELETE FROM pick_stock WHERE id !=0')
   Future<void> deleteAllPickStock();
 

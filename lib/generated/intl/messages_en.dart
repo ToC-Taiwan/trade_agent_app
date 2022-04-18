@@ -35,6 +35,7 @@ class MessageLookup extends MessageLookupByLibrary {
             "Are you sure you want to delete all pick stock?"),
         "delete_pick_stock_confirm": MessageLookupByLibrary.simpleMessage(
             "Are you sure you want to delete this stock"),
+        "group": MessageLookupByLibrary.simpleMessage("Group"),
         "input_must_not_empty":
             MessageLookupByLibrary.simpleMessage("Input is empty"),
         "language": MessageLookupByLibrary.simpleMessage("Language"),

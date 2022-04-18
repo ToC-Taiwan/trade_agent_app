@@ -1,14 +1,19 @@
 import 'dart:async';
+import 'dart:collection';
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:table_calendar/table_calendar.dart';
 import 'package:trade_agent_v2/basic/url.dart';
+import 'package:trade_agent_v2/database.dart';
 import 'package:trade_agent_v2/generated/l10n.dart';
+import 'package:trade_agent_v2/models/pick_stock.dart';
 import 'package:trade_agent_v2/utils/app_bar.dart';
 
 class StrategyPage extends StatefulWidget {
-  const StrategyPage({Key? key}) : super(key: key);
+  const StrategyPage({Key? key, required this.db}) : super(key: key);
+  final AppDatabase db;
 
   @override
   State<StrategyPage> createState() => _StrategyPage();
@@ -16,11 +21,91 @@ class StrategyPage extends StatefulWidget {
 
 class _StrategyPage extends State<StrategyPage> {
   late Future<List<Strategy>> futureStrategy;
+  late Future<Map<String, bool>> alreadyPick;
+
+  CalendarFormat _calendarFormat = CalendarFormat.month;
+  RangeSelectionMode _rangeSelectionMode = RangeSelectionMode.toggledOff;
+  late final ValueNotifier<List<Event>> _selectedEvents;
+
+  DateTime _focusedDay = DateTime.now();
+  DateTime? _selectedDay;
+  DateTime? _rangeStart;
+  DateTime? _rangeEnd;
+
+  LinkedHashMap<DateTime, List<Event>> kEvents = LinkedHashMap<DateTime, List<Event>>(
+    equals: isSameDay,
+    hashCode: getHashCode,
+  )..addAll({});
 
   @override
   void initState() {
     super.initState();
+    alreadyPick = getAllPickStock();
     futureStrategy = fetchStrategy();
+    _selectedDay = _focusedDay;
+    _selectedEvents = ValueNotifier(_getEventsForDay(_selectedDay!));
+  }
+
+  @override
+  void dispose() {
+    _selectedEvents.dispose();
+    super.dispose();
+  }
+
+  Future<Map<String, bool>> getAllPickStock() async {
+    var result = <String, bool>{};
+    final stocks = await widget.db.pickStockDao.getAllPickStock();
+    for (final stock in stocks) {
+      result[stock.stockNum] = true;
+    }
+    return result;
+  }
+
+  List<Event> _getEventsForDay(DateTime day) {
+    // Implementation example
+    return kEvents[day] ?? [];
+  }
+
+  List<Event> _getEventsForRange(DateTime start, DateTime end) {
+    // Implementation example
+    final days = daysInRange(start, end);
+
+    return [
+      for (final d in days) ..._getEventsForDay(d),
+    ];
+  }
+
+  void _onDaySelected(DateTime selectedDay, DateTime focusedDay) {
+    if (!isSameDay(_selectedDay, selectedDay)) {
+      setState(() {
+        _selectedDay = selectedDay;
+        _focusedDay = focusedDay;
+        _rangeStart = null; // Important to clean those
+        _rangeEnd = null;
+        _rangeSelectionMode = RangeSelectionMode.toggledOff;
+      });
+
+      _selectedEvents.value = _getEventsForDay(selectedDay);
+    }
+  }
+
+  void _onRangeSelected(DateTime? start, DateTime? end, DateTime focusedDay) {
+    setState(() {
+      _selectedDay = null;
+      _focusedDay = focusedDay;
+      _rangeStart = start;
+      _rangeEnd = end;
+      _rangeSelectionMode = RangeSelectionMode.toggledOn;
+    });
+
+    // `start` or `end` could be null
+    if (start != null && end != null) {
+      _selectedEvents.value = _getEventsForRange(start, end);
+    } else if (start != null) {
+      _selectedEvents.value = _getEventsForDay(start);
+    } else if (end != null) {
+      _selectedEvents.value = _getEventsForDay(end);
+    }
   }
 
   @override
@@ -30,65 +115,154 @@ class _StrategyPage extends State<StrategyPage> {
         context,
         S.of(context).strategy,
       ),
-      body: FutureBuilder<List<Strategy>>(
-        future: futureStrategy,
-        builder: (context, snapshot) {
-          if (snapshot.hasData) {
-            if (snapshot.data!.isEmpty) {
-              return const Center(
-                child: Text(
-                  'Analyzing...',
-                  style: TextStyle(
-                    fontSize: 30,
+      body: Column(
+        children: [
+          FutureBuilder<List<Strategy>>(
+            future: futureStrategy,
+            builder: (context, snapshot) {
+              if (snapshot.hasData) {
+                var tmp = snapshot.data!;
+                var result = <DateTime, List<Event>>{};
+                for (final i in tmp) {
+                  result[DateTime.parse(i.date!)] = [];
+                  for (final s in i.stocks!) {
+                    result[DateTime.parse(i.date!)]!.add(Event(s.number!, s.name!));
+                  }
+                }
+                kEvents = LinkedHashMap<DateTime, List<Event>>(
+                  equals: isSameDay,
+                  hashCode: getHashCode,
+                )..addAll(result);
+                return TableCalendar(
+                  firstDay: kFirstDay,
+                  lastDay: kLastDay,
+                  focusedDay: _focusedDay,
+                  selectedDayPredicate: (day) {
+                    return isSameDay(_selectedDay, day);
+                  },
+                  rangeStartDay: _rangeStart,
+                  rangeEndDay: _rangeEnd,
+                  calendarFormat: _calendarFormat,
+                  rangeSelectionMode: _rangeSelectionMode,
+                  eventLoader: _getEventsForDay,
+                  startingDayOfWeek: StartingDayOfWeek.monday,
+                  calendarStyle: const CalendarStyle(
+                    outsideDaysVisible: false,
                   ),
-                  textAlign: TextAlign.center,
+                  onDaySelected: _onDaySelected,
+                  onRangeSelected: _onRangeSelected,
+                  onFormatChanged: (format) {
+                    if (_calendarFormat != format) {
+                      setState(() {
+                        _calendarFormat = format;
+                      });
+                    }
+                  },
+                  onPageChanged: (focusedDay) {
+                    // No need to call `setState()` here
+                    _focusedDay = focusedDay;
+                  },
+                  // custom
+                  headerStyle: const HeaderStyle(
+                    leftChevronIcon: Icon(Icons.chevron_left, color: Colors.black),
+                    rightChevronIcon: Icon(Icons.chevron_right, color: Colors.black),
+                    formatButtonTextStyle: TextStyle(
+                      fontSize: 14,
+                      color: Colors.black,
+                    ),
+                  ),
+                  daysOfWeekHeight: 40,
+                );
+              }
+              return const Padding(
+                padding: EdgeInsets.all(80),
+                child: Center(
+                  child: CircularProgressIndicator(
+                    color: Colors.black,
+                  ),
                 ),
               );
-            }
-            var data = snapshot.data;
-            return Center(
-              child: ListView.builder(
-                itemCount: data!.length,
-                itemBuilder: (context, index) {
-                  return InkWell(
-                    child: Card(
-                      child: ListTile(
-                        title: Text(
-                          data[index].date!,
-                          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
-                        ),
-                        subtitle: Text(
-                          data[index].stocks!.length.toString(),
-                          textAlign: TextAlign.end,
-                          style: const TextStyle(fontSize: 20, color: Colors.red),
-                        ),
+            },
+          ),
+          const SizedBox(height: 8),
+          Expanded(
+            child: ValueListenableBuilder<List<Event>>(
+              valueListenable: _selectedEvents,
+              builder: (context, value, _) {
+                return ListView.builder(
+                  itemCount: value.length,
+                  itemBuilder: (context, index) {
+                    return Container(
+                      margin: const EdgeInsets.symmetric(
+                        horizontal: 12,
+                        vertical: 4,
                       ),
-                    ),
-                    onTap: () {
-                      showDialog(
-                        context: context,
-                        builder: (context) {
-                          return AlertDialog(
-                            title: Text(data[index].date!),
-                            content: SingleChildScrollView(
-                              child: Column(
-                                children: generateStockRow(data[index].stocks!, context),
-                              ),
-                            ),
+                      decoration: BoxDecoration(
+                        border: Border.all(),
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: ListTile(
+                        onTap: () {
+                          var t = PickStock(
+                            value[index].stockNum,
+                            value[index].stockNum,
+                            1,
+                            0,
+                            0,
+                            0,
                           );
+                          widget.db.pickStockDao.insertPickStock(t);
+                          setState(() {
+                            alreadyPick = getAllPickStock();
+                          });
                         },
-                      );
-                    },
-                  );
-                },
-              ),
-            );
-          }
-          return const CircularProgressIndicator();
-        },
+                        title: Text('${value[index].stockNum} ${value[index].stockName}'),
+                        trailing: FutureBuilder<Map<String, bool>>(
+                            future: alreadyPick,
+                            builder: (context, snapshot) {
+                              if (snapshot.hasData) {
+                                var tmp = snapshot.data!;
+                                if (tmp[value[index].stockNum] != null) {
+                                  return const Icon(Icons.check);
+                                }
+                              }
+                              return const Icon(Icons.add);
+                            }),
+                      ),
+                    );
+                  },
+                );
+              },
+            ),
+          ),
+        ],
       ),
     );
   }
+}
+
+final kToday = DateTime.now();
+final kFirstDay = DateTime(kToday.year, kToday.month - 3, kToday.day);
+final kLastDay = DateTime(kToday.year, kToday.month + 3, kToday.day);
+
+class Event {
+  Event(this.stockNum, this.stockName);
+
+  final String stockNum;
+  final String stockName;
+}
+
+int getHashCode(DateTime key) {
+  return key.day * 1000000 + key.month * 10000 + key.year;
+}
+
+/// Returns a list of [DateTime] objects from [first] to [last], inclusive.
+List<DateTime> daysInRange(DateTime first, DateTime last) {
+  final dayCount = last.difference(first).inDays + 1;
+  return List.generate(
+    dayCount,
+    (index) => DateTime.utc(first.year, first.month, first.day + index),
+  );
 }
 
 List<Widget> generateStockRow(List<Stocks> arr, BuildContext context) {

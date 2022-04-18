@@ -181,6 +181,22 @@ class _$PickStockDao extends PickStockDao {
   }
 
   @override
+  Future<PickStock?> getPickStockByStockNum(String stockNum) async {
+    return _queryAdapter.query('SELECT * FROM pick_stock WHERE stock_num = ?1',
+        mapper: (Map<String, Object?> row) => PickStock(
+            row['stock_num'] as String,
+            row['stock_name'] as String,
+            row['is_target'] as int,
+            row['price_change'] as double,
+            row['price_change_rate'] as double,
+            row['price'] as double,
+            id: row['id'] as int?,
+            createTime: row['create_time'] as int?,
+            updateTime: row['update_time'] as int?),
+        arguments: [stockNum]);
+  }
+
+  @override
   Future<void> deleteAllPickStock() async {
     await _queryAdapter.queryNoReturn('DELETE FROM pick_stock WHERE id !=0');
   }

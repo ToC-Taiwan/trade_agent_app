@@ -27,5 +27,6 @@
   "terms_and_conditions_of_use": "使用條款及條件",
   "notification": "通知",
   "settings_of_notification": "通知設定",
-  "trade_configuration": "交易設定"
+  "trade_configuration": "交易設定",
+  "group": "分組"
 }

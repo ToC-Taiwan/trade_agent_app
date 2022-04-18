@@ -35,6 +35,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("確定刪除全部自選股嗎？"),
         "delete_pick_stock_confirm":
             MessageLookupByLibrary.simpleMessage("確定刪除自選股嗎？"),
+        "group": MessageLookupByLibrary.simpleMessage("分組"),
         "input_must_not_empty": MessageLookupByLibrary.simpleMessage("輸入不能為空"),
         "language": MessageLookupByLibrary.simpleMessage("語言"),
         "no_pick_stock": MessageLookupByLibrary.simpleMessage("沒有自選股"),

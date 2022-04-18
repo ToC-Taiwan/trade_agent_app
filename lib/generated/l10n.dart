@@ -339,6 +339,16 @@ class S {
       args: [],
     );
   }
+
+  /// `Group`
+  String get group {
+    return Intl.message(
+      'Group',
+      name: 'group',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

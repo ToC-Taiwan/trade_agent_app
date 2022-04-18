@@ -27,5 +27,6 @@
   "terms_and_conditions_of_use": "Terms and Conditions of Use",
   "notification": "Notification",
   "settings_of_notification": "Settings of Notification",
-  "trade_configuration": "Trade Configuration"
+  "trade_configuration": "Trade Configuration",
+  "group": "Group"
 }
