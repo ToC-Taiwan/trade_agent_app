@@ -28,5 +28,14 @@
   "notification": "通知",
   "settings_of_notification": "通知設定",
   "trade_configuration": "交易設定",
-  "group": "分組"
+  "group": "分組",
+  "date": "日期",
+  "close": "收盤",
+  "open": "開盤",
+  "high": "高",
+  "low": "低",
+  "change_type": "漲跌",
+  "percent_change": "漲跌幅",
+  "price_change": "漲跌價",
+  "refresh": "重新整理"
 }

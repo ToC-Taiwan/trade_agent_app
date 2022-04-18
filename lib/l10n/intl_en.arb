@@ -28,5 +28,14 @@
   "notification": "Notification",
   "settings_of_notification": "Settings of Notification",
   "trade_configuration": "Trade Configuration",
-  "group": "Group"
+  "group": "Group",
+  "date": "Date",
+  "close": "Close",
+  "open": "Open",
+  "high": "High",
+  "low": "Low",
+  "change_type": "Change Type",
+  "percent_change": "Percent Change",
+  "price_change": "Price Change",
+  "refresh": "Refresh"
 }

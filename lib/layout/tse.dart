@@ -77,33 +77,48 @@ class _TSEPageState extends State<TSEPage> {
             }
             return Column(
               children: [
-                const SizedBox(
-                  height: 10,
+                Padding(
+                  padding: const EdgeInsets.only(top: 10),
+                  child: adContainer,
                 ),
-                adContainer,
-                ListView(
-                  shrinkWrap: true,
+                Column(
+                  // shrinkWrap: true,
                   children: [
-                    generateRow('Date', data.tickTime.toString().substring(0, 10), Colors.black),
-                    generateRow('Close', commaNumber(data.close.toString()), Colors.black),
+                    generateRow(S.of(context).date, data.tickTime.toString().substring(0, 10), Colors.black),
+                    generateRow(S.of(context).close, commaNumber(data.close.toString()), tmp),
                     const SizedBox(
-                      height: 40,
+                      height: 10,
                     ),
-                    generateRow('Open', commaNumber(data.open.toString()), Colors.black),
-                    generateRow('High', commaNumber(data.high.toString()), Colors.black),
-                    generateRow('Low', commaNumber(data.low.toString()), Colors.black),
+                    generateRow(S.of(context).open, commaNumber(data.open.toString()), Colors.black),
+                    generateRow(S.of(context).high, commaNumber(data.high.toString()), Colors.black),
+                    generateRow(S.of(context).low, commaNumber(data.low.toString()), Colors.black),
                     const SizedBox(
-                      height: 40,
+                      height: 10,
                     ),
-                    generateRow('Change Type', type, tmp),
-                    generateRow('Percent Change', data.pctChg.toString(), tmp),
-                    generateRow('Price Change', commaNumber(data.priceChg.toString()), tmp)
+                    generateRow(S.of(context).change_type, type, tmp),
+                    generateRow(S.of(context).percent_change, '${data.pctChg}%', tmp),
+                    generateRow(S.of(context).price_change, commaNumber(data.priceChg.toString()), tmp),
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    ElevatedButton(
+                      onPressed: () {
+                        setState(() {
+                          futureTSE = fetchTSE();
+                        });
+                      },
+                      child: const Icon(Icons.refresh),
+                    ),
                   ],
                 ),
               ],
             );
           }
-          return const CircularProgressIndicator();
+          return const Center(
+            child: CircularProgressIndicator(
+              color: Colors.black,
+            ),
+          );
         },
       ),
     );

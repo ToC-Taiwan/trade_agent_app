@@ -26,8 +26,11 @@ class MessageLookup extends MessageLookupByLibrary {
         "add": MessageLookupByLibrary.simpleMessage("Add"),
         "balance": MessageLookupByLibrary.simpleMessage("Balance"),
         "cancel": MessageLookupByLibrary.simpleMessage("Cancel"),
+        "change_type": MessageLookupByLibrary.simpleMessage("Change Type"),
         "click_plus_to_add_stock":
             MessageLookupByLibrary.simpleMessage("Click + to add stock"),
+        "close": MessageLookupByLibrary.simpleMessage("Close"),
+        "date": MessageLookupByLibrary.simpleMessage("Date"),
         "delete": MessageLookupByLibrary.simpleMessage("Delete"),
         "delete_all_pick_stock":
             MessageLookupByLibrary.simpleMessage("Delete All Pick Stock"),
@@ -36,13 +39,20 @@ class MessageLookup extends MessageLookupByLibrary {
         "delete_pick_stock_confirm": MessageLookupByLibrary.simpleMessage(
             "Are you sure you want to delete this stock"),
         "group": MessageLookupByLibrary.simpleMessage("Group"),
+        "high": MessageLookupByLibrary.simpleMessage("High"),
         "input_must_not_empty":
             MessageLookupByLibrary.simpleMessage("Input is empty"),
         "language": MessageLookupByLibrary.simpleMessage("Language"),
+        "low": MessageLookupByLibrary.simpleMessage("Low"),
         "no_pick_stock": MessageLookupByLibrary.simpleMessage("No Pick Stock"),
         "notification": MessageLookupByLibrary.simpleMessage("Notification"),
         "ok": MessageLookupByLibrary.simpleMessage("OK"),
+        "open": MessageLookupByLibrary.simpleMessage("Open"),
+        "percent_change":
+            MessageLookupByLibrary.simpleMessage("Percent Change"),
         "pick_stock": MessageLookupByLibrary.simpleMessage("Pick Stock"),
+        "price_change": MessageLookupByLibrary.simpleMessage("Price Change"),
+        "refresh": MessageLookupByLibrary.simpleMessage("Refresh"),
         "remove_ads": MessageLookupByLibrary.simpleMessage("Remove Ads"),
         "search": MessageLookupByLibrary.simpleMessage("Search"),
         "settings": MessageLookupByLibrary.simpleMessage("Settings"),

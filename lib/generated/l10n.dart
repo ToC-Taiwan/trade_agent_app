@@ -349,6 +349,96 @@ class S {
       args: [],
     );
   }
+
+  /// `Date`
+  String get date {
+    return Intl.message(
+      'Date',
+      name: 'date',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Close`
+  String get close {
+    return Intl.message(
+      'Close',
+      name: 'close',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Open`
+  String get open {
+    return Intl.message(
+      'Open',
+      name: 'open',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `High`
+  String get high {
+    return Intl.message(
+      'High',
+      name: 'high',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Low`
+  String get low {
+    return Intl.message(
+      'Low',
+      name: 'low',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Change Type`
+  String get change_type {
+    return Intl.message(
+      'Change Type',
+      name: 'change_type',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Percent Change`
+  String get percent_change {
+    return Intl.message(
+      'Percent Change',
+      name: 'percent_change',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Price Change`
+  String get price_change {
+    return Intl.message(
+      'Price Change',
+      name: 'price_change',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Refresh`
+  String get refresh {
+    return Intl.message(
+      'Refresh',
+      name: 'refresh',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {
