@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:trade_agent_v2/basic/url.dart';
 import 'package:trade_agent_v2/database.dart';
 import 'package:trade_agent_v2/generated/l10n.dart';
+import 'package:trade_agent_v2/layout/kbar.dart';
 import 'package:trade_agent_v2/models/pick_stock.dart';
 import 'package:trade_agent_v2/utils/app_bar.dart';
 import 'package:web_socket_channel/io.dart';
@@ -325,6 +326,17 @@ class _PickStockPageState extends State<PickStockPage> {
                       ),
                     ],
                   ),
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => Kbar(
+                          stockNum: snapshot.data![index].stockNum,
+                          stockName: snapshot.data![index].stockName,
+                        ),
+                      ),
+                    );
+                  },
                   onLongPress: () {
                     showDialog(
                       context: context,
@@ -334,18 +346,18 @@ class _PickStockPageState extends State<PickStockPage> {
                           content: Text(S.of(context).delete_pick_stock_confirm),
                           actions: <Widget>[
                             ElevatedButton(
-                              child: const Text(
-                                'Cancel',
-                                style: TextStyle(color: Colors.black),
+                              child: Text(
+                                S.of(context).cancel,
+                                style: const TextStyle(color: Colors.black),
                               ),
                               onPressed: () {
                                 Navigator.pop(context);
                               },
                             ),
                             ElevatedButton(
-                              child: const Text(
-                                'Delete',
-                                style: TextStyle(color: Colors.black),
+                              child: Text(
+                                S.of(context).ok,
+                                style: const TextStyle(color: Colors.black),
                               ),
                               onPressed: () {
                                 setState(() {

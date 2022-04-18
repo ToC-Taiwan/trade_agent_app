@@ -20,6 +20,7 @@ dependencies:
   floor: ^1.2.0
   firebase_core: ^1.14.0
   table_calendar: ^3.0.5
+  candlesticks: ^2.1.0
 
 dev_dependencies:
   flutter_test:
