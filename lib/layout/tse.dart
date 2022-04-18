@@ -85,15 +85,15 @@ class _TSEPageState extends State<TSEPage> {
                   // shrinkWrap: true,
                   children: [
                     generateRow(S.of(context).date, data.tickTime.toString().substring(0, 10), Colors.black),
-                    generateRow(S.of(context).high, commaNumber(data.high.toString()), Colors.black),
-                    generateRow(S.of(context).close, commaNumber(data.close.toString()), tmp),
-                    const SizedBox(
-                      height: 10,
-                    ),
                     generateRow(S.of(context).open, commaNumber(data.open.toString()), Colors.black),
+                    generateRow(S.of(context).close, commaNumber(data.close.toString()), tmp),
+                    const Divider(
+                      color: Colors.black,
+                    ),
+                    generateRow(S.of(context).high, commaNumber(data.high.toString()), Colors.black),
                     generateRow(S.of(context).low, commaNumber(data.low.toString()), Colors.black),
-                    const SizedBox(
-                      height: 10,
+                    const Divider(
+                      color: Colors.black,
                     ),
                     generateRow(S.of(context).change_type, type, tmp),
                     generateRow(S.of(context).percent_change, '${data.pctChg}%', tmp),
@@ -138,7 +138,7 @@ Widget generateRow(String columnName, String value, Color textColor) {
   return SizedBox(
     height: 50,
     child: Padding(
-      padding: const EdgeInsets.only(left: 20, top: 20),
+      padding: const EdgeInsets.only(left: 20),
       child: Flex(
         direction: Axis.horizontal,
         children: [
