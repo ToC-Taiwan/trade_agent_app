@@ -39,13 +39,25 @@ class _BalancePageState extends State<BalancePage> {
             dataArr = snapshot.data!;
             num total = 0;
             num lastTotal = 0;
+            var latestColor = Colors.black;
+            var totalColor = Colors.black;
             dataArr.asMap().forEach((i, value) {
               rows.add(generateBalanceRow(value));
               total += value.total!;
               if (i == dataArr.length - 1) {
                 lastTotal = value.total!;
+                if (lastTotal < 0) {
+                  latestColor = Colors.green;
+                } else {
+                  latestColor = Colors.red;
+                }
               }
             });
+            if (total < 0) {
+              totalColor = Colors.green;
+            } else {
+              totalColor = Colors.red;
+            }
             return Column(
               children: [
                 Expanded(
@@ -53,13 +65,13 @@ class _BalancePageState extends State<BalancePage> {
                   child: ListView(
                     shrinkWrap: true,
                     children: [
-                      const SizedBox(
+                      SizedBox(
                         child: Padding(
-                          padding: EdgeInsets.only(top: 30),
+                          padding: const EdgeInsets.only(top: 30),
                           child: Center(
                             child: Text(
-                              'Latest',
-                              style: TextStyle(fontSize: 30),
+                              S.of(context).latest,
+                              style: const TextStyle(fontSize: 30),
                             ),
                           ),
                         ),
@@ -70,18 +82,21 @@ class _BalancePageState extends State<BalancePage> {
                           child: Center(
                             child: Text(
                               commaNumber(lastTotal.toString()),
-                              style: const TextStyle(fontSize: 60),
+                              style: TextStyle(
+                                fontSize: 60,
+                                color: latestColor,
+                              ),
                             ),
                           ),
                         ),
                       ),
-                      const SizedBox(
+                      SizedBox(
                         child: Padding(
-                          padding: EdgeInsets.only(top: 30),
+                          padding: const EdgeInsets.only(top: 30),
                           child: Center(
                             child: Text(
-                              'Total',
-                              style: TextStyle(fontSize: 30),
+                              S.of(context).total,
+                              style: const TextStyle(fontSize: 30),
                             ),
                           ),
                         ),
@@ -92,7 +107,10 @@ class _BalancePageState extends State<BalancePage> {
                           child: Center(
                             child: Text(
                               commaNumber(total.toString()),
-                              style: const TextStyle(fontSize: 60),
+                              style: TextStyle(
+                                fontSize: 60,
+                                color: totalColor,
+                              ),
                             ),
                           ),
                         ),
@@ -105,21 +123,34 @@ class _BalancePageState extends State<BalancePage> {
                   child: Row(
                     children: const [
                       Expanded(
-                          flex: 2,
+                          flex: 4,
                           child: Text(
                             'Date',
                             style: TextStyle(fontWeight: FontWeight.bold),
                           )),
                       Expanded(
+                          flex: 2,
                           child: Text(
-                        'C',
-                      )),
-                      Expanded(child: Text('O')),
-                      Expanded(child: Text('D')),
+                            'C.',
+                          )),
                       Expanded(
+                        flex: 3,
+                        child: Text(
+                          'Ori.',
+                        ),
+                      ),
+                      Expanded(
+                        flex: 2,
+                        child: Text(
+                          'Dis.',
+                        ),
+                      ),
+                      Expanded(
+                          flex: 3,
                           child: Text(
-                        'Total',
-                      )),
+                            'Total',
+                            textAlign: TextAlign.center,
+                          )),
                     ],
                   ),
                 ),
@@ -175,22 +206,34 @@ Widget generateBalanceRow(Balance balance) {
     child: Row(
       children: [
         Expanded(
-            flex: 2,
+            flex: 4,
             child: Text(
               balance.tradeDay!.substring(0, 10),
               style: const TextStyle(fontWeight: FontWeight.bold),
             )),
         Expanded(
+            flex: 2,
             child: Text(
-          balance.tradeCount!.toString(),
-        )),
-        Expanded(child: Text(balance.originalBalance!.toString())),
-        Expanded(child: Text(balance.discount!.toString())),
+              balance.tradeCount!.toString(),
+            )),
         Expanded(
+          flex: 3,
+          child: Text(
+            balance.originalBalance!.toString(),
+          ),
+        ),
+        Expanded(
+          flex: 2,
+          child: Text(
+            balance.discount!.toString(),
+          ),
+        ),
+        Expanded(
+            flex: 3,
             child: Text(
-          balance.total!.toString(),
-          style: TextStyle(color: tmp),
-        )),
+              balance.total!.toString(),
+              style: TextStyle(color: tmp),
+            )),
       ],
     ),
   );

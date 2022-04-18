@@ -37,5 +37,7 @@
   "change_type": "漲跌",
   "percent_change": "漲跌幅",
   "price_change": "漲跌價",
-  "refresh": "重新整理"
+  "refresh": "重新整理",
+  "latest": "最新",
+  "total": "全部"
 }

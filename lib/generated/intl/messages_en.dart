@@ -43,6 +43,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "input_must_not_empty":
             MessageLookupByLibrary.simpleMessage("Input is empty"),
         "language": MessageLookupByLibrary.simpleMessage("Language"),
+        "latest": MessageLookupByLibrary.simpleMessage("Latest"),
         "low": MessageLookupByLibrary.simpleMessage("Low"),
         "no_pick_stock": MessageLookupByLibrary.simpleMessage("No Pick Stock"),
         "notification": MessageLookupByLibrary.simpleMessage("Notification"),
@@ -65,6 +66,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "targets": MessageLookupByLibrary.simpleMessage("Targets"),
         "terms_and_conditions_of_use":
             MessageLookupByLibrary.simpleMessage("Terms and Conditions of Use"),
+        "total": MessageLookupByLibrary.simpleMessage("Total"),
         "trade_configuration":
             MessageLookupByLibrary.simpleMessage("Trade Configuration"),
         "tse": MessageLookupByLibrary.simpleMessage("TSE"),

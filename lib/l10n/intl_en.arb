@@ -37,5 +37,7 @@
   "change_type": "Change Type",
   "percent_change": "Percent Change",
   "price_change": "Price Change",
-  "refresh": "Refresh"
+  "refresh": "Refresh",
+  "latest": "Latest",
+  "total": "Total"
 }

@@ -42,6 +42,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "high": MessageLookupByLibrary.simpleMessage("高"),
         "input_must_not_empty": MessageLookupByLibrary.simpleMessage("輸入不能為空"),
         "language": MessageLookupByLibrary.simpleMessage("語言"),
+        "latest": MessageLookupByLibrary.simpleMessage("最新"),
         "low": MessageLookupByLibrary.simpleMessage("低"),
         "no_pick_stock": MessageLookupByLibrary.simpleMessage("沒有自選股"),
         "notification": MessageLookupByLibrary.simpleMessage("通知"),
@@ -62,6 +63,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "targets": MessageLookupByLibrary.simpleMessage("交易目標"),
         "terms_and_conditions_of_use":
             MessageLookupByLibrary.simpleMessage("使用條款及條件"),
+        "total": MessageLookupByLibrary.simpleMessage("全部"),
         "trade_configuration": MessageLookupByLibrary.simpleMessage("交易設定"),
         "tse": MessageLookupByLibrary.simpleMessage("加權指數"),
         "type_stock_number": MessageLookupByLibrary.simpleMessage("輸入股票代號"),

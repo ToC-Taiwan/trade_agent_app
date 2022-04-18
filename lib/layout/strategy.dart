@@ -32,6 +32,8 @@ class _StrategyPage extends State<StrategyPage> {
   DateTime? _rangeStart;
   DateTime? _rangeEnd;
 
+  Map<String, bool> eventCache = {};
+
   LinkedHashMap<DateTime, List<Event>> kEvents = LinkedHashMap<DateTime, List<Event>>(
     equals: isSameDay,
     hashCode: getHashCode,
@@ -202,7 +204,10 @@ class _StrategyPage extends State<StrategyPage> {
                         borderRadius: BorderRadius.circular(12),
                       ),
                       child: ListTile(
-                        onTap: () {
+                        onTap: () async {
+                          if (eventCache[value[index].stockNum] != null) {
+                            return;
+                          }
                           var t = PickStock(
                             value[index].stockNum,
                             value[index].stockNum,
@@ -211,7 +216,7 @@ class _StrategyPage extends State<StrategyPage> {
                             0,
                             0,
                           );
-                          widget.db.pickStockDao.insertPickStock(t);
+                          await widget.db.pickStockDao.insertPickStock(t);
                           setState(() {
                             alreadyPick = getAllPickStock();
                           });
@@ -222,6 +227,7 @@ class _StrategyPage extends State<StrategyPage> {
                             builder: (context, snapshot) {
                               if (snapshot.hasData) {
                                 var tmp = snapshot.data!;
+                                eventCache = tmp;
                                 if (tmp[value[index].stockNum] != null) {
                                   return const Icon(Icons.check);
                                 }

@@ -84,7 +84,7 @@ class _TargetspageState extends State<Targetspage> {
                 if (i.rank == -1) {
                   continue;
                 }
-                if (i.rank! % 12 == 0 && !adExist) {
+                if (i.rank! % 6 == 0 && !adExist) {
                   adExist = true;
                   tmp.add(
                     buildTile(

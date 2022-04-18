@@ -85,12 +85,12 @@ class _TSEPageState extends State<TSEPage> {
                   // shrinkWrap: true,
                   children: [
                     generateRow(S.of(context).date, data.tickTime.toString().substring(0, 10), Colors.black),
+                    generateRow(S.of(context).high, commaNumber(data.high.toString()), Colors.black),
                     generateRow(S.of(context).close, commaNumber(data.close.toString()), tmp),
                     const SizedBox(
                       height: 10,
                     ),
                     generateRow(S.of(context).open, commaNumber(data.open.toString()), Colors.black),
-                    generateRow(S.of(context).high, commaNumber(data.high.toString()), Colors.black),
                     generateRow(S.of(context).low, commaNumber(data.low.toString()), Colors.black),
                     const SizedBox(
                       height: 10,
