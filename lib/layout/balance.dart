@@ -4,11 +4,13 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:trade_agent_v2/basic/url.dart';
+import 'package:trade_agent_v2/database.dart';
 import 'package:trade_agent_v2/generated/l10n.dart';
 import 'package:trade_agent_v2/utils/app_bar.dart';
 
 class BalancePage extends StatefulWidget {
-  const BalancePage({Key? key}) : super(key: key);
+  const BalancePage({Key? key, required this.db}) : super(key: key);
+  final AppDatabase db;
 
   @override
   State<BalancePage> createState() => _BalancePageState();
@@ -30,6 +32,7 @@ class _BalancePageState extends State<BalancePage> {
       appBar: trAppbar(
         context,
         S.of(context).balance,
+        widget.db,
       ),
       body: FutureBuilder<List<Balance>>(
         future: futureBalance,

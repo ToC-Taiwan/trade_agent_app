@@ -8,12 +8,14 @@ import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:http/http.dart' as http;
 import 'package:trade_agent_v2/basic/ad_id.dart';
 import 'package:trade_agent_v2/basic/url.dart';
+import 'package:trade_agent_v2/database.dart';
 import 'package:trade_agent_v2/generated/l10n.dart';
 import 'package:trade_agent_v2/layout/kbar.dart';
 import 'package:trade_agent_v2/utils/app_bar.dart';
 
 class Targetspage extends StatefulWidget {
-  const Targetspage({Key? key}) : super(key: key);
+  const Targetspage({Key? key, required this.db}) : super(key: key);
+  final AppDatabase db;
 
   @override
   _TargetspageState createState() => _TargetspageState();
@@ -48,14 +50,6 @@ class _TargetspageState extends State<Targetspage> {
     });
   }
 
-  // void _launchInWebViewOrVC(String url) async {
-  //   await launch(
-  //     url,
-  //     forceSafariVC: true,
-  //     forceWebView: true,
-  //   );
-  // }
-
   bool adExist = false;
 
   @override
@@ -73,6 +67,7 @@ class _TargetspageState extends State<Targetspage> {
       appBar: trAppbar(
         context,
         S.of(context).targets,
+        widget.db,
       ),
       body: SizedBox(
         child: FutureBuilder<List<Target>>(

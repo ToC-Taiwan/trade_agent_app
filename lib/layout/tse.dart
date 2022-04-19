@@ -6,11 +6,13 @@ import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:http/http.dart' as http;
 import 'package:trade_agent_v2/basic/ad_id.dart';
 import 'package:trade_agent_v2/basic/url.dart';
+import 'package:trade_agent_v2/database.dart';
 import 'package:trade_agent_v2/generated/l10n.dart';
 import 'package:trade_agent_v2/utils/app_bar.dart';
 
 class TSEPage extends StatefulWidget {
-  const TSEPage({Key? key}) : super(key: key);
+  const TSEPage({Key? key, required this.db}) : super(key: key);
+  final AppDatabase db;
 
   @override
   State<TSEPage> createState() => _TSEPageState();
@@ -52,6 +54,7 @@ class _TSEPageState extends State<TSEPage> {
       appBar: trAppbar(
         context,
         S.of(context).tse,
+        widget.db,
       ),
       body: FutureBuilder<TSE>(
         future: futureTSE,

@@ -26,15 +26,21 @@ class _MyHomePageState extends State<MyHomePage> {
   void initState() {
     super.initState();
     pages = [
-      const Targetspage(),
+      Targetspage(
+        db: widget.db,
+      ),
       StrategyPage(
         db: widget.db,
       ),
       PickStockPage(
         db: widget.db,
       ),
-      const TSEPage(),
-      const BalancePage(),
+      TSEPage(
+        db: widget.db,
+      ),
+      BalancePage(
+        db: widget.db,
+      ),
       // const SettingsPage(),
     ];
   }

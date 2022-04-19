@@ -152,7 +152,7 @@ class _PickStockPageState extends State<PickStockPage> {
                     // onChanged: (value) {},
                     controller: textFieldController,
                     decoration: InputDecoration(
-                      hintText: S.of(context).stock_number,
+                      hintText: '${S.of(context).stock_number}(0050, 00878...)',
                     ),
                     keyboardType: TextInputType.number,
                     autofocus: true,
@@ -226,6 +226,7 @@ class _PickStockPageState extends State<PickStockPage> {
       appBar: trAppbar(
         context,
         S.of(context).pick_stock,
+        widget.db,
         actions: actions,
       ),
       body: FutureBuilder<List<PickStock>>(

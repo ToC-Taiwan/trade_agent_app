@@ -117,6 +117,7 @@ class _StrategyPage extends State<StrategyPage> {
       appBar: trAppbar(
         context,
         S.of(context).strategy,
+        widget.db,
       ),
       body: Column(
         children: [
