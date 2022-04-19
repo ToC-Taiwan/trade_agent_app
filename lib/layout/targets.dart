@@ -10,7 +10,6 @@ import 'package:trade_agent_v2/basic/ad_id.dart';
 import 'package:trade_agent_v2/basic/url.dart';
 import 'package:trade_agent_v2/generated/l10n.dart';
 import 'package:trade_agent_v2/utils/app_bar.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 class Targetspage extends StatefulWidget {
   const Targetspage({Key? key}) : super(key: key);
@@ -48,13 +47,13 @@ class _TargetspageState extends State<Targetspage> {
     });
   }
 
-  void _launchInWebViewOrVC(String url) async {
-    await launch(
-      url,
-      forceSafariVC: true,
-      forceWebView: true,
-    );
-  }
+  // void _launchInWebViewOrVC(String url) async {
+  //   await launch(
+  //     url,
+  //     forceSafariVC: true,
+  //     forceWebView: true,
+  //   );
+  // }
 
   bool adExist = false;
 

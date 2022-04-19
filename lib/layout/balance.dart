@@ -62,7 +62,7 @@ class _BalancePageState extends State<BalancePage> {
             var reverse = dataArr.reversed.toList();
             return Column(children: [
               Expanded(
-                flex: 9,
+                flex: 14,
                 child: ListView.separated(
                   separatorBuilder: (context, index) => const Divider(
                     height: 0,
@@ -92,35 +92,55 @@ class _BalancePageState extends State<BalancePage> {
                 ),
               ),
               Expanded(
+                flex: 2,
                 child: Row(
                   children: [
                     Expanded(
+                      flex: 4,
                       child: ListTile(
-                        leading: Text(
+                        title: Text(
                           S.of(context).latest,
                           style: const TextStyle(fontWeight: FontWeight.bold),
                         ),
-                        title: SizedBox(
+                        subtitle: SizedBox(
                           child: Text(
                             commaNumber(lastTotal.toString()),
-                            textAlign: TextAlign.center,
-                            style: TextStyle(fontSize: 20, color: latestColor),
+                            style: TextStyle(fontSize: 22, color: latestColor),
                           ),
                         ),
                       ),
                     ),
                     Expanded(
+                      flex: 4,
                       child: ListTile(
-                        leading: Text(
+                        title: Text(
                           S.of(context).total,
                           style: const TextStyle(fontWeight: FontWeight.bold),
                         ),
-                        title: SizedBox(
+                        subtitle: SizedBox(
                           child: Text(
                             commaNumber(total.toString()),
-                            textAlign: TextAlign.center,
-                            style: TextStyle(fontSize: 20, color: totalColor),
+                            style: TextStyle(fontSize: 22, color: totalColor),
                           ),
+                        ),
+                      ),
+                    ),
+                    Expanded(
+                      flex: 2,
+                      child: Padding(
+                        padding: const EdgeInsets.only(right: 26),
+                        child: IconButton(
+                          padding: EdgeInsets.zero,
+                          onPressed: () {
+                            setState(() {
+                              futureBalance = fetchBalance();
+                            });
+                          },
+                          icon: const Icon(
+                            Icons.refresh,
+                            size: 28,
+                          ),
+                          color: Colors.blue,
                         ),
                       ),
                     ),
