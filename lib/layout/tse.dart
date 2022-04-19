@@ -48,6 +48,7 @@ class _TSEPageState extends State<TSEPage> {
       child: adWidget,
     );
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: trAppbar(
         context,
         S.of(context).tse,

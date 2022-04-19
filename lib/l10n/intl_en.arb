@@ -39,5 +39,6 @@
   "price_change": "Price Change",
   "refresh": "Refresh",
   "latest": "Latest",
-  "total": "Total"
+  "total": "Total",
+  "no_data": "No Data"
 }

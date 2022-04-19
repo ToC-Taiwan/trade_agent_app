@@ -44,6 +44,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "language": MessageLookupByLibrary.simpleMessage("語言"),
         "latest": MessageLookupByLibrary.simpleMessage("最新"),
         "low": MessageLookupByLibrary.simpleMessage("低"),
+        "no_data": MessageLookupByLibrary.simpleMessage("沒有資料"),
         "no_pick_stock": MessageLookupByLibrary.simpleMessage("沒有自選股"),
         "notification": MessageLookupByLibrary.simpleMessage("通知"),
         "ok": MessageLookupByLibrary.simpleMessage("確定"),

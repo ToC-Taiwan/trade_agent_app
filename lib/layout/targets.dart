@@ -69,6 +69,7 @@ class _TargetspageState extends State<Targetspage> {
       child: adWidget,
     );
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: trAppbar(
         context,
         S.of(context).targets,
@@ -137,12 +138,12 @@ class _TargetspageState extends State<Targetspage> {
                         // Text(i.rank.toString()),
                       ],
                     ),
-                    onTap: () {
-                      var number = i.stock!.number!;
-                      setState(() {
-                        _launchInWebViewOrVC('https://tw.stock.yahoo.com/quote/$number.TW/technical-analysis');
-                      });
-                    },
+                    // onTap: () {
+                    //   var number = i.stock!.number!;
+                    //   setState(() {
+                    //     _launchInWebViewOrVC('https://tw.stock.yahoo.com/quote/$number.TW/technical-analysis');
+                    //   });
+                    // },
                   ),
                 );
               }
@@ -206,7 +207,7 @@ Widget buildTile(int cross, int main, Widget child, {Function()? onTap}) {
     mainAxisCellCount: main,
     child: Material(
       color: Colors.grey[100],
-      elevation: 3,
+      elevation: 6,
       borderRadius: BorderRadius.circular(12),
       shadowColor: Colors.pink.shade50,
       child: InkWell(

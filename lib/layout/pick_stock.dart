@@ -222,6 +222,7 @@ class _PickStockPageState extends State<PickStockPage> {
       )
     ];
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: trAppbar(
         context,
         S.of(context).pick_stock,

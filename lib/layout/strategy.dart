@@ -113,6 +113,7 @@ class _StrategyPage extends State<StrategyPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: trAppbar(
         context,
         S.of(context).strategy,
@@ -191,6 +192,16 @@ class _StrategyPage extends State<StrategyPage> {
             child: ValueListenableBuilder<List<Event>>(
               valueListenable: _selectedEvents,
               builder: (context, value, _) {
+                if (value.isEmpty) {
+                  return Center(
+                    child: Text(
+                      S.of(context).no_data,
+                      style: const TextStyle(
+                        fontSize: 20,
+                      ),
+                    ),
+                  );
+                }
                 return ListView.builder(
                   itemCount: value.length,
                   itemBuilder: (context, index) {

@@ -39,5 +39,6 @@
   "price_change": "漲跌價",
   "refresh": "重新整理",
   "latest": "最新",
-  "total": "全部"
+  "total": "全部",
+  "no_data": "沒有資料"
 }

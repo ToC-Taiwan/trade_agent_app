@@ -37,7 +37,9 @@ class _KbarState extends State<Kbar> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
+        elevation: 1,
         automaticallyImplyLeading: false,
         centerTitle: false,
         title: Text('${widget.stockNum} ${widget.stockName}'),

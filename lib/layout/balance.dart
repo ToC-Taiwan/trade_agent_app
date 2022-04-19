@@ -26,6 +26,7 @@ class _BalancePageState extends State<BalancePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: trAppbar(
         context,
         S.of(context).balance,
@@ -58,110 +59,75 @@ class _BalancePageState extends State<BalancePage> {
             } else {
               totalColor = Colors.red;
             }
-            return Column(
-              children: [
-                Expanded(
-                  flex: 3,
-                  child: ListView(
-                    shrinkWrap: true,
-                    children: [
-                      SizedBox(
-                        child: Padding(
-                          padding: const EdgeInsets.only(top: 30),
-                          child: Center(
-                            child: Text(
-                              S.of(context).latest,
-                              style: const TextStyle(fontSize: 30),
-                            ),
-                          ),
-                        ),
-                      ),
-                      SizedBox(
-                        child: Padding(
-                          padding: const EdgeInsets.only(top: 30),
-                          child: Center(
-                            child: Text(
-                              commaNumber(lastTotal.toString()),
-                              style: TextStyle(
-                                fontSize: 60,
-                                color: latestColor,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                      SizedBox(
-                        child: Padding(
-                          padding: const EdgeInsets.only(top: 30),
-                          child: Center(
-                            child: Text(
-                              S.of(context).total,
-                              style: const TextStyle(fontSize: 30),
-                            ),
-                          ),
-                        ),
-                      ),
-                      SizedBox(
-                        child: Padding(
-                          padding: const EdgeInsets.only(top: 30),
-                          child: Center(
-                            child: Text(
-                              commaNumber(total.toString()),
-                              style: TextStyle(
-                                fontSize: 60,
-                                color: totalColor,
-                              ),
-                            ),
-                          ),
-                        ),
-                      )
-                    ],
+            var reverse = dataArr.reversed.toList();
+            return Column(children: [
+              Expanded(
+                flex: 9,
+                child: ListView.separated(
+                  separatorBuilder: (context, index) => const Divider(
+                    height: 0,
+                    color: Colors.grey,
                   ),
+                  itemCount: reverse.length,
+                  itemBuilder: (context, index) {
+                    Color balance;
+                    if (reverse[index].total! < 0) {
+                      balance = Colors.green;
+                    } else {
+                      balance = Colors.red;
+                    }
+                    return ListTile(
+                      onTap: () {},
+                      title: Text(reverse[index].tradeDay!.substring(0, 10)),
+                      subtitle: Text(reverse[index].tradeCount.toString()),
+                      trailing: Text(
+                        commaNumber(reverse[index].total.toString()),
+                        style: TextStyle(
+                          fontSize: 18,
+                          color: balance,
+                        ),
+                      ),
+                    );
+                  },
                 ),
-                Padding(
-                  padding: const EdgeInsets.only(top: 18, left: 20),
-                  child: Row(
-                    children: const [
-                      Expanded(
-                          flex: 4,
-                          child: Text(
-                            'Date',
-                            style: TextStyle(fontWeight: FontWeight.bold),
-                          )),
-                      Expanded(
-                          flex: 2,
-                          child: Text(
-                            'C.',
-                          )),
-                      Expanded(
-                        flex: 3,
-                        child: Text(
-                          'Ori.',
+              ),
+              Expanded(
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: ListTile(
+                        leading: Text(
+                          S.of(context).latest,
+                          style: const TextStyle(fontWeight: FontWeight.bold),
                         ),
-                      ),
-                      Expanded(
-                        flex: 2,
-                        child: Text(
-                          'Dis.',
-                        ),
-                      ),
-                      Expanded(
-                          flex: 3,
+                        title: SizedBox(
                           child: Text(
-                            'Total',
+                            commaNumber(lastTotal.toString()),
                             textAlign: TextAlign.center,
-                          )),
-                    ],
-                  ),
+                            style: TextStyle(fontSize: 20, color: latestColor),
+                          ),
+                        ),
+                      ),
+                    ),
+                    Expanded(
+                      child: ListTile(
+                        leading: Text(
+                          S.of(context).total,
+                          style: const TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                        title: SizedBox(
+                          child: Text(
+                            commaNumber(total.toString()),
+                            textAlign: TextAlign.center,
+                            style: TextStyle(fontSize: 20, color: totalColor),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
-                Expanded(
-                  flex: 2,
-                  child: ListView(
-                    children: rows.reversed.toList(),
-                  ),
-                ),
-              ],
-            );
+              )
+            ]);
           } else if (snapshot.hasError) {
             return Text('${snapshot.error}');
           }
