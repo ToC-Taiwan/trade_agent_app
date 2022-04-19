@@ -78,6 +78,16 @@ class _TargetspageState extends State<Targetspage> {
           future: futureTargets,
           builder: (context, snapshot) {
             if (snapshot.hasData) {
+              if (snapshot.data!.isEmpty) {
+                return Center(
+                  child: Text(
+                    S.of(context).no_data,
+                    style: const TextStyle(
+                      fontSize: 30,
+                    ),
+                  ),
+                );
+              }
               var tmp = <Widget>[];
               current = snapshot.data!;
               for (final i in snapshot.data!) {
@@ -182,7 +192,10 @@ class _TargetspageState extends State<Targetspage> {
                 ),
               );
             }
-            return const CircularProgressIndicator();
+            return const Center(
+                child: CircularProgressIndicator(
+              color: Colors.black,
+            ));
           },
         ),
       ),
@@ -220,13 +233,17 @@ Widget buildTile(int cross, int main, Widget child, {Function()? onTap}) {
 Future<List<Target>> fetchTargets(List<Target> current, num opt) async {
   var targetArr = <Target>[];
   if (opt == -1) {
-    final response = await http.get(Uri.parse('$tradeAgentURLPrefix/targets'));
-    if (response.statusCode == 200) {
-      for (final Map<String, dynamic> i in jsonDecode(response.body)) {
-        targetArr.add(Target.fromJson(i));
+    try {
+      final response = await http.get(Uri.parse('$tradeAgentURLPrefix/targets'));
+      if (response.statusCode == 200) {
+        for (final Map<String, dynamic> i in jsonDecode(response.body)) {
+          targetArr.add(Target.fromJson(i));
+        }
+        return targetArr;
+      } else {
+        return targetArr;
       }
-      return targetArr;
-    } else {
+    } catch (_) {
       return targetArr;
     }
   } else {

@@ -45,9 +45,9 @@ class _TradeConfigPageState extends State<TradeConfigPage> {
             if (snapshot.hasData) {
               var data = snapshot.data!;
               if (data.server == null) {
-                return const Text(
-                  'Loading...',
-                  style: TextStyle(
+                return Text(
+                  S.of(context).no_data,
+                  style: const TextStyle(
                     fontSize: 30,
                   ),
                   textAlign: TextAlign.center,
@@ -346,10 +346,11 @@ class _TradeConfigPageState extends State<TradeConfigPage> {
                   ),
                 ],
               );
-            } else if (snapshot.hasError) {
-              return Text('${snapshot.error}');
             }
-            return const CircularProgressIndicator();
+            return const Center(
+                child: CircularProgressIndicator(
+              color: Colors.black,
+            ));
           },
         ),
       ),
@@ -358,10 +359,14 @@ class _TradeConfigPageState extends State<TradeConfigPage> {
 }
 
 Future<Config> fetchConfig() async {
-  final response = await http.get(Uri.parse('$tradeAgentURLPrefix/config'));
-  if (response.statusCode == 200) {
-    return Config.fromJson(jsonDecode(response.body));
-  } else {
+  try {
+    final response = await http.get(Uri.parse('$tradeAgentURLPrefix/config'));
+    if (response.statusCode == 200) {
+      return Config.fromJson(jsonDecode(response.body));
+    } else {
+      return Config();
+    }
+  } catch (e) {
     return Config();
   }
 }

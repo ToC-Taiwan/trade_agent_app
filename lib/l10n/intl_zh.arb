@@ -40,5 +40,6 @@
   "refresh": "重新整理",
   "latest": "最新",
   "total": "全部",
-  "no_data": "沒有資料"
+  "no_data": "沒有資料",
+  "trade_count": "交易數量"
 }

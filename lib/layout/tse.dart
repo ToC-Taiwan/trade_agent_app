@@ -59,12 +59,14 @@ class _TSEPageState extends State<TSEPage> {
           if (snapshot.hasData) {
             var data = snapshot.data!;
             if (data.tickTime.toString().length < 10) {
-              return const Text(
-                'Loading...',
-                style: TextStyle(
-                  fontSize: 30,
+              return Center(
+                child: Text(
+                  S.of(context).no_data,
+                  style: const TextStyle(
+                    fontSize: 30,
+                  ),
+                  textAlign: TextAlign.center,
                 ),
-                textAlign: TextAlign.center,
               );
             }
             String type;
@@ -166,10 +168,14 @@ Widget generateRow(String columnName, String value, Color textColor) {
 }
 
 Future<TSE> fetchTSE() async {
-  final response = await http.get(Uri.parse('$tradeAgentURLPrefix/tse/real-time'));
-  if (response.statusCode == 200) {
-    return TSE.fromJson(jsonDecode(response.body));
-  } else {
+  try {
+    final response = await http.get(Uri.parse('$tradeAgentURLPrefix/tse/real-time'));
+    if (response.statusCode == 200) {
+      return TSE.fromJson(jsonDecode(response.body));
+    } else {
+      return TSE();
+    }
+  } catch (e) {
     return TSE();
   }
 }

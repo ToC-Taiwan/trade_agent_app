@@ -376,10 +376,11 @@ class _PickStockPageState extends State<PickStockPage> {
                 );
               },
             );
-          } else if (snapshot.hasError) {
-            return Text('${snapshot.error}');
           }
-          return const CircularProgressIndicator();
+          return const Center(
+              child: CircularProgressIndicator(
+            color: Colors.black,
+          ));
         },
       ),
     );

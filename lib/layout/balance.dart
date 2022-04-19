@@ -35,6 +35,16 @@ class _BalancePageState extends State<BalancePage> {
         future: futureBalance,
         builder: (context, snapshot) {
           if (snapshot.hasData) {
+            if (snapshot.data!.isEmpty) {
+              return Center(
+                child: Text(
+                  S.of(context).no_data,
+                  style: const TextStyle(
+                    fontSize: 30,
+                  ),
+                ),
+              );
+            }
             var dataArr = <Balance>[];
             var rows = <Widget>[];
             dataArr = snapshot.data!;
@@ -78,8 +88,9 @@ class _BalancePageState extends State<BalancePage> {
                     }
                     return ListTile(
                       onTap: () {},
+                      leading: Icon(Icons.account_balance_wallet, color: balance),
                       title: Text(reverse[index].tradeDay!.substring(0, 10)),
-                      subtitle: Text(reverse[index].tradeCount.toString()),
+                      subtitle: Text('${S.of(context).trade_count}: ${reverse[index].tradeCount}'),
                       trailing: Text(
                         commaNumber(reverse[index].total.toString()),
                         style: TextStyle(
@@ -148,10 +159,11 @@ class _BalancePageState extends State<BalancePage> {
                 ),
               )
             ]);
-          } else if (snapshot.hasError) {
-            return Text('${snapshot.error}');
           }
-          return const CircularProgressIndicator();
+          return const Center(
+              child: CircularProgressIndicator(
+            color: Colors.black,
+          ));
         },
       ),
     );
@@ -169,13 +181,17 @@ String mathFunc(Match match) {
 
 Future<List<Balance>> fetchBalance() async {
   var balanceArr = <Balance>[];
-  final response = await http.get(Uri.parse('$tradeAgentURLPrefix/balance'));
-  if (response.statusCode == 200) {
-    for (final Map<String, dynamic> i in jsonDecode(response.body)) {
-      balanceArr.add(Balance.fromJson(i));
+  try {
+    final response = await http.get(Uri.parse('$tradeAgentURLPrefix/balance'));
+    if (response.statusCode == 200) {
+      for (final Map<String, dynamic> i in jsonDecode(response.body)) {
+        balanceArr.add(Balance.fromJson(i));
+      }
+      return balanceArr;
+    } else {
+      return balanceArr;
     }
-    return balanceArr;
-  } else {
+  } catch (e) {
     return balanceArr;
   }
 }

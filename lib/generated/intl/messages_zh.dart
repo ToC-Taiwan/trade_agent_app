@@ -66,6 +66,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("使用條款及條件"),
         "total": MessageLookupByLibrary.simpleMessage("全部"),
         "trade_configuration": MessageLookupByLibrary.simpleMessage("交易設定"),
+        "trade_count": MessageLookupByLibrary.simpleMessage("交易數量"),
         "tse": MessageLookupByLibrary.simpleMessage("加權指數"),
         "type_stock_number": MessageLookupByLibrary.simpleMessage("輸入股票代號"),
         "version": MessageLookupByLibrary.simpleMessage("版本"),

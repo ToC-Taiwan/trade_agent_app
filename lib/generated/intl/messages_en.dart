@@ -70,6 +70,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "total": MessageLookupByLibrary.simpleMessage("Total"),
         "trade_configuration":
             MessageLookupByLibrary.simpleMessage("Trade Configuration"),
+        "trade_count": MessageLookupByLibrary.simpleMessage("Trade Count"),
         "tse": MessageLookupByLibrary.simpleMessage("TSE"),
         "type_stock_number":
             MessageLookupByLibrary.simpleMessage("Type Stock Number"),

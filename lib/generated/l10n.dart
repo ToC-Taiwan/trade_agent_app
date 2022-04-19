@@ -469,6 +469,16 @@ class S {
       args: [],
     );
   }
+
+  /// `Trade Count`
+  String get trade_count {
+    return Intl.message(
+      'Trade Count',
+      name: 'trade_count',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {
