@@ -38,6 +38,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("確定刪除全部自選股嗎？"),
         "delete_pick_stock_confirm":
             MessageLookupByLibrary.simpleMessage("確定刪除自選股嗎？"),
+        "display": MessageLookupByLibrary.simpleMessage("顯示"),
         "group": MessageLookupByLibrary.simpleMessage("分組"),
         "high": MessageLookupByLibrary.simpleMessage("高"),
         "input_must_not_empty": MessageLookupByLibrary.simpleMessage("輸入不能為空"),
@@ -67,6 +68,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "total": MessageLookupByLibrary.simpleMessage("全部"),
         "trade_configuration": MessageLookupByLibrary.simpleMessage("交易設定"),
         "trade_count": MessageLookupByLibrary.simpleMessage("交易數量"),
+        "try_again": MessageLookupByLibrary.simpleMessage("再試一次"),
         "tse": MessageLookupByLibrary.simpleMessage("加權指數"),
         "type_stock_number": MessageLookupByLibrary.simpleMessage("輸入股票代號"),
         "version": MessageLookupByLibrary.simpleMessage("版本"),

@@ -41,5 +41,7 @@
   "latest": "Latest",
   "total": "Total",
   "no_data": "No Data",
-  "trade_count": "Trade Count"
+  "trade_count": "Trade Count",
+  "try_again": "Try Again",
+  "display": "Display"
 }

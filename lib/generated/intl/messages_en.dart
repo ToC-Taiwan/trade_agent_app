@@ -38,6 +38,7 @@ class MessageLookup extends MessageLookupByLibrary {
             "Are you sure you want to delete all pick stock?"),
         "delete_pick_stock_confirm": MessageLookupByLibrary.simpleMessage(
             "Are you sure you want to delete this stock"),
+        "display": MessageLookupByLibrary.simpleMessage("Display"),
         "group": MessageLookupByLibrary.simpleMessage("Group"),
         "high": MessageLookupByLibrary.simpleMessage("High"),
         "input_must_not_empty":
@@ -71,6 +72,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "trade_configuration":
             MessageLookupByLibrary.simpleMessage("Trade Configuration"),
         "trade_count": MessageLookupByLibrary.simpleMessage("Trade Count"),
+        "try_again": MessageLookupByLibrary.simpleMessage("Try Again"),
         "tse": MessageLookupByLibrary.simpleMessage("TSE"),
         "type_stock_number":
             MessageLookupByLibrary.simpleMessage("Type Stock Number"),

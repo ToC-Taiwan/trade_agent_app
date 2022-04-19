@@ -151,6 +151,10 @@ class _StrategyPage extends State<StrategyPage> {
                   startingDayOfWeek: StartingDayOfWeek.monday,
                   calendarStyle: const CalendarStyle(
                     outsideDaysVisible: false,
+                    markerDecoration: BoxDecoration(
+                      color: Colors.orange,
+                      shape: BoxShape.circle,
+                    ),
                   ),
                   onDaySelected: _onDaySelected,
                   onRangeSelected: _onRangeSelected,

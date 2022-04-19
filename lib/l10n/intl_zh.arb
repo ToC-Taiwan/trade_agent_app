@@ -41,5 +41,7 @@
   "latest": "最新",
   "total": "全部",
   "no_data": "沒有資料",
-  "trade_count": "交易數量"
+  "trade_count": "交易數量",
+  "try_again": "再試一次",
+  "display": "顯示"
 }

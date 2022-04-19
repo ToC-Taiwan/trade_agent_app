@@ -9,6 +9,7 @@ import 'package:http/http.dart' as http;
 import 'package:trade_agent_v2/basic/ad_id.dart';
 import 'package:trade_agent_v2/basic/url.dart';
 import 'package:trade_agent_v2/generated/l10n.dart';
+import 'package:trade_agent_v2/layout/kbar.dart';
 import 'package:trade_agent_v2/utils/app_bar.dart';
 
 class Targetspage extends StatefulWidget {
@@ -147,12 +148,17 @@ class _TargetspageState extends State<Targetspage> {
                         // Text(i.rank.toString()),
                       ],
                     ),
-                    // onTap: () {
-                    //   var number = i.stock!.number!;
-                    //   setState(() {
-                    //     _launchInWebViewOrVC('https://tw.stock.yahoo.com/quote/$number.TW/technical-analysis');
-                    //   });
-                    // },
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => Kbar(
+                            stockNum: i.stock!.number!,
+                            stockName: i.stock!.name!,
+                          ),
+                        ),
+                      );
+                    },
                   ),
                 );
               }
