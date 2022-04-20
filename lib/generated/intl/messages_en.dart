@@ -46,6 +46,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "language": MessageLookupByLibrary.simpleMessage("Language"),
         "latest": MessageLookupByLibrary.simpleMessage("Latest"),
         "low": MessageLookupByLibrary.simpleMessage("Low"),
+        "my_web_site": MessageLookupByLibrary.simpleMessage("My Web Site"),
         "no_data": MessageLookupByLibrary.simpleMessage("No Data"),
         "no_pick_stock": MessageLookupByLibrary.simpleMessage("No Pick Stock"),
         "notification": MessageLookupByLibrary.simpleMessage("Notification"),

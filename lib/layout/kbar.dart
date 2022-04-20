@@ -70,15 +70,6 @@ class _KbarState extends State<Kbar> {
             IconButton(
               onPressed: () {
                 Navigator.pop(context);
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => Kbar(
-                      stockNum: widget.stockNum,
-                      stockName: widget.stockName,
-                    ),
-                  ),
-                );
               },
               icon: const Icon(Icons.close),
             )
@@ -141,6 +132,19 @@ class _KbarState extends State<Kbar> {
                 });
               }
             },
+            actions: [
+              ToolBarAction(
+                child: const Icon(Icons.refresh),
+                onPressed: () async {
+                  var newData = await fetchCandles(widget.stockNum, startTime, '30');
+                  if (mounted) {
+                    setState(() {
+                      candles += newData;
+                    });
+                  }
+                },
+              )
+            ],
           ),
         ),
       ),

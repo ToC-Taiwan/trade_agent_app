@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:trade_agent_v2/database.dart';
 import 'package:trade_agent_v2/generated/l10n.dart';
+import 'package:trade_agent_v2/layout/terms.dart';
 import 'package:trade_agent_v2/layout/trade_config.dart';
 import 'package:trade_agent_v2/models/basic.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -64,16 +65,16 @@ class _SettingsPageState extends State<SettingsPage> {
                 MaterialPageRoute(builder: (context) => const TradeConfigPage()),
               ),
             ),
-            // ListTile(
-            //   leading: const Icon(Icons.language),
-            //   title: Text(S.of(context).language),
-            //   trailing: const Icon(Icons.keyboard_arrow_right),
-            // ),
-            // ListTile(
-            //   leading: const Icon(Icons.remove_circle),
-            //   title: Text(S.of(context).remove_ads),
-            //   trailing: const Icon(Icons.keyboard_arrow_right),
-            // ),
+            ExpansionTile(
+              leading: const Icon(Icons.language),
+              title: Text(S.of(context).language),
+              trailing: const Icon(Icons.keyboard_arrow_right),
+            ),
+            ListTile(
+              leading: const Icon(Icons.remove_circle),
+              title: Text(S.of(context).remove_ads),
+              trailing: const Icon(Icons.keyboard_arrow_right),
+            ),
             ListTile(
               leading: const Icon(Icons.info_rounded),
               title: Text(S.of(context).version),
@@ -95,27 +96,26 @@ class _SettingsPageState extends State<SettingsPage> {
                 },
               ),
             ),
-            //
-            // const Divider(
-            //   color: Colors.grey,
-            //   thickness: 0,
-            // ),
-            // ListTile(
-            //   leading: const Icon(Icons.checklist_rounded),
-            //   title: Text(S.of(context).terms_and_conditions_of_use),
-            //   trailing: const Icon(Icons.keyboard_arrow_right),
-            //   onTap: () => Navigator.push(
-            //     context,
-            //     MaterialPageRoute(builder: (context) => const TermsOfUsePage()),
-            //   ),
-            // ),
+            const Divider(
+              color: Colors.grey,
+              thickness: 0,
+            ),
+            ListTile(
+              leading: const Icon(Icons.checklist_rounded),
+              title: Text(S.of(context).terms_and_conditions_of_use),
+              trailing: const Icon(Icons.keyboard_arrow_right),
+              onTap: () => Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const TermsOfUsePage()),
+              ),
+            ),
             const Divider(
               color: Colors.grey,
               thickness: 0,
             ),
             ListTile(
               leading: const Icon(Icons.settings_accessibility_outlined),
-              title: Text(S.of(context).about_me),
+              title: Text(S.of(context).my_web_site),
               trailing: const Icon(Icons.keyboard_arrow_right),
               onTap: () {
                 _launchInWebViewOrVC('https://blog.tocandraw.com/');
