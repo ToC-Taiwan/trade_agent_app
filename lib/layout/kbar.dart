@@ -24,9 +24,11 @@ class _KbarState extends State<Kbar> {
   void initState() {
     super.initState();
     fetchCandles(widget.stockNum, startTime, '30').then((value) {
-      setState(() {
-        candles = value;
-      });
+      if (mounted) {
+        setState(() {
+          candles = value;
+        });
+      }
     });
   }
 
@@ -53,6 +55,15 @@ class _KbarState extends State<Kbar> {
       }
     } catch (e) {
       return candleArr;
+    }
+  }
+
+  Future<void> addCandles(String stockNum, String startDate, String interval) async {
+    var newData = await fetchCandles(widget.stockNum, startTime, '30');
+    if (mounted) {
+      setState(() {
+        candles += newData;
+      });
     }
   }
 
@@ -103,6 +114,9 @@ class _KbarState extends State<Kbar> {
           ),
         ),
       );
+    }
+    if (candles.length < 30) {
+      addCandles(widget.stockNum, candles[candles.length - 1].date.add(const Duration(days: -1)).toString().substring(0, 10), '30');
     }
     return Scaffold(
       backgroundColor: Colors.white,
