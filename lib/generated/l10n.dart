@@ -509,6 +509,16 @@ class S {
       args: [],
     );
   }
+
+  /// `Restart to apply changes`
+  String get restart_to_apply_changes {
+    return Intl.message(
+      'Restart to apply changes',
+      name: 'restart_to_apply_changes',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {
@@ -517,7 +527,10 @@ class AppLocalizationDelegate extends LocalizationsDelegate<S> {
   List<Locale> get supportedLocales {
     return const <Locale>[
       Locale.fromSubtags(languageCode: 'en'),
-      Locale.fromSubtags(languageCode: 'zh'),
+      Locale.fromSubtags(
+          languageCode: 'zh', scriptCode: 'Hans', countryCode: 'CN'),
+      Locale.fromSubtags(
+          languageCode: 'zh', scriptCode: 'Hant', countryCode: 'TW'),
     ];
   }
 

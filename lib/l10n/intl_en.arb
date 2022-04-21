@@ -44,5 +44,6 @@
   "trade_count": "Trade Count",
   "try_again": "Try Again",
   "display": "Display",
-  "my_web_site": "My Web Site"
+  "my_web_site": "My Web Site",
+  "restart_to_apply_changes": "Restart to apply changes"
 }

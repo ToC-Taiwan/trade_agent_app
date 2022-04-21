@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -26,7 +28,7 @@ void main() async {
     ),
   );
 
-  // floor
+  // initital floor
   // final db = await $FloorAppDatabase.databaseBuilder('app_database_tr.db').addMigrations([migration1to2]).build();
   final db = await $FloorAppDatabase.databaseBuilder('app_database_tr.db').build();
   var version = await db.basicDao.getBasicByKey('version');
@@ -34,16 +36,76 @@ void main() async {
     await db.basicDao.insertBasic(Basic('version', '3.0.0'));
   }
 
+  var dbLanguageSetup = await db.basicDao.getBasicByKey('language_setup');
+  if (dbLanguageSetup == null) {
+    final defaultLocale = Platform.localeName;
+    Basic tmp;
+    var splitLocale = defaultLocale.split('_');
+    if (splitLocale[0] == 'zh' && splitLocale[1] == 'Hant') {
+      tmp = Basic('language_setup', 'zh_Hant');
+    } else if (splitLocale[0] == 'zh' && splitLocale[1] == 'Hans') {
+      tmp = Basic('language_setup', 'zh_Hans');
+    } else {
+      tmp = Basic('language_setup', 'en');
+    }
+    await db.basicDao.insertBasic(tmp);
+    dbLanguageSetup = tmp;
+  }
+
   runApp(
     MyApp(
+      dbLanguageSetup.value,
       db: db,
     ),
   );
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({Key? key, required this.db}) : super(key: key);
+class MyApp extends StatefulWidget {
+  const MyApp(this.languageSetup, {Key? key, required this.db}) : super(key: key);
   final AppDatabase db;
+
+  final String languageSetup;
+
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  late String language;
+  late String languageScript;
+  late String country;
+  late Locale locale;
+
+  @override
+  void initState() {
+    var splitLanguage = widget.languageSetup.split('_');
+    if (splitLanguage[0].isNotEmpty) {
+      language = splitLanguage[0];
+    } else {
+      language = 'en';
+    }
+    if (splitLanguage.length > 2 && splitLanguage[1].isNotEmpty) {
+      languageScript = splitLanguage[1];
+    } else {
+      languageScript = '';
+    }
+    if (splitLanguage.length > 2 && splitLanguage[2].isNotEmpty) {
+      country = splitLanguage[3];
+    } else {
+      country = '';
+    }
+
+    if (languageScript.isNotEmpty && country.isNotEmpty) {
+      locale = Locale.fromSubtags(languageCode: language, countryCode: country, scriptCode: languageScript);
+    } else if (languageScript.isNotEmpty && country.isEmpty) {
+      locale = Locale.fromSubtags(languageCode: language, scriptCode: languageScript);
+    } else if (languageScript.isEmpty && country.isNotEmpty) {
+      locale = Locale.fromSubtags(languageCode: language, countryCode: country);
+    } else {
+      locale = Locale.fromSubtags(languageCode: language);
+    }
+    super.initState();
+  }
 
   void hideKeyboard(BuildContext context) {
     var currentFocus = FocusScope.of(context);
@@ -59,7 +121,7 @@ class MyApp extends StatelessWidget {
         primarySwatch: createMaterialColor(const Color.fromARGB(255, 255, 255, 255)),
       ),
       home: IntroPage(
-        db: db,
+        db: widget.db,
       ),
       debugShowCheckedModeBanner: false,
       localizationsDelegates: const [
@@ -68,6 +130,7 @@ class MyApp extends StatelessWidget {
         GlobalWidgetsLocalizations.delegate,
         GlobalCupertinoLocalizations.delegate,
       ],
+      locale: locale,
       supportedLocales: S.delegate.supportedLocales,
       builder: (context, child) => Scaffold(
         // Global GestureDetector that will dismiss the keyboard

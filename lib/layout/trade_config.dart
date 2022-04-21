@@ -59,6 +59,7 @@ class _TradeConfigPageState extends State<TradeConfigPage> {
                     height: 20,
                   ),
                   ExpansionTile(
+                    leading: const Icon(Icons.computer, color: Colors.black),
                     title: const Text(
                       'Server',
                       style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
@@ -95,6 +96,7 @@ class _TradeConfigPageState extends State<TradeConfigPage> {
                     ],
                   ),
                   ExpansionTile(
+                    leading: const Icon(Icons.document_scanner, color: Colors.black),
                     title: const Text(
                       'Database',
                       style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
@@ -138,6 +140,7 @@ class _TradeConfigPageState extends State<TradeConfigPage> {
                     ],
                   ),
                   ExpansionTile(
+                    leading: const Icon(Icons.radio, color: Colors.black),
                     title: const Text(
                       'MQTT',
                       style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
@@ -167,6 +170,7 @@ class _TradeConfigPageState extends State<TradeConfigPage> {
                     ],
                   ),
                   ExpansionTile(
+                    leading: const Icon(Icons.money, color: Colors.black),
                     title: const Text(
                       'Trade Switch',
                       style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
@@ -238,6 +242,7 @@ class _TradeConfigPageState extends State<TradeConfigPage> {
                     ],
                   ),
                   ExpansionTile(
+                    leading: const Icon(Icons.currency_exchange, color: Colors.black),
                     title: const Text(
                       'Trade',
                       style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
@@ -309,6 +314,7 @@ class _TradeConfigPageState extends State<TradeConfigPage> {
                     ],
                   ),
                   ExpansionTile(
+                    leading: const Icon(Icons.account_balance_wallet, color: Colors.black),
                     title: const Text(
                       'Quota',
                       style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black),

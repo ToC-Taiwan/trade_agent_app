@@ -12,8 +12,8 @@ class Basic extends BaseObject {
   }) : super(id: id, updateTime: updateTime, createTime: createTime);
 
   @ColumnInfo(name: 'key')
-  final String key;
+  String key;
 
   @ColumnInfo(name: 'value')
-  final String value;
+  String value;
 }

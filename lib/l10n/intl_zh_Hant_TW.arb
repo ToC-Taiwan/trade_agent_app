@@ -44,5 +44,6 @@
   "trade_count": "交易數量",
   "try_again": "再試一次",
   "display": "顯示",
-  "my_web_site": "我的網站"
+  "my_web_site": "我的網站",
+  "restart_to_apply_changes": "重啟以套用變更"
 }

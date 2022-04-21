@@ -58,6 +58,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "price_change": MessageLookupByLibrary.simpleMessage("Price Change"),
         "refresh": MessageLookupByLibrary.simpleMessage("Refresh"),
         "remove_ads": MessageLookupByLibrary.simpleMessage("Remove Ads"),
+        "restart_to_apply_changes":
+            MessageLookupByLibrary.simpleMessage("Restart to apply changes"),
         "search": MessageLookupByLibrary.simpleMessage("Search"),
         "settings": MessageLookupByLibrary.simpleMessage("Settings"),
         "settings_of_notification":
