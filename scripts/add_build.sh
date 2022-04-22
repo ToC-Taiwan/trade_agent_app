@@ -4,5 +4,3 @@
 
 mv temp_pubspec.yaml pubspec.yaml
 
-flutter clean
-flutter pub get
