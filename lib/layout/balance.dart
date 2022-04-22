@@ -90,7 +90,7 @@ class _BalancePageState extends State<BalancePage> {
                       balance = Colors.red;
                     }
                     return ListTile(
-                      onTap: () {},
+                      // onTap: () {},
                       leading: Icon(Icons.account_balance_wallet, color: balance),
                       title: Text(reverse[index].tradeDay!.substring(0, 10)),
                       subtitle: Text('${S.of(context).trade_count}: ${reverse[index].tradeCount}'),

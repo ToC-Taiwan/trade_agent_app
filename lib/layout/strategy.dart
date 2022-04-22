@@ -245,10 +245,13 @@ class _StrategyPage extends State<StrategyPage> {
                                 var tmp = snapshot.data!;
                                 eventCache = tmp;
                                 if (tmp[value[index].stockNum] != null) {
-                                  return const Icon(Icons.check);
+                                  return const Icon(
+                                    Icons.check,
+                                    color: Colors.green,
+                                  );
                                 }
                               }
-                              return const Icon(Icons.add);
+                              return const Icon(Icons.add, color: Colors.red);
                             }),
                       ),
                     );

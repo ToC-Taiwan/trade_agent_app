@@ -7,7 +7,6 @@ import 'package:in_app_purchase_storekit/in_app_purchase_storekit.dart';
 import 'package:in_app_purchase_storekit/store_kit_wrappers.dart';
 import 'package:trade_agent_v2/database.dart';
 import 'package:trade_agent_v2/generated/l10n.dart';
-import 'package:trade_agent_v2/layout/terms.dart';
 import 'package:trade_agent_v2/layout/trade_config.dart';
 import 'package:trade_agent_v2/models/basic.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -153,18 +152,6 @@ class _SettingsPageState extends State<SettingsPage> {
             //   title: Text(S.of(context).settings_of_notification),
             //   trailing: const Icon(Icons.keyboard_arrow_right),
             // ),
-            ListTile(
-              leading: const Icon(
-                Icons.settings,
-                color: Colors.black,
-              ),
-              title: Text(S.of(context).trade_configuration),
-              // trailing: const Icon(Icons.keyboard_arrow_right),
-              onTap: () => Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => const TradeConfigPage()),
-              ),
-            ),
             ExpansionTile(
               childrenPadding: const EdgeInsets.only(left: 50),
               maintainState: true,
@@ -297,10 +284,8 @@ class _SettingsPageState extends State<SettingsPage> {
                     return Padding(
                       padding: const EdgeInsets.only(right: 8),
                       child: Text(
-                        snapshot.data!.value,
-                        style: const TextStyle(
-                          fontSize: 18,
-                        ),
+                        '${snapshot.data!.value} Latest Version',
+                        style: const TextStyle(fontSize: 16, color: Colors.grey),
                       ),
                     );
                   }
@@ -314,26 +299,27 @@ class _SettingsPageState extends State<SettingsPage> {
             ),
             ListTile(
               leading: const Icon(
-                Icons.checklist_rounded,
+                Icons.settings,
                 color: Colors.black,
               ),
-              title: Text(S.of(context).terms_and_conditions_of_use),
-              // trailing: const Icon(Icons.keyboard_arrow_right),
+              title: Text(S.of(context).trade_configuration),
+              subtitle: Text(S.of(context).read_only),
               onTap: () => Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => const TermsOfUsePage()),
+                MaterialPageRoute(builder: (context) => const TradeConfigPage()),
               ),
             ),
             const Divider(
               color: Colors.grey,
               thickness: 0,
             ),
+
             ListTile(
               leading: const Icon(
                 Icons.settings_accessibility_outlined,
                 color: Colors.black,
               ),
-              title: Text(S.of(context).my_web_site),
+              title: Text(S.of(context).about_me),
               // trailing: const Icon(Icons.keyboard_arrow_right),
               onTap: () {
                 _launchInWebViewOrVC('https://blog.tocandraw.com/');

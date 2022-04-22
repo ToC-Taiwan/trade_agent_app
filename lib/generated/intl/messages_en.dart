@@ -61,6 +61,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "price_change": MessageLookupByLibrary.simpleMessage("Price Change"),
         "product_list_abnormal":
             MessageLookupByLibrary.simpleMessage("Product List Abnormal"),
+        "read_only": MessageLookupByLibrary.simpleMessage("Read Only"),
         "refresh": MessageLookupByLibrary.simpleMessage("Refresh"),
         "remove_ads": MessageLookupByLibrary.simpleMessage("Remove Ads"),
         "restart_to_apply_changes":

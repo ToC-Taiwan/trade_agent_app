@@ -559,6 +559,16 @@ class S {
       args: [],
     );
   }
+
+  /// `Read Only`
+  String get read_only {
+    return Intl.message(
+      'Read Only',
+      name: 'read_only',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

@@ -57,6 +57,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "pick_stock": MessageLookupByLibrary.simpleMessage("自选股"),
         "price_change": MessageLookupByLibrary.simpleMessage("涨跌价"),
         "product_list_abnormal": MessageLookupByLibrary.simpleMessage("产品清单异常"),
+        "read_only": MessageLookupByLibrary.simpleMessage("唯读"),
         "refresh": MessageLookupByLibrary.simpleMessage("重新整理"),
         "remove_ads": MessageLookupByLibrary.simpleMessage("移除广告"),
         "restart_to_apply_changes":
