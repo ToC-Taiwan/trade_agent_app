@@ -73,7 +73,7 @@ class _KbarState extends State<Kbar> {
       return Scaffold(
         backgroundColor: Colors.white,
         appBar: AppBar(
-          elevation: 1,
+          elevation: 0.5,
           automaticallyImplyLeading: false,
           centerTitle: false,
           title: Text('${widget.stockNum} ${widget.stockName}'),
@@ -121,7 +121,7 @@ class _KbarState extends State<Kbar> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        elevation: 1,
+        elevation: 0.5,
         automaticallyImplyLeading: false,
         centerTitle: false,
         title: Text('${widget.stockNum} ${widget.stockName}'),

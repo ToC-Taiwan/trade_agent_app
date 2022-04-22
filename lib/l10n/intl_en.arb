@@ -45,5 +45,9 @@
   "try_again": "Try Again",
   "display": "Display",
   "my_web_site": "My Web Site",
-  "restart_to_apply_changes": "Restart to apply changes"
+  "restart_to_apply_changes": "Restart to apply changes",
+  "product_list_abnormal": "Product List Abnormal",
+  "developing": "Developing",
+  "restore": "Restore",
+  "already_purchased": "Already Purchased"
 }

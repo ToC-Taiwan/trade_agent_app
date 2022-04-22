@@ -24,6 +24,8 @@ class MessageLookup extends MessageLookupByLibrary {
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
         "about_me": MessageLookupByLibrary.simpleMessage("About Me"),
         "add": MessageLookupByLibrary.simpleMessage("Add"),
+        "already_purchased":
+            MessageLookupByLibrary.simpleMessage("Already Purchased"),
         "balance": MessageLookupByLibrary.simpleMessage("Balance"),
         "cancel": MessageLookupByLibrary.simpleMessage("Cancel"),
         "change_type": MessageLookupByLibrary.simpleMessage("Change Type"),
@@ -38,6 +40,7 @@ class MessageLookup extends MessageLookupByLibrary {
             "Are you sure you want to delete all pick stock?"),
         "delete_pick_stock_confirm": MessageLookupByLibrary.simpleMessage(
             "Are you sure you want to delete this stock"),
+        "developing": MessageLookupByLibrary.simpleMessage("Developing"),
         "display": MessageLookupByLibrary.simpleMessage("Display"),
         "group": MessageLookupByLibrary.simpleMessage("Group"),
         "high": MessageLookupByLibrary.simpleMessage("High"),
@@ -56,10 +59,13 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Percent Change"),
         "pick_stock": MessageLookupByLibrary.simpleMessage("Pick Stock"),
         "price_change": MessageLookupByLibrary.simpleMessage("Price Change"),
+        "product_list_abnormal":
+            MessageLookupByLibrary.simpleMessage("Product List Abnormal"),
         "refresh": MessageLookupByLibrary.simpleMessage("Refresh"),
         "remove_ads": MessageLookupByLibrary.simpleMessage("Remove Ads"),
         "restart_to_apply_changes":
             MessageLookupByLibrary.simpleMessage("Restart to apply changes"),
+        "restore": MessageLookupByLibrary.simpleMessage("Restore"),
         "search": MessageLookupByLibrary.simpleMessage("Search"),
         "settings": MessageLookupByLibrary.simpleMessage("Settings"),
         "settings_of_notification":

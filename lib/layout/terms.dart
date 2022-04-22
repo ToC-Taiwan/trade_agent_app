@@ -9,7 +9,7 @@ class TermsOfUsePage extends StatelessWidget {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        elevation: 1,
+        elevation: 0.5,
         automaticallyImplyLeading: false,
         centerTitle: false,
         title: Text(S.of(context).terms_and_conditions_of_use),

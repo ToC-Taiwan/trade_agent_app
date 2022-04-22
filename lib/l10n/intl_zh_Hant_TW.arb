@@ -45,5 +45,9 @@
   "try_again": "再試一次",
   "display": "顯示",
   "my_web_site": "我的網站",
-  "restart_to_apply_changes": "重啟以套用變更"
+  "restart_to_apply_changes": "重啟以套用變更",
+  "product_list_abnormal": "產品清單異常",
+  "developing": "開發中",
+  "restore": "還原",
+  "already_purchased": "已經購買"
 }

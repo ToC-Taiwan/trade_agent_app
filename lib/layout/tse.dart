@@ -32,12 +32,16 @@ class _TSEPageState extends State<TSEPage> {
   );
 
   late Future<TSE> futureTSE;
+  bool alreadyRemovedAd = false;
 
   @override
   void initState() {
     super.initState();
     myBanner.load();
     futureTSE = fetchTSE();
+    widget.db.basicDao.getBasicByKey('remove_ad_status').then((value) => {
+          if (value != null) {alreadyRemovedAd = value.value == 'true'}
+        });
   }
 
   @override
@@ -83,10 +87,7 @@ class _TSEPageState extends State<TSEPage> {
             }
             return Column(
               children: [
-                Padding(
-                  padding: const EdgeInsets.only(top: 10),
-                  child: adContainer,
-                ),
+                _buildAd(adContainer),
                 Column(
                   // shrinkWrap: true,
                   children: [
@@ -127,6 +128,19 @@ class _TSEPageState extends State<TSEPage> {
           );
         },
       ),
+    );
+  }
+
+  Padding _buildAd(Container adContainer) {
+    if (alreadyRemovedAd) {
+      return Padding(
+        padding: const EdgeInsets.only(top: 10),
+        child: Container(),
+      );
+    }
+    return Padding(
+      padding: const EdgeInsets.only(top: 10),
+      child: adContainer,
     );
   }
 }

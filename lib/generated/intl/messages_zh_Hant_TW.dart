@@ -24,6 +24,7 @@ class MessageLookup extends MessageLookupByLibrary {
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
         "about_me": MessageLookupByLibrary.simpleMessage("關於我"),
         "add": MessageLookupByLibrary.simpleMessage("增加"),
+        "already_purchased": MessageLookupByLibrary.simpleMessage("已經購買"),
         "balance": MessageLookupByLibrary.simpleMessage("損益"),
         "cancel": MessageLookupByLibrary.simpleMessage("取消"),
         "change_type": MessageLookupByLibrary.simpleMessage("漲跌"),
@@ -38,6 +39,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("確定刪除全部自選股嗎？"),
         "delete_pick_stock_confirm":
             MessageLookupByLibrary.simpleMessage("確定刪除自選股嗎？"),
+        "developing": MessageLookupByLibrary.simpleMessage("開發中"),
         "display": MessageLookupByLibrary.simpleMessage("顯示"),
         "group": MessageLookupByLibrary.simpleMessage("分組"),
         "high": MessageLookupByLibrary.simpleMessage("高"),
@@ -54,10 +56,12 @@ class MessageLookup extends MessageLookupByLibrary {
         "percent_change": MessageLookupByLibrary.simpleMessage("漲跌幅"),
         "pick_stock": MessageLookupByLibrary.simpleMessage("自選股"),
         "price_change": MessageLookupByLibrary.simpleMessage("漲跌價"),
+        "product_list_abnormal": MessageLookupByLibrary.simpleMessage("產品清單異常"),
         "refresh": MessageLookupByLibrary.simpleMessage("重新整理"),
         "remove_ads": MessageLookupByLibrary.simpleMessage("移除廣告"),
         "restart_to_apply_changes":
             MessageLookupByLibrary.simpleMessage("重啟以套用變更"),
+        "restore": MessageLookupByLibrary.simpleMessage("還原"),
         "search": MessageLookupByLibrary.simpleMessage("搜尋"),
         "settings": MessageLookupByLibrary.simpleMessage("設定"),
         "settings_of_notification":

@@ -1,0 +1,43 @@
+{
+  "identifier" : "1391B95C",
+  "nonRenewingSubscriptions" : [
+
+  ],
+  "products" : [
+    {
+      "displayPrice" : "3.99",
+      "familyShareable" : false,
+      "internalID" : "2BBE6566",
+      "localizations" : [
+        {
+          "description" : "Remove ad in some pages",
+          "displayName" : "Remove Ad",
+          "locale" : "en_US"
+        },
+        {
+          "description" : "移除頁面中的廣告",
+          "displayName" : "去除廣告",
+          "locale" : "zh_TW"
+        },
+        {
+          "description" : "移除页面中的广告",
+          "displayName" : "移除广告",
+          "locale" : "zh_CN"
+        }
+      ],
+      "productID" : "com.tocandraw.removeAd",
+      "referenceName" : "Remove Ad",
+      "type" : "NonConsumable"
+    }
+  ],
+  "settings" : {
+
+  },
+  "subscriptionGroups" : [
+
+  ],
+  "version" : {
+    "major" : 1,
+    "minor" : 2
+  }
+}

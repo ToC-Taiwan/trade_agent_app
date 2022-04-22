@@ -24,7 +24,7 @@ AppBar trAppbar(BuildContext context, String title, AppDatabase db, {List<Widget
   ];
   return AppBar(
     centerTitle: false,
-    elevation: 1,
+    elevation: 0.5,
     title: Text(title),
     actions: actions ?? normalAction,
   );

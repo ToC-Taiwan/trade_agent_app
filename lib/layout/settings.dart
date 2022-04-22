@@ -1,4 +1,10 @@
+import 'dart:async';
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:in_app_purchase/in_app_purchase.dart';
+import 'package:in_app_purchase_storekit/in_app_purchase_storekit.dart';
+import 'package:in_app_purchase_storekit/store_kit_wrappers.dart';
 import 'package:trade_agent_v2/database.dart';
 import 'package:trade_agent_v2/generated/l10n.dart';
 import 'package:trade_agent_v2/layout/terms.dart';
@@ -14,12 +20,18 @@ class SettingsPage extends StatefulWidget {
   State<SettingsPage> createState() => _SettingsPageState();
 }
 
+const String _kUpgradeId = 'com.tocandraw.removeAd';
+const List<String> _kProductIds = <String>[
+  _kUpgradeId,
+];
+
 class _SettingsPageState extends State<SettingsPage> {
   late Future<Basic?> futureVersion;
   late Future<Basic?> languageGroup;
 
   String originalLanguage = '';
   bool languageChanged = false;
+  bool alreadyRemovedAd = false;
 
   void _launchInWebViewOrVC(String url) async {
     await launch(
@@ -29,11 +41,82 @@ class _SettingsPageState extends State<SettingsPage> {
     );
   }
 
+  final InAppPurchase _inAppPurchase = InAppPurchase.instance;
+  List<String> _notFoundIds = <String>[];
+  List<ProductDetails> _products = <ProductDetails>[];
+  List<PurchaseDetails> _purchases = <PurchaseDetails>[];
+  bool _isAvailable = false;
+  bool _loading = true;
+
   @override
   void initState() {
+    _inAppPurchase.purchaseStream.listen((purchaseDetailsList) {
+      _listenToPurchaseUpdated(purchaseDetailsList);
+    });
+    initStoreInfo();
     super.initState();
     languageGroup = widget.db.basicDao.getBasicByKey('language_setup');
     futureVersion = widget.db.basicDao.getBasicByKey('version');
+    widget.db.basicDao.getBasicByKey('remove_ad_status').then((value) => {
+          if (value != null) {alreadyRemovedAd = value.value == 'true'}
+        });
+  }
+
+  Future<void> initStoreInfo() async {
+    final isAvailable = await _inAppPurchase.isAvailable();
+    if (!isAvailable) {
+      setState(() {
+        _isAvailable = isAvailable;
+        _products = <ProductDetails>[];
+        _purchases = <PurchaseDetails>[];
+        _notFoundIds = <String>[];
+        _loading = false;
+      });
+      return;
+    }
+
+    if (Platform.isIOS) {
+      final iosPlatformAddition = _inAppPurchase.getPlatformAddition<InAppPurchaseStoreKitPlatformAddition>();
+      await iosPlatformAddition.setDelegate(ExamplePaymentQueueDelegate());
+    }
+
+    final productDetailResponse = await _inAppPurchase.queryProductDetails(_kProductIds.toSet());
+    if (productDetailResponse.error != null) {
+      setState(() {
+        _isAvailable = isAvailable;
+        _products = productDetailResponse.productDetails;
+        _purchases = <PurchaseDetails>[];
+        _notFoundIds = productDetailResponse.notFoundIDs;
+        _loading = false;
+      });
+      return;
+    }
+
+    if (productDetailResponse.productDetails.isEmpty) {
+      setState(() {
+        _isAvailable = isAvailable;
+        _products = productDetailResponse.productDetails;
+        _purchases = <PurchaseDetails>[];
+        _notFoundIds = productDetailResponse.notFoundIDs;
+        _loading = false;
+      });
+      return;
+    }
+
+    setState(() {
+      _isAvailable = isAvailable;
+      _products = productDetailResponse.productDetails;
+      _notFoundIds = productDetailResponse.notFoundIDs;
+      _loading = false;
+    });
+  }
+
+  @override
+  void dispose() {
+    if (Platform.isIOS) {
+      _inAppPurchase.getPlatformAddition<InAppPurchaseStoreKitPlatformAddition>().setDelegate(null);
+    }
+    super.dispose();
   }
 
   Widget _showShouldRestart(BuildContext context) {
@@ -200,50 +283,7 @@ class _SettingsPageState extends State<SettingsPage> {
                 _showShouldRestart(context),
               ],
             ),
-            ExpansionTile(
-              childrenPadding: const EdgeInsets.only(left: 50),
-              maintainState: true,
-              leading: const Icon(
-                Icons.remove_circle,
-                color: Colors.black,
-              ),
-              title: Text(
-                S.of(context).remove_ads,
-                style: const TextStyle(color: Colors.black),
-              ),
-              trailing: const Icon(Icons.keyboard_arrow_right),
-              children: [
-                Row(
-                  children: [
-                    const SizedBox(
-                      width: 25,
-                    ),
-                    TextButton(
-                      style: TextButton.styleFrom(
-                        backgroundColor: Colors.green,
-                        primary: Colors.black,
-                      ),
-                      onPressed: () => {},
-                      child: const Text(r'$0.99'),
-                    ),
-                    const SizedBox(
-                      width: 40,
-                    ),
-                    TextButton(
-                      style: TextButton.styleFrom(
-                        backgroundColor: Colors.green,
-                        primary: Colors.black,
-                      ),
-                      onPressed: () => {},
-                      child: const Text('還原購買'),
-                    ),
-                  ],
-                ),
-                const SizedBox(
-                  height: 15,
-                )
-              ],
-            ),
+            _buildRemoveAdTile(),
             ListTile(
               leading: const Icon(
                 Icons.info_rounded,
@@ -298,10 +338,155 @@ class _SettingsPageState extends State<SettingsPage> {
               onTap: () {
                 _launchInWebViewOrVC('https://blog.tocandraw.com/');
               },
-            )
+            ),
           ],
         ),
       ),
     );
+  }
+
+  Column _buildProductList() {
+    if (_loading) {
+      Column();
+    }
+    if (!_isAvailable) {
+      return Column();
+    }
+
+    final productList = <ListTile>[];
+    if (_notFoundIds.isNotEmpty) {
+      productList.add(
+        ListTile(
+          title: Text(S.of(context).product_list_abnormal, style: const TextStyle(color: Colors.black)),
+        ),
+      );
+    }
+
+    final purchases = Map<String, PurchaseDetails>.fromEntries(
+      _purchases.map(
+        (purchase) {
+          if (purchase.pendingCompletePurchase) {
+            _inAppPurchase.completePurchase(purchase);
+          }
+          return MapEntry<String, PurchaseDetails>(purchase.productID, purchase);
+        },
+      ),
+    );
+
+    productList.addAll(
+      _products.map(
+        (productDetails) {
+          final previousPurchase = purchases[productDetails.id];
+          return ListTile(
+            title: Text(
+              productDetails.title,
+              style: const TextStyle(color: Colors.black),
+            ),
+            subtitle: Text(
+              productDetails.description,
+              style: const TextStyle(color: Colors.grey),
+            ),
+            trailing: (previousPurchase != null || alreadyRemovedAd)
+                ? const Icon(Icons.check)
+                : TextButton(
+                    style: TextButton.styleFrom(
+                      backgroundColor: Colors.green[800],
+                      primary: Colors.white,
+                    ),
+                    onPressed: () {
+                      late PurchaseParam purchaseParam;
+                      purchaseParam = PurchaseParam(
+                        productDetails: productDetails,
+                      );
+                      _inAppPurchase.buyNonConsumable(purchaseParam: purchaseParam);
+                    },
+                    child: Text(productDetails.price),
+                  ),
+          );
+        },
+      ),
+    );
+    return Column(children: productList);
+  }
+
+  Future<void> deliverProduct(PurchaseDetails purchaseDetails) async {
+    // IMPORTANT!! Always verify purchase details before delivering the product.
+    if (purchaseDetails.productID == _kUpgradeId) {
+      await widget.db.basicDao.insertBasic(Basic('remove_ad_status', 'true'));
+    }
+    setState(() {
+      _purchases.add(purchaseDetails);
+    });
+  }
+
+  Future<bool> _verifyPurchase(PurchaseDetails purchaseDetails) {
+    // IMPORTANT!! Always verify a purchase before delivering the product.
+    // For the purpose of an example, we directly return true.
+    return Future<bool>.value(true);
+  }
+
+  void _handleInvalidPurchase(PurchaseDetails purchaseDetails) {
+    // handle invalid purchase here if  _verifyPurchase` failed.
+  }
+
+  Future<void> _listenToPurchaseUpdated(List<PurchaseDetails> purchaseDetailsList) async {
+    for (final purchaseDetails in purchaseDetailsList) {
+      if (purchaseDetails.status == PurchaseStatus.purchased || purchaseDetails.status == PurchaseStatus.restored) {
+        final valid = await _verifyPurchase(purchaseDetails);
+        if (valid) {
+          await deliverProduct(purchaseDetails);
+        } else {
+          _handleInvalidPurchase(purchaseDetails);
+          return;
+        }
+      }
+      if (purchaseDetails.pendingCompletePurchase) {
+        await _inAppPurchase.completePurchase(purchaseDetails);
+      }
+    }
+  }
+
+  ExpansionTile _buildRemoveAdTile() {
+    if (Platform.isAndroid) {
+      return ExpansionTile(
+        maintainState: true,
+        leading: const Icon(Icons.workspace_premium),
+        title: Text(
+          S.of(context).developing,
+          style: const TextStyle(color: Colors.black),
+        ),
+      );
+    }
+    return ExpansionTile(
+      childrenPadding: const EdgeInsets.only(left: 50),
+      maintainState: true,
+      leading: const Icon(
+        Icons.remove_circle,
+        color: Colors.black,
+      ),
+      title: Text(
+        S.of(context).remove_ads,
+        style: const TextStyle(color: Colors.black),
+      ),
+      trailing: const Icon(Icons.keyboard_arrow_right),
+      children: [
+        _buildProductList(),
+        const SizedBox(
+          height: 15,
+        )
+      ],
+    );
+  }
+}
+
+class ExamplePaymentQueueDelegate implements SKPaymentQueueDelegateWrapper {
+  @override
+  bool shouldContinueTransaction(SKPaymentTransactionWrapper transaction, SKStorefrontWrapper storefront) {
+    return true;
+  }
+
+  @override
+  bool shouldShowPriceConsent() {
+    return false;
   }
 }

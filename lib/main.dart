@@ -84,13 +84,13 @@ class _MyAppState extends State<MyApp> {
     } else {
       language = 'en';
     }
-    if (splitLanguage.length > 2 && splitLanguage[1].isNotEmpty) {
+    if (splitLanguage.length == 2 && splitLanguage[1].isNotEmpty) {
       languageScript = splitLanguage[1];
     } else {
       languageScript = '';
     }
-    if (splitLanguage.length > 2 && splitLanguage[2].isNotEmpty) {
-      country = splitLanguage[3];
+    if (splitLanguage.length == 3 && splitLanguage[2].isNotEmpty) {
+      country = splitLanguage[2];
     } else {
       country = '';
     }

@@ -36,12 +36,16 @@ class _TargetspageState extends State<Targetspage> {
 
   List<Target> current = [];
   late Future<List<Target>> futureTargets;
+  bool alreadyRemovedAd = false;
 
   @override
   void initState() {
     super.initState();
     myBanner.load();
     futureTargets = fetchTargets(current, -1);
+    widget.db.basicDao.getBasicByKey('remove_ad_status').then((value) => {
+          if (value != null) {alreadyRemovedAd = value.value == 'true'}
+        });
   }
 
   void _onItemClick(num opt) {
@@ -90,7 +94,7 @@ class _TargetspageState extends State<Targetspage> {
                 if (i.rank == -1) {
                   continue;
                 }
-                if (i.rank! % 6 == 0 && !adExist) {
+                if (i.rank! % 6 == 0 && !adExist && !alreadyRemovedAd) {
                   adExist = true;
                   tmp.add(
                     buildTile(

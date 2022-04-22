@@ -519,6 +519,46 @@ class S {
       args: [],
     );
   }
+
+  /// `Product List Abnormal`
+  String get product_list_abnormal {
+    return Intl.message(
+      'Product List Abnormal',
+      name: 'product_list_abnormal',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Developing`
+  String get developing {
+    return Intl.message(
+      'Developing',
+      name: 'developing',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Restore`
+  String get restore {
+    return Intl.message(
+      'Restore',
+      name: 'restore',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Already Purchased`
+  String get already_purchased {
+    return Intl.message(
+      'Already Purchased',
+      name: 'already_purchased',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {
