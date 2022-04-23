@@ -436,7 +436,10 @@ class _SettingsPageState extends State<SettingsPage> {
     if (Platform.isAndroid) {
       return ExpansionTile(
         maintainState: true,
-        leading: const Icon(Icons.workspace_premium),
+        leading: const Icon(
+          Icons.workspace_premium,
+          color: Colors.black,
+        ),
         title: Text(
           S.of(context).developing,
           style: const TextStyle(color: Colors.black),

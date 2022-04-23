@@ -63,6 +63,7 @@ class _KbarState extends State<Kbar> {
     if (mounted) {
       setState(() {
         candles += newData;
+        startTime = candles[candles.length - 1].date.add(const Duration(days: -1)).toString().substring(0, 10);
       });
     }
   }
@@ -114,9 +115,6 @@ class _KbarState extends State<Kbar> {
           ),
         ),
       );
-    }
-    if (candles.length < 30) {
-      addCandles(widget.stockNum, candles[candles.length - 1].date.add(const Duration(days: -1)).toString().substring(0, 10), '30');
     }
     return Scaffold(
       backgroundColor: Colors.white,
