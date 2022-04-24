@@ -25,7 +25,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "about_me": MessageLookupByLibrary.simpleMessage("About Me"),
         "add": MessageLookupByLibrary.simpleMessage("Add"),
         "already_purchased":
-            MessageLookupByLibrary.simpleMessage("Already Purchased"),
+            MessageLookupByLibrary.simpleMessage("Already Purchased?"),
         "balance": MessageLookupByLibrary.simpleMessage("Balance"),
         "cancel": MessageLookupByLibrary.simpleMessage("Cancel"),
         "change_type": MessageLookupByLibrary.simpleMessage("Change Type"),

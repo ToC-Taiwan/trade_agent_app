@@ -24,7 +24,7 @@ class MessageLookup extends MessageLookupByLibrary {
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
         "about_me": MessageLookupByLibrary.simpleMessage("关于我"),
         "add": MessageLookupByLibrary.simpleMessage("增加"),
-        "already_purchased": MessageLookupByLibrary.simpleMessage("已经购买"),
+        "already_purchased": MessageLookupByLibrary.simpleMessage("已经购买?"),
         "balance": MessageLookupByLibrary.simpleMessage("损益"),
         "cancel": MessageLookupByLibrary.simpleMessage("取消"),
         "change_type": MessageLookupByLibrary.simpleMessage("涨跌"),

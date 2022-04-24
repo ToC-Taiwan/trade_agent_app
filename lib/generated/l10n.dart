@@ -550,10 +550,10 @@ class S {
     );
   }
 
-  /// `Already Purchased`
+  /// `Already Purchased?`
   String get already_purchased {
     return Intl.message(
-      'Already Purchased',
+      'Already Purchased?',
       name: 'already_purchased',
       desc: '',
       args: [],
