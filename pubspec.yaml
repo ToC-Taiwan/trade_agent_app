@@ -2,7 +2,7 @@ name: trade_agent_v2
 description: Status of trade agent, let user query analyzed stocks.
 
 publish_to: 'none'
-version: 3.0.1+38005
+version: 3.1.0+38006
 
 environment:
   sdk: ">=2.16.2 <3.0.0"

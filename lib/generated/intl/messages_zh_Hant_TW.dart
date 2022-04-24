@@ -71,6 +71,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "stock_dose_not_exist": MessageLookupByLibrary.simpleMessage("股票不存在"),
         "stock_number": MessageLookupByLibrary.simpleMessage("股票代號"),
         "strategy": MessageLookupByLibrary.simpleMessage("策略選股"),
+        "success": MessageLookupByLibrary.simpleMessage("成功"),
         "targets": MessageLookupByLibrary.simpleMessage("交易目標"),
         "terms_and_conditions_of_use":
             MessageLookupByLibrary.simpleMessage("使用條款及條件"),

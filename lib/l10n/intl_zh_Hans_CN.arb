@@ -51,5 +51,6 @@
   "restore": "还原",
   "already_purchased": "已经购买?",
   "read_only": "唯读",
-  "restore_purchase": "还原购买"
+  "restore_purchase": "还原购买",
+  "success": "成功"
 }

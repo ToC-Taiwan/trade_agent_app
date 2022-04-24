@@ -77,6 +77,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Stock dose not exist"),
         "stock_number": MessageLookupByLibrary.simpleMessage("Stock Number"),
         "strategy": MessageLookupByLibrary.simpleMessage("Strategy"),
+        "success": MessageLookupByLibrary.simpleMessage("Success"),
         "targets": MessageLookupByLibrary.simpleMessage("Targets"),
         "terms_and_conditions_of_use":
             MessageLookupByLibrary.simpleMessage("Terms and Conditions of Use"),
