@@ -63,6 +63,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "restart_to_apply_changes":
             MessageLookupByLibrary.simpleMessage("重启以套用变更"),
         "restore": MessageLookupByLibrary.simpleMessage("还原"),
+        "restore_purchase": MessageLookupByLibrary.simpleMessage("还原购买"),
         "search": MessageLookupByLibrary.simpleMessage("搜寻"),
         "settings": MessageLookupByLibrary.simpleMessage("设定"),
         "settings_of_notification":

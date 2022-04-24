@@ -569,6 +569,16 @@ class S {
       args: [],
     );
   }
+
+  /// `Restore Purchase`
+  String get restore_purchase {
+    return Intl.message(
+      'Restore Purchase',
+      name: 'restore_purchase',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

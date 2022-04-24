@@ -395,6 +395,26 @@ class _SettingsPageState extends State<SettingsPage> {
     return Column(children: productList);
   }
 
+  Widget _buildRestoreButton() {
+    if (_loading) {
+      return Container();
+    }
+
+    return ListTile(
+      title: Text(S.of(context).restore_purchase),
+      trailing: TextButton(
+        style: TextButton.styleFrom(
+          backgroundColor: Colors.green[800],
+          primary: Colors.white,
+        ),
+        onPressed: () {
+          _inAppPurchase.restorePurchases();
+        },
+        child: Text(S.of(context).restore),
+      ),
+    );
+  }
+
   Future<void> deliverProduct(PurchaseDetails purchaseDetails) async {
     // IMPORTANT!! Always verify purchase details before delivering the product.
     if (purchaseDetails.productID == _kUpgradeId) {
@@ -460,6 +480,7 @@ class _SettingsPageState extends State<SettingsPage> {
       trailing: const Icon(Icons.keyboard_arrow_right),
       children: [
         _buildProductList(),
+        _buildRestoreButton(),
         const SizedBox(
           height: 15,
         )

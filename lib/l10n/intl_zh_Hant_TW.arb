@@ -50,5 +50,6 @@
   "developing": "開發中",
   "restore": "還原",
   "already_purchased": "已經購買",
-  "read_only": "唯讀"
+  "read_only": "唯讀",
+  "restore_purchase": "還原購買"
 }
