@@ -6,8 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:http/http.dart' as http;
-import 'package:trade_agent_v2/basic/ad_id.dart';
-import 'package:trade_agent_v2/basic/url.dart';
+import 'package:trade_agent_v2/basic/basic.dart';
 import 'package:trade_agent_v2/database.dart';
 import 'package:trade_agent_v2/generated/l10n.dart';
 import 'package:trade_agent_v2/layout/kbar.dart';
@@ -34,9 +33,11 @@ class _TargetspageState extends State<Targetspage> {
     ),
   );
 
-  List<Target> current = [];
+  TextEditingController textFieldController = TextEditingController();
   late Future<List<Target>> futureTargets;
+  List<Target> current = [];
   bool alreadyRemovedAd = false;
+  bool adExist = false;
 
   @override
   void initState() {
@@ -54,18 +55,21 @@ class _TargetspageState extends State<Targetspage> {
     });
   }
 
-  bool adExist = false;
+  Widget _buildAd(BuildContext context, BannerAd myBanner) {
+    return Container(
+      padding: const EdgeInsets.all(5),
+      alignment: Alignment.center,
+      child: AdWidget(ad: myBanner),
+    );
+  }
+
+  void clearTextField() {
+    textFieldController.clear();
+    _onItemClick(-1);
+  }
 
   @override
   Widget build(BuildContext context) {
-    final adWidget = AdWidget(ad: myBanner);
-    final adContainer = Container(
-      padding: const EdgeInsets.only(top: 5),
-      alignment: Alignment.center,
-      width: myBanner.size.width.toDouble(),
-      height: myBanner.size.height.toDouble(),
-      child: adWidget,
-    );
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: trAppbar(
@@ -98,12 +102,13 @@ class _TargetspageState extends State<Targetspage> {
                   adExist = true;
                   tmp.add(
                     buildTile(
-                        2,
-                        2,
-                        Padding(
-                          padding: const EdgeInsets.all(18),
-                          child: adContainer,
-                        )),
+                      2,
+                      2,
+                      Padding(
+                        padding: const EdgeInsets.all(18),
+                        child: _buildAd(context, myBanner),
+                      ),
+                    ),
                   );
                 }
                 tmp.add(
@@ -114,19 +119,24 @@ class _TargetspageState extends State<Targetspage> {
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
                         Expanded(
-                          child: AutoSizeText(
-                            i.stock!.number!,
-                            style: const TextStyle(fontSize: 22, color: Colors.black),
-                          ),
-                        ),
-                        Expanded(
-                          child: AutoSizeText(
-                            i.stock!.name!,
-                            style: const TextStyle(fontSize: 22, color: Color.fromARGB(255, 0, 46, 184), fontWeight: FontWeight.bold),
+                          flex: 2,
+                          child: Padding(
+                            padding: const EdgeInsets.only(top: 8),
+                            child: AutoSizeText(
+                              i.stock!.number!,
+                              style: const TextStyle(fontSize: 22, color: Colors.black),
+                            ),
                           ),
                         ),
                         Expanded(
                           flex: 2,
+                          child: AutoSizeText(
+                            i.stock!.name!,
+                            style: const TextStyle(fontSize: 22, color: Color.fromARGB(255, 138, 155, 208), fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                        Expanded(
+                          flex: 3,
                           child: Padding(
                             padding: const EdgeInsets.only(left: 5, right: 5),
                             child: Row(
@@ -167,13 +177,21 @@ class _TargetspageState extends State<Targetspage> {
                   shrinkWrap: true,
                   children: [
                     TextFormField(
-                      // controller: emailController,
+                      textAlignVertical: TextAlignVertical.center,
+                      controller: textFieldController,
                       keyboardType: TextInputType.number,
                       decoration: InputDecoration(
-                        icon: const Icon(Icons.search),
+                        icon: const Icon(
+                          Icons.search,
+                          color: Colors.grey,
+                        ),
                         border: const UnderlineInputBorder(),
                         labelText: S.of(context).search,
                         hintText: S.of(context).stock_number,
+                        suffixIcon: IconButton(
+                          onPressed: clearTextField,
+                          icon: const Icon(Icons.clear, color: Colors.grey),
+                        ),
                       ),
                       textInputAction: TextInputAction.search,
                       onChanged: (val) {
@@ -224,9 +242,9 @@ Widget buildTile(int cross, int main, Widget child, {Function()? onTap}) {
     mainAxisCellCount: main,
     child: Material(
       color: Colors.grey[100],
-      elevation: 6,
+      elevation: 2,
       borderRadius: BorderRadius.circular(12),
-      shadowColor: Colors.pink.shade50,
+      shadowColor: Colors.blueGrey.shade50,
       child: InkWell(
         onTap: onTap != null ? () => onTap() : () {},
         child: child,

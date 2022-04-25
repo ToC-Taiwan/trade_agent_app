@@ -46,6 +46,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "input_must_not_empty": MessageLookupByLibrary.simpleMessage("输入不能为空"),
         "language": MessageLookupByLibrary.simpleMessage("语言"),
         "latest": MessageLookupByLibrary.simpleMessage("最新"),
+        "loading": MessageLookupByLibrary.simpleMessage("读取中"),
         "low": MessageLookupByLibrary.simpleMessage("低"),
         "my_web_site": MessageLookupByLibrary.simpleMessage("我的网站"),
         "no_data": MessageLookupByLibrary.simpleMessage("没有资料"),

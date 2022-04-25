@@ -52,5 +52,6 @@
   "already_purchased": "Already Purchased?",
   "read_only": "Read Only",
   "restore_purchase": "Restore Purchase",
-  "success": "Success"
+  "success": "Success",
+  "loading": "Loading"
 }
