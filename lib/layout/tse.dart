@@ -18,17 +18,91 @@ class TSEPage extends StatefulWidget {
 }
 
 class _TSEPageState extends State<TSEPage> {
-  final BannerAd myBanner = BannerAd(
-    adUnitId: bannerAdUnitID,
-    size: AdSize.banner,
-    request: const AdRequest(),
-    listener: BannerAdListener(
-      onAdFailedToLoad: (ad, _) {
-        // Dispose the ad here to free resources.
-        ad.dispose();
+  static const _insets = 16.0;
+  BannerAd? _inlineAdaptiveAd;
+  bool _isLoaded = false;
+  AdSize? _adSize;
+  late Orientation _currentOrientation;
+
+  double get _adWidth => MediaQuery.of(context).size.width - (4 * _insets);
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _currentOrientation = MediaQuery.of(context).orientation;
+    _loadAd();
+  }
+
+  void _loadAd() async {
+    await _inlineAdaptiveAd?.dispose();
+    setState(() {
+      _inlineAdaptiveAd = null;
+      _isLoaded = false;
+    });
+
+    // Get an inline adaptive size for the current orientation.
+    AdSize size = AdSize.getInlineAdaptiveBannerAdSize(_adWidth.truncate(), 60);
+    _inlineAdaptiveAd = BannerAd(
+      adUnitId: bannerAdUnitID,
+      size: size,
+      request: const AdRequest(),
+      listener: BannerAdListener(
+        onAdLoaded: (ad) async {
+          // After the ad is loaded, get the platform ad size and use it to
+          // update the height of the container. This is necessary because the
+          // height can change after the ad is loaded.
+          var bannerAd = ad as BannerAd;
+          final size = await bannerAd.getPlatformAdSize();
+          if (size == null) {
+            return;
+          }
+
+          setState(() {
+            _inlineAdaptiveAd = bannerAd;
+            _isLoaded = true;
+            _adSize = size;
+          });
+        },
+        onAdFailedToLoad: (ad, error) {
+          ad.dispose();
+        },
+      ),
+    );
+    await _inlineAdaptiveAd!.load();
+  }
+
+  /// Gets a widget containing the ad, if one is loaded.
+  /// Returns an empty container if no ad is loaded, or the orientation
+  /// has changed. Also loads a new ad if the orientation changes.
+  Widget _getAdWidget() {
+    return OrientationBuilder(
+      builder: (context, orientation) {
+        if (_currentOrientation == orientation && _inlineAdaptiveAd != null && _isLoaded && _adSize != null) {
+          return Align(
+            child: SizedBox(
+              width: _adWidth,
+              height: _adSize!.height.toDouble(),
+              child: AdWidget(
+                ad: _inlineAdaptiveAd!,
+              ),
+            ),
+          );
+        }
+        // Reload the ad if the orientation changes.
+        if (_currentOrientation != orientation) {
+          _currentOrientation = orientation;
+          _loadAd();
+        }
+        return Container();
       },
-    ),
-  );
+    );
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _inlineAdaptiveAd?.dispose();
+  }
 
   late Future<TSE> futureTSE;
   bool alreadyRemovedAd = false;
@@ -36,7 +110,7 @@ class _TSEPageState extends State<TSEPage> {
   @override
   void initState() {
     super.initState();
-    myBanner.load();
+    // myBanner.load();
     futureTSE = fetchTSE();
     widget.db.basicDao.getBasicByKey('remove_ad_status').then((value) => {
           if (value != null) {alreadyRemovedAd = value.value == 'true'}
@@ -45,13 +119,6 @@ class _TSEPageState extends State<TSEPage> {
 
   @override
   Widget build(BuildContext context) {
-    final adWidget = AdWidget(ad: myBanner);
-    final adContainer = Container(
-      alignment: Alignment.center,
-      width: myBanner.size.width.toDouble(),
-      height: myBanner.size.height.toDouble(),
-      child: adWidget,
-    );
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: trAppbar(
@@ -86,7 +153,7 @@ class _TSEPageState extends State<TSEPage> {
             }
             return Column(
               children: [
-                _buildAd(adContainer),
+                _buildAd(),
                 Column(
                   // shrinkWrap: true,
                   children: [
@@ -130,7 +197,7 @@ class _TSEPageState extends State<TSEPage> {
     );
   }
 
-  Padding _buildAd(Container adContainer) {
+  Widget _buildAd() {
     if (alreadyRemovedAd) {
       return Padding(
         padding: const EdgeInsets.only(top: 10),
@@ -139,7 +206,7 @@ class _TSEPageState extends State<TSEPage> {
     }
     return Padding(
       padding: const EdgeInsets.only(top: 10),
-      child: adContainer,
+      child: _getAdWidget(),
     );
   }
 }
