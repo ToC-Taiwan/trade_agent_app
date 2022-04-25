@@ -40,13 +40,16 @@ class _IntroPageState extends State<IntroPage> with TickerProviderStateMixin {
           ).then(
             (value) => _lottieAnimation.forward().then(
                   (value) => Navigator.of(context).pushAndRemoveUntil(
-                      MaterialPageRoute(
-                        builder: (context) => MyHomePage(
-                          title: 'Trade Agent V2',
-                          db: widget.db,
-                        ),
+                    PageRouteBuilder(
+                      pageBuilder: (context, animation1, animation2) => MyHomePage(
+                        title: 'TradeAgentV2',
+                        db: widget.db,
                       ),
-                      (route) => false),
+                      transitionDuration: Duration.zero,
+                      reverseTransitionDuration: Duration.zero,
+                    ),
+                    (route) => false,
+                  ),
                 ),
           ),
         );
