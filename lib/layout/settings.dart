@@ -401,8 +401,8 @@ class _SettingsPageState extends State<SettingsPage> {
     }
 
     return ListTile(
-      title: Text(S.of(context).restore_purchase),
-      subtitle: Text(S.of(context).already_purchased),
+      title: Text(S.of(context).already_purchased),
+      // subtitle: Text(S.of(context).already_purchased),
       trailing: TextButton(
         style: TextButton.styleFrom(
           backgroundColor: Colors.green[800],
@@ -411,7 +411,7 @@ class _SettingsPageState extends State<SettingsPage> {
         onPressed: () {
           _inAppPurchase.restorePurchases();
         },
-        child: const Icon(Icons.refresh),
+        child: Text(S.of(context).restore_purchase),
       ),
     );
   }
