@@ -570,10 +570,10 @@ class S {
     );
   }
 
-  /// `Restore Purchase`
+  /// `Restore Purchases`
   String get restore_purchase {
     return Intl.message(
-      'Restore Purchase',
+      'Restore Purchases',
       name: 'restore_purchase',
       desc: '',
       args: [],
