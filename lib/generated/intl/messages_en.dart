@@ -48,6 +48,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Input is empty"),
         "language": MessageLookupByLibrary.simpleMessage("Language"),
         "latest": MessageLookupByLibrary.simpleMessage("Latest"),
+        "loading": MessageLookupByLibrary.simpleMessage("Loading"),
         "low": MessageLookupByLibrary.simpleMessage("Low"),
         "my_web_site": MessageLookupByLibrary.simpleMessage("My Web Site"),
         "no_data": MessageLookupByLibrary.simpleMessage("No Data"),

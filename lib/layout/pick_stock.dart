@@ -2,11 +2,11 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:trade_agent_v2/basic/url.dart';
+import 'package:trade_agent_v2/basic/basic.dart';
 import 'package:trade_agent_v2/database.dart';
 import 'package:trade_agent_v2/generated/l10n.dart';
 import 'package:trade_agent_v2/layout/kbar.dart';
-import 'package:trade_agent_v2/models/pick_stock.dart';
+import 'package:trade_agent_v2/models/model.dart';
 import 'package:trade_agent_v2/utils/app_bar.dart';
 import 'package:web_socket_channel/io.dart';
 

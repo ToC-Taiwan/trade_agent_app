@@ -8,7 +8,7 @@ import 'package:in_app_purchase_storekit/store_kit_wrappers.dart';
 import 'package:trade_agent_v2/database.dart';
 import 'package:trade_agent_v2/generated/l10n.dart';
 import 'package:trade_agent_v2/layout/trade_config.dart';
-import 'package:trade_agent_v2/models/basic.dart';
+import 'package:trade_agent_v2/models/model.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class SettingsPage extends StatefulWidget {

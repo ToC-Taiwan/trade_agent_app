@@ -1,6 +1,6 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:trade_agent_v2/database.dart';
+import 'package:trade_agent_v2/generated/l10n.dart';
 import 'package:trade_agent_v2/homepage.dart';
 
 class IntroPage extends StatefulWidget {
@@ -15,17 +15,29 @@ class _IntroPageState extends State<IntroPage> with TickerProviderStateMixin {
   late AnimationController _lottieAnimation;
 
   bool expanded = false;
-  final double _bigFontSize = kIsWeb ? 234 : 40;
   final transitionDuration = const Duration(seconds: 1);
 
   @override
   void initState() {
     _lottieAnimation = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 800),
+      duration: const Duration(milliseconds: 500),
     );
-    Future.delayed(const Duration(seconds: 1)).then((value) => setState(() => expanded = true)).then((value) => const Duration(seconds: 1)).then(
-          (value) => Future.delayed(const Duration(seconds: 1)).then(
+    Future.delayed(
+      const Duration(seconds: 1),
+    )
+        .then(
+          (value) => setState(() => expanded = true),
+        )
+        .then(
+          (value) => const Duration(seconds: 1),
+        )
+        .then(
+          (value) => Future.delayed(
+            const Duration(
+              seconds: 1,
+            ),
+          ).then(
             (value) => _lottieAnimation.forward().then(
                   (value) => Navigator.of(context).pushAndRemoveUntil(
                       MaterialPageRoute(
@@ -57,26 +69,15 @@ class _IntroPageState extends State<IntroPage> with TickerProviderStateMixin {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
-            AnimatedDefaultTextStyle(
-              duration: transitionDuration,
-              curve: Curves.fastOutSlowIn,
-              style: TextStyle(
-                color: Colors.black,
-                fontSize: !expanded ? _bigFontSize : 40,
-                fontWeight: FontWeight.w600,
-              ),
-              child: const Text(
-                'Trade Agent',
-              ),
+            const CircularProgressIndicator(
+              color: Colors.grey,
             ),
-            AnimatedCrossFade(
-              firstCurve: Curves.fastOutSlowIn,
-              crossFadeState: !expanded ? CrossFadeState.showFirst : CrossFadeState.showSecond,
-              duration: transitionDuration,
-              firstChild: Container(),
-              secondChild: _logoRemainder(),
-              alignment: Alignment.centerLeft,
-              sizeCurve: Curves.easeInOut,
+            const SizedBox(
+              height: 30,
+            ),
+            Text(
+              S.of(context).loading,
+              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.black87),
             ),
             const SizedBox(
               height: 60,
@@ -84,22 +85,6 @@ class _IntroPageState extends State<IntroPage> with TickerProviderStateMixin {
           ],
         ),
       ),
-    );
-  }
-
-  Widget _logoRemainder() {
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: const [
-        Text(
-          'V2',
-          style: TextStyle(
-            color: Colors.red,
-            fontSize: 50,
-            fontWeight: FontWeight.w600,
-          ),
-        ),
-      ],
     );
   }
 }

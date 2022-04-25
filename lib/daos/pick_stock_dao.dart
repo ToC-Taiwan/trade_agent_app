@@ -1,5 +1,5 @@
 import 'package:floor/floor.dart';
-import 'package:trade_agent_v2/models/pick_stock.dart';
+import 'package:trade_agent_v2/models/model.dart';
 
 @dao
 abstract class PickStockDao {

@@ -10,7 +10,7 @@ import 'package:trade_agent_v2/database.dart';
 import 'package:trade_agent_v2/firebase_options.dart';
 import 'package:trade_agent_v2/generated/l10n.dart';
 import 'package:trade_agent_v2/intro.dart';
-import 'package:trade_agent_v2/models/basic.dart';
+import 'package:trade_agent_v2/models/model.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
