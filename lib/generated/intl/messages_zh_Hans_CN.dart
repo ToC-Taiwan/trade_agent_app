@@ -24,7 +24,7 @@ class MessageLookup extends MessageLookupByLibrary {
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
         "about_me": MessageLookupByLibrary.simpleMessage("关于我"),
         "add": MessageLookupByLibrary.simpleMessage("增加"),
-        "already_purchased": MessageLookupByLibrary.simpleMessage("已经购买"),
+        "already_purchased": MessageLookupByLibrary.simpleMessage("已经购买?"),
         "balance": MessageLookupByLibrary.simpleMessage("损益"),
         "cancel": MessageLookupByLibrary.simpleMessage("取消"),
         "change_type": MessageLookupByLibrary.simpleMessage("涨跌"),
@@ -63,6 +63,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "restart_to_apply_changes":
             MessageLookupByLibrary.simpleMessage("重启以套用变更"),
         "restore": MessageLookupByLibrary.simpleMessage("还原"),
+        "restore_purchase": MessageLookupByLibrary.simpleMessage("还原购买"),
         "search": MessageLookupByLibrary.simpleMessage("搜寻"),
         "settings": MessageLookupByLibrary.simpleMessage("设定"),
         "settings_of_notification":
@@ -70,6 +71,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "stock_dose_not_exist": MessageLookupByLibrary.simpleMessage("股票不存在"),
         "stock_number": MessageLookupByLibrary.simpleMessage("股票代号"),
         "strategy": MessageLookupByLibrary.simpleMessage("策略选股"),
+        "success": MessageLookupByLibrary.simpleMessage("成功"),
         "targets": MessageLookupByLibrary.simpleMessage("交易目标"),
         "terms_and_conditions_of_use":
             MessageLookupByLibrary.simpleMessage("使用条款及条件"),

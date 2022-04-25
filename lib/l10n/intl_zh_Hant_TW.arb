@@ -49,6 +49,8 @@
   "product_list_abnormal": "產品清單異常",
   "developing": "開發中",
   "restore": "還原",
-  "already_purchased": "已經購買",
-  "read_only": "唯讀"
+  "already_purchased": "已經購買?",
+  "read_only": "唯讀",
+  "restore_purchase": "還原購買",
+  "success": "成功"
 }

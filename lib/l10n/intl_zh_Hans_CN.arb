@@ -49,6 +49,8 @@
   "product_list_abnormal": "产品清单异常",
   "developing": "开发中",
   "restore": "还原",
-  "already_purchased": "已经购买",
-  "read_only": "唯读"
+  "already_purchased": "已经购买?",
+  "read_only": "唯读",
+  "restore_purchase": "还原购买",
+  "success": "成功"
 }

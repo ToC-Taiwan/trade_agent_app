@@ -550,10 +550,10 @@ class S {
     );
   }
 
-  /// `Already Purchased`
+  /// `Already Purchased?`
   String get already_purchased {
     return Intl.message(
-      'Already Purchased',
+      'Already Purchased?',
       name: 'already_purchased',
       desc: '',
       args: [],
@@ -565,6 +565,26 @@ class S {
     return Intl.message(
       'Read Only',
       name: 'read_only',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Restore Purchase`
+  String get restore_purchase {
+    return Intl.message(
+      'Restore Purchase',
+      name: 'restore_purchase',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Success`
+  String get success {
+    return Intl.message(
+      'Success',
+      name: 'success',
       desc: '',
       args: [],
     );

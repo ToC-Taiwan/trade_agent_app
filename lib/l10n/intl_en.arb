@@ -49,6 +49,8 @@
   "product_list_abnormal": "Product List Abnormal",
   "developing": "Developing",
   "restore": "Restore",
-  "already_purchased": "Already Purchased",
-  "read_only": "Read Only"
+  "already_purchased": "Already Purchased?",
+  "read_only": "Read Only",
+  "restore_purchase": "Restore Purchase",
+  "success": "Success"
 }

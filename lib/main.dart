@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -22,18 +23,25 @@ void main() async {
 
   // adsense
   await MobileAds.instance.initialize();
-  await MobileAds.instance.updateRequestConfiguration(
-    RequestConfiguration(
-      testDeviceIds: ['kGADSimulatorID'],
-    ),
-  );
+  if (kDebugMode) {
+    await MobileAds.instance.updateRequestConfiguration(
+      RequestConfiguration(
+        testDeviceIds: ['kGADSimulatorID'],
+      ),
+    );
+  }
+
+  var latestVersion = '3.1.0';
 
   // initital floor
   // final db = await $FloorAppDatabase.databaseBuilder('app_database_tr.db').addMigrations([migration1to2]).build();
   final db = await $FloorAppDatabase.databaseBuilder('app_database_tr.db').build();
   var version = await db.basicDao.getBasicByKey('version');
   if (version == null) {
-    await db.basicDao.insertBasic(Basic('version', '3.0.0'));
+    await db.basicDao.insertBasic(Basic('version', latestVersion));
+  } else {
+    version.value = latestVersion;
+    await db.basicDao.updateBasic(version);
   }
 
   var dbLanguageSetup = await db.basicDao.getBasicByKey('language_setup');

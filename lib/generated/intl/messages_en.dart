@@ -25,7 +25,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "about_me": MessageLookupByLibrary.simpleMessage("About Me"),
         "add": MessageLookupByLibrary.simpleMessage("Add"),
         "already_purchased":
-            MessageLookupByLibrary.simpleMessage("Already Purchased"),
+            MessageLookupByLibrary.simpleMessage("Already Purchased?"),
         "balance": MessageLookupByLibrary.simpleMessage("Balance"),
         "cancel": MessageLookupByLibrary.simpleMessage("Cancel"),
         "change_type": MessageLookupByLibrary.simpleMessage("Change Type"),
@@ -67,6 +67,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "restart_to_apply_changes":
             MessageLookupByLibrary.simpleMessage("Restart to apply changes"),
         "restore": MessageLookupByLibrary.simpleMessage("Restore"),
+        "restore_purchase":
+            MessageLookupByLibrary.simpleMessage("Restore Purchase"),
         "search": MessageLookupByLibrary.simpleMessage("Search"),
         "settings": MessageLookupByLibrary.simpleMessage("Settings"),
         "settings_of_notification":
@@ -75,6 +77,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Stock dose not exist"),
         "stock_number": MessageLookupByLibrary.simpleMessage("Stock Number"),
         "strategy": MessageLookupByLibrary.simpleMessage("Strategy"),
+        "success": MessageLookupByLibrary.simpleMessage("Success"),
         "targets": MessageLookupByLibrary.simpleMessage("Targets"),
         "terms_and_conditions_of_use":
             MessageLookupByLibrary.simpleMessage("Terms and Conditions of Use"),
