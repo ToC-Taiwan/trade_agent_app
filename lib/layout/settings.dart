@@ -411,7 +411,7 @@ class _SettingsPageState extends State<SettingsPage> {
         onPressed: () {
           _inAppPurchase.restorePurchases();
         },
-        child: Text(S.of(context).restore_purchase),
+        child: Text(S.of(context).restore),
       ),
     );
   }
