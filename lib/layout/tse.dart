@@ -6,9 +6,13 @@ import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:http/http.dart' as http;
 import 'package:trade_agent_v2/basic/ad_id.dart';
 import 'package:trade_agent_v2/basic/url.dart';
+import 'package:trade_agent_v2/database.dart';
+import 'package:trade_agent_v2/generated/l10n.dart';
+import 'package:trade_agent_v2/utils/app_bar.dart';
 
 class TSEPage extends StatefulWidget {
-  const TSEPage({Key? key}) : super(key: key);
+  const TSEPage({Key? key, required this.db}) : super(key: key);
+  final AppDatabase db;
 
   @override
   State<TSEPage> createState() => _TSEPageState();
@@ -28,12 +32,16 @@ class _TSEPageState extends State<TSEPage> {
   );
 
   late Future<TSE> futureTSE;
+  bool alreadyRemovedAd = false;
 
   @override
   void initState() {
     super.initState();
     myBanner.load();
     futureTSE = fetchTSE();
+    widget.db.basicDao.getBasicByKey('remove_ad_status').then((value) => {
+          if (value != null) {alreadyRemovedAd = value.value == 'true'}
+        });
   }
 
   @override
@@ -45,62 +53,94 @@ class _TSEPageState extends State<TSEPage> {
       height: myBanner.size.height.toDouble(),
       child: adWidget,
     );
-    return FutureBuilder<TSE>(
-      future: futureTSE,
-      builder: (context, snapshot) {
-        if (snapshot.hasData) {
-          var data = snapshot.data!;
-          var widgetArr = <Widget>[];
-          if (data.tickTime.toString().length > 10) {
-            widgetArr.add(generateRow('Date', data.tickTime.toString().substring(0, 10), Colors.black));
-          } else {
-            return const Text(
-              'Loading...',
-              style: TextStyle(
-                fontSize: 30,
-              ),
-              textAlign: TextAlign.center,
+    return Scaffold(
+      backgroundColor: Colors.white,
+      appBar: trAppbar(
+        context,
+        S.of(context).tse,
+        widget.db,
+      ),
+      body: FutureBuilder<TSE>(
+        future: futureTSE,
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            var data = snapshot.data!;
+            if (data.tickTime.toString().length < 10) {
+              return Center(
+                child: Text(
+                  S.of(context).no_data,
+                  style: const TextStyle(
+                    fontSize: 30,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+              );
+            }
+            String type;
+            Color tmp;
+            if (data.chgType.toString() == 'Down') {
+              tmp = Colors.green;
+              type = '↘️';
+            } else {
+              tmp = Colors.red;
+              type = '↗️';
+            }
+            return Column(
+              children: [
+                _buildAd(adContainer),
+                Column(
+                  // shrinkWrap: true,
+                  children: [
+                    generateRow(S.of(context).date, data.tickTime.toString().substring(0, 10), Colors.black),
+                    generateRow(S.of(context).open, commaNumber(data.open.toString()), Colors.black),
+                    generateRow(S.of(context).close, commaNumber(data.close.toString()), tmp),
+                    const Divider(
+                      color: Colors.black,
+                    ),
+                    generateRow(S.of(context).high, commaNumber(data.high.toString()), Colors.black),
+                    generateRow(S.of(context).low, commaNumber(data.low.toString()), Colors.black),
+                    const Divider(
+                      color: Colors.black,
+                    ),
+                    generateRow(S.of(context).change_type, type, tmp),
+                    generateRow(S.of(context).percent_change, '${data.pctChg}%', tmp),
+                    generateRow(S.of(context).price_change, commaNumber(data.priceChg.toString()), tmp),
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    ElevatedButton(
+                      onPressed: () {
+                        setState(() {
+                          futureTSE = fetchTSE();
+                        });
+                      },
+                      child: const Icon(Icons.refresh),
+                    ),
+                  ],
+                ),
+              ],
             );
           }
-          String type;
-          Color tmp;
-          if (data.chgType.toString() == 'Down') {
-            tmp = Colors.green;
-            type = '↘️';
-          } else {
-            tmp = Colors.red;
-            type = '↗️';
-          }
-          widgetArr.add(generateRow('Close', commaNumber(data.close.toString()), Colors.black));
-          widgetArr.add(SizedBox(
-            height: 40,
-          ));
-          // widgetArr.add(generateRow('Volume', commaNumber(data.volume.toString()), Colors.black));
-          widgetArr.add(generateRow('Open', commaNumber(data.open.toString()), Colors.black));
-          widgetArr.add(generateRow('High', commaNumber(data.high.toString()), Colors.black));
-          widgetArr.add(generateRow('Low', commaNumber(data.low.toString()), Colors.black));
-          widgetArr.add(SizedBox(
-            height: 40,
-          ));
-          // widgetArr.add(generateRow('Yesterday Volume', commaNumber(data.yesterdayVolume.toString())));
-          widgetArr.add(generateRow('Change Type', type, tmp));
-          widgetArr.add(generateRow('Percent Change', data.pctChg.toString(), tmp));
-          widgetArr.add(generateRow('Price Change', commaNumber(data.priceChg.toString()), tmp));
-          return Column(
-            children: [
-              const SizedBox(
-                height: 10,
-              ),
-              adContainer,
-              ListView(
-                shrinkWrap: true,
-                children: widgetArr,
-              ),
-            ],
+          return const Center(
+            child: CircularProgressIndicator(
+              color: Colors.black,
+            ),
           );
-        }
-        return const CircularProgressIndicator();
-      },
+        },
+      ),
+    );
+  }
+
+  Padding _buildAd(Container adContainer) {
+    if (alreadyRemovedAd) {
+      return Padding(
+        padding: const EdgeInsets.only(top: 10),
+        child: Container(),
+      );
+    }
+    return Padding(
+      padding: const EdgeInsets.only(top: 10),
+      child: adContainer,
     );
   }
 }
@@ -118,7 +158,7 @@ Widget generateRow(String columnName, String value, Color textColor) {
   return SizedBox(
     height: 50,
     child: Padding(
-      padding: const EdgeInsets.only(left: 20, top: 20),
+      padding: const EdgeInsets.only(left: 20),
       child: Flex(
         direction: Axis.horizontal,
         children: [
@@ -145,10 +185,14 @@ Widget generateRow(String columnName, String value, Color textColor) {
 }
 
 Future<TSE> fetchTSE() async {
-  final response = await http.get(Uri.parse('$tradeAgentURLPrefix/tse/real-time'));
-  if (response.statusCode == 200) {
-    return TSE.fromJson(jsonDecode(response.body));
-  } else {
+  try {
+    final response = await http.get(Uri.parse('$tradeAgentURLPrefix/tse/real-time'));
+    if (response.statusCode == 200) {
+      return TSE.fromJson(jsonDecode(response.body));
+    } else {
+      return TSE();
+    }
+  } catch (e) {
     return TSE();
   }
 }

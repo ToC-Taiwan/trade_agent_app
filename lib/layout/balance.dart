@@ -4,9 +4,13 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:trade_agent_v2/basic/url.dart';
+import 'package:trade_agent_v2/database.dart';
+import 'package:trade_agent_v2/generated/l10n.dart';
+import 'package:trade_agent_v2/utils/app_bar.dart';
 
 class BalancePage extends StatefulWidget {
-  const BalancePage({Key? key}) : super(key: key);
+  const BalancePage({Key? key, required this.db}) : super(key: key);
+  final AppDatabase db;
 
   @override
   State<BalancePage> createState() => _BalancePageState();
@@ -23,112 +27,148 @@ class _BalancePageState extends State<BalancePage> {
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<List<Balance>>(
-      future: futureBalance,
-      builder: (context, snapshot) {
-        if (snapshot.hasData) {
-          var dataArr = <Balance>[];
-          List<Widget> rows = [];
-          dataArr = snapshot.data!;
-          num total = 0;
-          num lastTotal = 0;
-          dataArr.asMap().forEach((i, value) {
-            rows.add(generateBalanceRow(value));
-            total += value.total!;
-            if (i == dataArr.length - 1) {
-              lastTotal = value.total!;
-            }
-          });
-          return Column(
-            children: [
-              Expanded(
-                flex: 3,
-                child: ListView(
-                  shrinkWrap: true,
-                  children: [
-                    const SizedBox(
-                      child: Padding(
-                        padding: EdgeInsets.only(top: 30),
-                        child: Center(
-                          child: Text(
-                            'Latest',
-                            style: TextStyle(fontSize: 30),
-                          ),
-                        ),
-                      ),
-                    ),
-                    SizedBox(
-                      child: Padding(
-                        padding: const EdgeInsets.only(top: 30),
-                        child: Center(
-                          child: Text(
-                            commaNumber(lastTotal.toString()),
-                            style: const TextStyle(fontSize: 60),
-                          ),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(
-                      child: Padding(
-                        padding: EdgeInsets.only(top: 30),
-                        child: Center(
-                          child: Text(
-                            'Total',
-                            style: TextStyle(fontSize: 30),
-                          ),
-                        ),
-                      ),
-                    ),
-                    SizedBox(
-                      child: Padding(
-                        padding: const EdgeInsets.only(top: 30),
-                        child: Center(
-                          child: Text(
-                            commaNumber(total.toString()),
-                            style: const TextStyle(fontSize: 60),
-                          ),
-                        ),
-                      ),
-                    )
-                  ],
+    return Scaffold(
+      backgroundColor: Colors.white,
+      appBar: trAppbar(
+        context,
+        S.of(context).balance,
+        widget.db,
+      ),
+      body: FutureBuilder<List<Balance>>(
+        future: futureBalance,
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            if (snapshot.data!.isEmpty) {
+              return Center(
+                child: Text(
+                  S.of(context).no_data,
+                  style: const TextStyle(
+                    fontSize: 30,
+                  ),
                 ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(top: 18, left: 20),
-                child: Row(
-                  children: const [
-                    Expanded(
-                        flex: 2,
-                        child: Text(
-                          'Date',
-                          style: TextStyle(fontWeight: FontWeight.bold),
-                        )),
-                    Expanded(
-                        child: Text(
-                      'C',
-                    )),
-                    Expanded(child: Text('O')),
-                    Expanded(child: Text('D')),
-                    Expanded(
-                        child: Text(
-                      'Total',
-                    )),
-                  ],
+              );
+            }
+            var dataArr = <Balance>[];
+            var rows = <Widget>[];
+            dataArr = snapshot.data!;
+            num total = 0;
+            num lastTotal = 0;
+            var latestColor = Colors.black;
+            var totalColor = Colors.black;
+            dataArr.asMap().forEach((i, value) {
+              rows.add(generateBalanceRow(value));
+              total += value.total!;
+              if (i == dataArr.length - 1) {
+                lastTotal = value.total!;
+                if (lastTotal < 0) {
+                  latestColor = Colors.green;
+                } else {
+                  latestColor = Colors.red;
+                }
+              }
+            });
+            if (total < 0) {
+              totalColor = Colors.green;
+            } else {
+              totalColor = Colors.red;
+            }
+            var reverse = dataArr.reversed.toList();
+            return Column(children: [
+              Expanded(
+                flex: 14,
+                child: ListView.separated(
+                  separatorBuilder: (context, index) => const Divider(
+                    height: 0,
+                    color: Colors.grey,
+                  ),
+                  itemCount: reverse.length,
+                  itemBuilder: (context, index) {
+                    Color balance;
+                    if (reverse[index].total! < 0) {
+                      balance = Colors.green;
+                    } else {
+                      balance = Colors.red;
+                    }
+                    return ListTile(
+                      // onTap: () {},
+                      leading: Icon(Icons.account_balance_wallet, color: balance),
+                      title: Text(reverse[index].tradeDay!.substring(0, 10)),
+                      subtitle: Text('${S.of(context).trade_count}: ${reverse[index].tradeCount}'),
+                      trailing: Text(
+                        commaNumber(reverse[index].total.toString()),
+                        style: TextStyle(
+                          fontSize: 18,
+                          color: balance,
+                        ),
+                      ),
+                    );
+                  },
                 ),
               ),
               Expanded(
                 flex: 2,
-                child: ListView(
-                  children: rows.reversed.toList(),
+                child: Row(
+                  children: [
+                    Expanded(
+                      flex: 4,
+                      child: ListTile(
+                        title: Text(
+                          S.of(context).latest,
+                          style: const TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                        subtitle: SizedBox(
+                          child: Text(
+                            commaNumber(lastTotal.toString()),
+                            style: TextStyle(fontSize: 22, color: latestColor),
+                          ),
+                        ),
+                      ),
+                    ),
+                    Expanded(
+                      flex: 4,
+                      child: ListTile(
+                        title: Text(
+                          S.of(context).total,
+                          style: const TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                        subtitle: SizedBox(
+                          child: Text(
+                            commaNumber(total.toString()),
+                            style: TextStyle(fontSize: 22, color: totalColor),
+                          ),
+                        ),
+                      ),
+                    ),
+                    Expanded(
+                      flex: 2,
+                      child: Padding(
+                        padding: const EdgeInsets.only(right: 26),
+                        child: IconButton(
+                          padding: EdgeInsets.zero,
+                          onPressed: () {
+                            setState(() {
+                              futureBalance = fetchBalance();
+                            });
+                          },
+                          icon: const Icon(
+                            Icons.refresh,
+                            size: 28,
+                          ),
+                          color: Colors.blue,
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
-              ),
-            ],
-          );
-        } else if (snapshot.hasError) {
-          return Text('${snapshot.error}');
-        }
-        return const CircularProgressIndicator();
-      },
+              )
+            ]);
+          }
+          return const Center(
+              child: CircularProgressIndicator(
+            color: Colors.black,
+          ));
+        },
+      ),
     );
   }
 }
@@ -144,13 +184,17 @@ String mathFunc(Match match) {
 
 Future<List<Balance>> fetchBalance() async {
   var balanceArr = <Balance>[];
-  final response = await http.get(Uri.parse('$tradeAgentURLPrefix/balance'));
-  if (response.statusCode == 200) {
-    for (final Map<String, dynamic> i in jsonDecode(response.body)) {
-      balanceArr.add(Balance.fromJson(i));
+  try {
+    final response = await http.get(Uri.parse('$tradeAgentURLPrefix/balance'));
+    if (response.statusCode == 200) {
+      for (final Map<String, dynamic> i in jsonDecode(response.body)) {
+        balanceArr.add(Balance.fromJson(i));
+      }
+      return balanceArr;
+    } else {
+      return balanceArr;
     }
-    return balanceArr;
-  } else {
+  } catch (e) {
     return balanceArr;
   }
 }
@@ -167,22 +211,34 @@ Widget generateBalanceRow(Balance balance) {
     child: Row(
       children: [
         Expanded(
-            flex: 2,
+            flex: 4,
             child: Text(
               balance.tradeDay!.substring(0, 10),
-              style: TextStyle(fontWeight: FontWeight.bold),
+              style: const TextStyle(fontWeight: FontWeight.bold),
             )),
         Expanded(
+            flex: 2,
             child: Text(
-          balance.tradeCount!.toString(),
-        )),
-        Expanded(child: Text(balance.originalBalance!.toString())),
-        Expanded(child: Text(balance.discount!.toString())),
+              balance.tradeCount!.toString(),
+            )),
         Expanded(
+          flex: 3,
+          child: Text(
+            balance.originalBalance!.toString(),
+          ),
+        ),
+        Expanded(
+          flex: 2,
+          child: Text(
+            balance.discount!.toString(),
+          ),
+        ),
+        Expanded(
+            flex: 3,
             child: Text(
-          balance.total!.toString(),
-          style: TextStyle(color: tmp),
-        )),
+              balance.total!.toString(),
+              style: TextStyle(color: tmp),
+            )),
       ],
     ),
   );

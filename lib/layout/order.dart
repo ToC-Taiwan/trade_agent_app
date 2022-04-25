@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:trade_agent_v2/basic/url.dart';
+import 'package:trade_agent_v2/generated/l10n.dart';
 
 class OrderPage extends StatefulWidget {
   const OrderPage({Key? key}) : super(key: key);
@@ -34,9 +35,9 @@ class _OrderPageState extends State<OrderPage> {
               widgetArr.add(generateRow(i));
             }
             if (widgetArr.isEmpty) {
-              return const Text(
-                'Loading...',
-                style: TextStyle(
+              return Text(
+                S.of(context).no_data,
+                style: const TextStyle(
                   fontSize: 30,
                 ),
                 textAlign: TextAlign.center,
@@ -44,7 +45,10 @@ class _OrderPageState extends State<OrderPage> {
             }
             return ListView(children: widgetArr);
           }
-          return const CircularProgressIndicator();
+          return const Center(
+              child: CircularProgressIndicator(
+            color: Colors.black,
+          ));
         },
       ),
     );
