@@ -49,6 +49,9 @@ fi
 git diff-index --check --cached $against --
 
 # Trade Agent App Hook
-./scripts/add_build.sh
+if ! ./scripts/add_build.sh
+then
+  exit 1
+fi
 git add ./pubspec.yaml
 exit 0
