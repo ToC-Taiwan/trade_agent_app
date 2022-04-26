@@ -109,9 +109,11 @@ packages:
   candlesticks:
     dependency: "direct main"
     description:
-      name: candlesticks
-      url: "https://pub.dartlang.org"
-    source: hosted
+      path: "."
+      ref: master
+      resolved-ref: "81f5fb749a6fe2a4af9153a3579ac574043b5a9a"
+      url: "https://github.com/Chindada/candlesticks.git"
+    source: git
     version: "2.1.0"
   characters:
     dependency: transitive
@@ -224,7 +226,7 @@ packages:
       name: firebase_core
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.14.1"
+    version: "1.15.0"
   firebase_core_platform_interface:
     dependency: transitive
     description:
@@ -676,7 +678,7 @@ packages:
       name: url_launcher
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "6.0.20"
+    version: "6.1.0"
   url_launcher_android:
     dependency: transitive
     description:
