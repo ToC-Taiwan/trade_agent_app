@@ -2,7 +2,7 @@ name: trade_agent_v2
 description: Status of trade agent, let user query analyzed stocks.
 
 publish_to: 'none'
-version: 3.1.4+38017
+version: 3.1.4+38018
 
 environment:
   sdk: ">=2.16.2 <3.0.0"
@@ -20,7 +20,10 @@ dependencies:
   floor: ^1.2.0
   firebase_core: ^1.15.0
   table_calendar: ^3.0.5
-  candlesticks: ^2.1.0
+  candlesticks:
+    git:
+      url: https://github.com/Chindada/candlesticks.git
+      ref: master
   in_app_purchase: ^3.0.2
 
 dev_dependencies:

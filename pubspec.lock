@@ -109,9 +109,11 @@ packages:
   candlesticks:
     dependency: "direct main"
     description:
-      name: candlesticks
-      url: "https://pub.dartlang.org"
-    source: hosted
+      path: "."
+      ref: master
+      resolved-ref: "887930ca331fcf8efe6a1ea7a61053e55093d4f9"
+      url: "https://github.com/Chindada/candlesticks.git"
+    source: git
     version: "2.1.0"
   characters:
     dependency: transitive
