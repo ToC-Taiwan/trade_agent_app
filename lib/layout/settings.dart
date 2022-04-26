@@ -415,7 +415,13 @@ class _SettingsPageState extends State<SettingsPage> {
   Future<void> deliverProduct(PurchaseDetails purchaseDetails) async {
     // IMPORTANT!! Always verify purchase details before delivering the product.
     if (purchaseDetails.productID == _kUpgradeId) {
-      await widget.db.basicDao.insertBasic(Basic('remove_ad_status', 'true'));
+      var dbRemoveAdStatus = await widget.db.basicDao.getBasicByKey('remove_ad_status');
+      if (dbRemoveAdStatus != null) {
+        dbRemoveAdStatus.value = 'true';
+        await widget.db.basicDao.updateBasic(dbRemoveAdStatus);
+      } else {
+        await widget.db.basicDao.insertBasic(Basic('remove_ad_status', 'true'));
+      }
     }
     setState(() {
       _purchases.add(purchaseDetails);
