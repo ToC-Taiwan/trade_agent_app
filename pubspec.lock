@@ -111,7 +111,7 @@ packages:
     description:
       path: "."
       ref: master
-      resolved-ref: "887930ca331fcf8efe6a1ea7a61053e55093d4f9"
+      resolved-ref: "81f5fb749a6fe2a4af9153a3579ac574043b5a9a"
       url: "https://github.com/Chindada/candlesticks.git"
     source: git
     version: "2.1.0"
