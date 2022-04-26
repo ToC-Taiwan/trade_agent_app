@@ -32,12 +32,8 @@ class _SettingsPageState extends State<SettingsPage> {
   bool languageChanged = false;
   bool alreadyRemovedAd = false;
 
-  void _launchInWebViewOrVC(String url) async {
-    await launch(
-      url,
-      forceSafariVC: true,
-      forceWebView: true,
-    );
+  void _launchInWebViewOrVC(Uri url) async {
+    await launchUrl(url, mode: LaunchMode.inAppWebView);
   }
 
   final InAppPurchase _inAppPurchase = InAppPurchase.instance;
@@ -322,7 +318,7 @@ class _SettingsPageState extends State<SettingsPage> {
               title: Text(S.of(context).about_me),
               // trailing: const Icon(Icons.keyboard_arrow_right),
               onTap: () {
-                _launchInWebViewOrVC('https://blog.tocandraw.com/');
+                _launchInWebViewOrVC(Uri(scheme: 'https', path: 'blog.tocandraw.com'));
               },
             ),
           ],
