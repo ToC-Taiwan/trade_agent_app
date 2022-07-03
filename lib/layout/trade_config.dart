@@ -44,7 +44,7 @@ class _TradeConfigPageState extends State<TradeConfigPage> {
           builder: (context, snapshot) {
             if (snapshot.hasData) {
               var data = snapshot.data!;
-              if (data.server == null) {
+              if (data.http == null) {
                 return Text(
                   S.of(context).no_data,
                   style: const TextStyle(
@@ -61,110 +61,61 @@ class _TradeConfigPageState extends State<TradeConfigPage> {
                   ExpansionTile(
                     leading: const Icon(Icons.computer, color: Colors.black),
                     title: const Text(
-                      'Server',
+                      'HTTP',
                       style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
                     ),
                     children: [
                       Padding(
                         padding: const EdgeInsets.only(left: 10, right: 10),
                         child: ListTile(
-                          title: const Text('Run Mode'),
-                          trailing: Text(data.server!.runMode!),
+                          title: const Text('Port'),
+                          trailing: Text(data.http!.port!),
                         ),
                       ),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 10, right: 10),
-                        child: ListTile(
-                          title: const Text('HTTP Port'),
-                          trailing: Text(data.server!.httpPort!),
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 10, right: 10),
-                        child: ListTile(
-                          title: const Text('Sinopac MQ SRV Host'),
-                          trailing: Text(data.server!.sinopacSrvHost!),
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 10, right: 10),
-                        child: ListTile(
-                          title: const Text('Sinopac MQ SRV Port'),
-                          trailing: Text(data.server!.sinopacSrvPort!),
-                        ),
-                      )
                     ],
                   ),
                   ExpansionTile(
                     leading: const Icon(Icons.document_scanner, color: Colors.black),
                     title: const Text(
-                      'Database',
+                      'Postgres',
                       style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
                     ),
                     children: [
                       Padding(
                         padding: const EdgeInsets.only(left: 10, right: 10),
                         child: ListTile(
-                          title: const Text('Host'),
-                          trailing: Text(data.database!.host!),
+                          title: const Text('Pool Max'),
+                          trailing: Text(data.postgres!.poolMax!.toString()),
                         ),
                       ),
                       Padding(
                         padding: const EdgeInsets.only(left: 10, right: 10),
                         child: ListTile(
-                          title: const Text('Port'),
-                          trailing: Text(data.database!.port!),
+                          title: const Text('DB Name'),
+                          trailing: Text(data.postgres!.dbName!),
                         ),
                       ),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 10, right: 10),
-                        child: ListTile(
-                          title: const Text('User'),
-                          trailing: Text(data.database!.user!),
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 10, right: 10),
-                        child: ListTile(
-                          title: const Text('Database'),
-                          trailing: Text(data.database!.database!),
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 10, right: 10),
-                        child: ListTile(
-                          title: const Text('Time Zone'),
-                          trailing: Text(data.database!.timeZone!),
-                        ),
-                      )
                     ],
                   ),
                   ExpansionTile(
                     leading: const Icon(Icons.radio, color: Colors.black),
                     title: const Text(
-                      'MQTT',
+                      'Sinopac',
                       style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
                     ),
                     children: [
                       Padding(
                         padding: const EdgeInsets.only(left: 10, right: 10),
                         child: ListTile(
-                          title: const Text('Host'),
-                          trailing: Text(data.mqtt!.host!),
+                          title: const Text('Pool Max'),
+                          trailing: Text(data.sinopac!.poolMax!.toString()),
                         ),
                       ),
                       Padding(
                         padding: const EdgeInsets.only(left: 10, right: 10),
                         child: ListTile(
-                          title: const Text('Port'),
-                          trailing: Text(data.mqtt!.port!),
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 10, right: 10),
-                        child: ListTile(
-                          title: const Text('User'),
-                          trailing: Text(data.mqtt!.user!),
+                          title: const Text('URL'),
+                          trailing: Text(data.sinopac!.url!),
                         ),
                       ),
                     ],
@@ -239,12 +190,54 @@ class _TradeConfigPageState extends State<TradeConfigPage> {
                           trailing: Text(data.tradeSwitch!.reverseMax!.toString()),
                         ),
                       ),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 10, right: 10),
+                        child: ListTile(
+                          title: const Text('Hold Time From Open'),
+                          trailing: Text(data.tradeSwitch!.holdTimeFromOpen!.toString()),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 10, right: 10),
+                        child: ListTile(
+                          title: const Text('Total Open Time'),
+                          trailing: Text(data.tradeSwitch!.totalOpenTime!.toString()),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 10, right: 10),
+                        child: ListTile(
+                          title: const Text('Trade IN Wait Time'),
+                          trailing: Text(data.tradeSwitch!.tradeInWaitTime!.toString()),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 10, right: 10),
+                        child: ListTile(
+                          title: const Text('Trade OUT Wait Time'),
+                          trailing: Text(data.tradeSwitch!.tradeOutWaitTime!.toString()),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 10, right: 10),
+                        child: ListTile(
+                          title: const Text('Trade IN End Time'),
+                          trailing: Text(data.tradeSwitch!.tradeInEndTime!.toString()),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 10, right: 10),
+                        child: ListTile(
+                          title: const Text('Trade OUT Wait Time'),
+                          trailing: Text(data.tradeSwitch!.tradeOutEndTime!.toString()),
+                        ),
+                      ),
                     ],
                   ),
                   ExpansionTile(
                     leading: const Icon(Icons.currency_exchange, color: Colors.black),
                     title: const Text(
-                      'Trade',
+                      'History',
                       style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
                     ),
                     children: [
@@ -252,63 +245,21 @@ class _TradeConfigPageState extends State<TradeConfigPage> {
                         padding: const EdgeInsets.only(left: 10, right: 10),
                         child: ListTile(
                           title: const Text('History Close Period'),
-                          trailing: Text(data.trade!.historyClosePeriod!.toString()),
+                          trailing: Text(data.history!.historyClosePeriod!.toString()),
                         ),
                       ),
                       Padding(
                         padding: const EdgeInsets.only(left: 10, right: 10),
                         child: ListTile(
                           title: const Text('History Tick Period'),
-                          trailing: Text(data.trade!.historyTickPeriod!.toString()),
+                          trailing: Text(data.history!.historyTickPeriod!.toString()),
                         ),
                       ),
                       Padding(
                         padding: const EdgeInsets.only(left: 10, right: 10),
                         child: ListTile(
                           title: const Text('History Kbar Period'),
-                          trailing: Text(data.trade!.historyKbarPeriod!.toString()),
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 10, right: 10),
-                        child: ListTile(
-                          title: const Text('Hold Time From Open'),
-                          trailing: Text(data.trade!.holdTimeFromOpen!.toString()),
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 10, right: 10),
-                        child: ListTile(
-                          title: const Text('Total Open Time'),
-                          trailing: Text(data.trade!.totalOpenTime!.toString()),
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 10, right: 10),
-                        child: ListTile(
-                          title: const Text('Trade IN Wait Time'),
-                          trailing: Text(data.trade!.tradeInWaitTime!.toString()),
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 10, right: 10),
-                        child: ListTile(
-                          title: const Text('Trade OUT Wait Time'),
-                          trailing: Text(data.trade!.tradeOutWaitTime!.toString()),
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 10, right: 10),
-                        child: ListTile(
-                          title: const Text('Trade IN End Time'),
-                          trailing: Text(data.trade!.tradeInEndTime!.toString()),
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 10, right: 10),
-                        child: ListTile(
-                          title: const Text('Trade OUT Wait Time'),
-                          trailing: Text(data.trade!.tradeOutEndTime!.toString()),
+                          trailing: Text(data.history!.historyKbarPeriod!.toString()),
                         ),
                       ),
                     ],
@@ -366,7 +317,7 @@ class _TradeConfigPageState extends State<TradeConfigPage> {
 
 Future<Config> fetchConfig() async {
   try {
-    final response = await http.get(Uri.parse('$tradeAgentURLPrefix/config'));
+    final response = await http.get(Uri.parse('$tradeAgentURLPrefix/basic/config'));
     if (response.statusCode == 200) {
       return Config.fromJson(jsonDecode(response.body));
     } else {
@@ -378,159 +329,181 @@ Future<Config> fetchConfig() async {
 }
 
 class Config {
-  Config({this.server, this.database, this.mqtt, this.tradeSwitch, this.trade, this.quota, this.targetCond, this.analyze, this.schedule});
+  Config({
+    this.http,
+    this.postgres,
+    this.sinopac,
+    this.rabbitmq,
+    this.tradeSwitch,
+    this.history,
+    this.quota,
+    this.targetCond,
+    this.analyze,
+    this.deployment,
+  });
 
   Config.fromJson(Map<String, dynamic> json) {
-    server = json['server'] != null ? Server.fromJson(json['server']) : null;
-    database = json['database'] != null ? Database.fromJson(json['database']) : null;
-    mqtt = json['mqtt'] != null ? Mqtt.fromJson(json['mqtt']) : null;
+    http = json['http'] != null ? Http.fromJson(json['http']) : null;
+    postgres = json['postgres'] != null ? Postgres.fromJson(json['postgres']) : null;
+    sinopac = json['sinopac'] != null ? Sinopac.fromJson(json['sinopac']) : null;
+    rabbitmq = json['rabbitmq'] != null ? Rabbitmq.fromJson(json['rabbitmq']) : null;
     tradeSwitch = json['trade_switch'] != null ? TradeSwitch.fromJson(json['trade_switch']) : null;
-    trade = json['trade'] != null ? Trade.fromJson(json['trade']) : null;
+    history = json['history'] != null ? History.fromJson(json['history']) : null;
     quota = json['quota'] != null ? Quota.fromJson(json['quota']) : null;
-    targetCond = json['target_cond'] != null ? TargetCond.fromJson(json['target_cond']) : null;
+    if (json['target_cond'] != null) {
+      targetCond = <TargetCond>[];
+      json['target_cond'].forEach((v) {
+        targetCond!.add(TargetCond.fromJson(v));
+      });
+    }
     analyze = json['analyze'] != null ? Analyze.fromJson(json['analyze']) : null;
-    schedule = json['schedule'] != null ? Schedule.fromJson(json['schedule']) : null;
+    deployment = json['deployment'];
   }
 
   Map<String, dynamic> toJson() {
-    var data = <String, dynamic>{};
-    if (server != null) {
-      data['server'] = server!.toJson();
+    final data = <String, dynamic>{};
+    if (http != null) {
+      data['http'] = http!.toJson();
     }
-    if (database != null) {
-      data['database'] = database!.toJson();
+    if (postgres != null) {
+      data['postgres'] = postgres!.toJson();
     }
-    if (mqtt != null) {
-      data['mqtt'] = mqtt!.toJson();
+    if (sinopac != null) {
+      data['sinopac'] = sinopac!.toJson();
+    }
+    if (rabbitmq != null) {
+      data['rabbitmq'] = rabbitmq!.toJson();
     }
     if (tradeSwitch != null) {
       data['trade_switch'] = tradeSwitch!.toJson();
     }
-    if (trade != null) {
-      data['trade'] = trade!.toJson();
+    if (history != null) {
+      data['history'] = history!.toJson();
     }
     if (quota != null) {
       data['quota'] = quota!.toJson();
     }
     if (targetCond != null) {
-      data['target_cond'] = targetCond!.toJson();
+      data['target_cond'] = targetCond!.map((v) => v.toJson()).toList();
     }
     if (analyze != null) {
       data['analyze'] = analyze!.toJson();
     }
-    if (schedule != null) {
-      data['schedule'] = schedule!.toJson();
-    }
+    data['deployment'] = deployment;
     return data;
   }
 
-  Server? server;
-  Database? database;
-  Mqtt? mqtt;
+  Http? http;
+  Postgres? postgres;
+  Sinopac? sinopac;
+  Rabbitmq? rabbitmq;
   TradeSwitch? tradeSwitch;
-  Trade? trade;
+  History? history;
   Quota? quota;
-  TargetCond? targetCond;
+  List<TargetCond>? targetCond;
   Analyze? analyze;
-  Schedule? schedule;
+  String? deployment;
 }
 
-class Server {
-  Server({this.runMode, this.httpPort, this.sinopacSrvHost, this.sinopacSrvPort});
+class Http {
+  Http({this.port});
 
-  Server.fromJson(Map<String, dynamic> json) {
-    runMode = json['run_mode'];
-    httpPort = json['http_port'];
-    sinopacSrvHost = json['sinopac_srv_host'];
-    sinopacSrvPort = json['sinopac_srv_port'];
-  }
-
-  Map<String, dynamic> toJson() {
-    var data = <String, dynamic>{};
-    data['run_mode'] = runMode;
-    data['http_port'] = httpPort;
-    data['sinopac_srv_host'] = sinopacSrvHost;
-    data['sinopac_srv_port'] = sinopacSrvPort;
-    return data;
-  }
-
-  String? runMode;
-  String? httpPort;
-  String? sinopacSrvHost;
-  String? sinopacSrvPort;
-}
-
-class Database {
-  Database({this.host, this.port, this.user, this.passwd, this.database, this.timeZone});
-
-  Database.fromJson(Map<String, dynamic> json) {
-    host = json['host'];
+  Http.fromJson(Map<String, dynamic> json) {
     port = json['port'];
-    user = json['user'];
-    passwd = json['passwd'];
-    database = json['database'];
-    timeZone = json['time_zone'];
   }
 
   Map<String, dynamic> toJson() {
-    var data = <String, dynamic>{};
-    data['host'] = host;
+    final data = <String, dynamic>{};
     data['port'] = port;
-    data['user'] = user;
-    data['passwd'] = passwd;
-    data['database'] = database;
-    data['time_zone'] = timeZone;
     return data;
   }
 
-  String? host;
   String? port;
-  String? user;
-  String? passwd;
-  String? database;
-  String? timeZone;
 }
 
-class Mqtt {
-  Mqtt({this.host, this.port, this.user, this.passwd, this.clientId, this.caPath, this.certPath, this.keyPath});
+class Postgres {
+  Postgres({this.poolMax, this.url, this.dbName});
 
-  Mqtt.fromJson(Map<String, dynamic> json) {
-    host = json['host'];
-    port = json['port'];
-    user = json['user'];
-    passwd = json['passwd'];
-    clientId = json['client_id'];
-    caPath = json['ca_path'];
-    certPath = json['cert_path'];
-    keyPath = json['key_path'];
+  Postgres.fromJson(Map<String, dynamic> json) {
+    poolMax = json['pool_max'];
+    url = json['url'];
+    dbName = json['db_name'];
   }
 
   Map<String, dynamic> toJson() {
-    var data = <String, dynamic>{};
-    data['host'] = host;
-    data['port'] = port;
-    data['user'] = user;
-    data['passwd'] = passwd;
-    data['client_id'] = clientId;
-    data['ca_path'] = caPath;
-    data['cert_path'] = certPath;
-    data['key_path'] = keyPath;
+    final data = <String, dynamic>{};
+    data['pool_max'] = poolMax;
+    data['url'] = url;
+    data['db_name'] = dbName;
     return data;
   }
 
-  String? host;
-  String? port;
-  String? user;
-  String? passwd;
-  String? clientId;
-  String? caPath;
-  String? certPath;
-  String? keyPath;
+  int? poolMax;
+  String? url;
+  String? dbName;
+}
+
+class Sinopac {
+  Sinopac({this.poolMax, this.url});
+
+  Sinopac.fromJson(Map<String, dynamic> json) {
+    poolMax = json['pool_max'];
+    url = json['url'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final data = <String, dynamic>{};
+    data['pool_max'] = poolMax;
+    data['url'] = url;
+    return data;
+  }
+
+  int? poolMax;
+  String? url;
+}
+
+class Rabbitmq {
+  Rabbitmq({this.url, this.exchange, this.waitTime, this.attempts});
+
+  Rabbitmq.fromJson(Map<String, dynamic> json) {
+    url = json['url'];
+    exchange = json['exchange'];
+    waitTime = json['wait_time'];
+    attempts = json['attempts'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final data = <String, dynamic>{};
+    data['url'] = url;
+    data['exchange'] = exchange;
+    data['wait_time'] = waitTime;
+    data['attempts'] = attempts;
+    return data;
+  }
+
+  String? url;
+  String? exchange;
+  int? waitTime;
+  int? attempts;
 }
 
 class TradeSwitch {
   TradeSwitch(
-      {this.simulation, this.buy, this.sell, this.sellFirst, this.buyLater, this.meanTimeForward, this.meanTimeReverse, this.forwardMax, this.reverseMax});
+      {this.simulation,
+      this.buy,
+      this.sell,
+      this.sellFirst,
+      this.buyLater,
+      this.holdTimeFromOpen,
+      this.totalOpenTime,
+      this.tradeInWaitTime,
+      this.tradeOutWaitTime,
+      this.tradeInEndTime,
+      this.tradeOutEndTime,
+      this.meanTimeForward,
+      this.meanTimeReverse,
+      this.forwardMax,
+      this.reverseMax});
 
   TradeSwitch.fromJson(Map<String, dynamic> json) {
     simulation = json['simulation'];
@@ -538,6 +511,12 @@ class TradeSwitch {
     sell = json['sell'];
     sellFirst = json['sell_first'];
     buyLater = json['buy_later'];
+    holdTimeFromOpen = json['hold_time_from_open'];
+    totalOpenTime = json['total_open_time'];
+    tradeInWaitTime = json['trade_in_wait_time'];
+    tradeOutWaitTime = json['trade_out_wait_time'];
+    tradeInEndTime = json['trade_in_end_time'];
+    tradeOutEndTime = json['trade_out_end_time'];
     meanTimeForward = json['mean_time_forward'];
     meanTimeReverse = json['mean_time_reverse'];
     forwardMax = json['forward_max'];
@@ -545,12 +524,18 @@ class TradeSwitch {
   }
 
   Map<String, dynamic> toJson() {
-    var data = <String, dynamic>{};
+    final data = <String, dynamic>{};
     data['simulation'] = simulation;
     data['buy'] = buy;
     data['sell'] = sell;
     data['sell_first'] = sellFirst;
     data['buy_later'] = buyLater;
+    data['hold_time_from_open'] = holdTimeFromOpen;
+    data['total_open_time'] = totalOpenTime;
+    data['trade_in_wait_time'] = tradeInWaitTime;
+    data['trade_out_wait_time'] = tradeOutWaitTime;
+    data['trade_in_end_time'] = tradeInEndTime;
+    data['trade_out_end_time'] = tradeOutEndTime;
     data['mean_time_forward'] = meanTimeForward;
     data['mean_time_reverse'] = meanTimeReverse;
     data['forward_max'] = forwardMax;
@@ -563,59 +548,38 @@ class TradeSwitch {
   bool? sell;
   bool? sellFirst;
   bool? buyLater;
-  num? meanTimeForward;
-  num? meanTimeReverse;
-  num? forwardMax;
-  num? reverseMax;
+  int? holdTimeFromOpen;
+  int? totalOpenTime;
+  int? tradeInWaitTime;
+  int? tradeOutWaitTime;
+  int? tradeInEndTime;
+  int? tradeOutEndTime;
+  int? meanTimeForward;
+  int? meanTimeReverse;
+  int? forwardMax;
+  int? reverseMax;
 }
 
-class Trade {
-  Trade(
-      {this.historyClosePeriod,
-      this.historyTickPeriod,
-      this.historyKbarPeriod,
-      this.holdTimeFromOpen,
-      this.totalOpenTime,
-      this.tradeInWaitTime,
-      this.tradeOutWaitTime,
-      this.tradeInEndTime,
-      this.tradeOutEndTime});
+class History {
+  History({this.historyClosePeriod, this.historyTickPeriod, this.historyKbarPeriod});
 
-  Trade.fromJson(Map<String, dynamic> json) {
+  History.fromJson(Map<String, dynamic> json) {
     historyClosePeriod = json['history_close_period'];
     historyTickPeriod = json['history_tick_period'];
     historyKbarPeriod = json['history_kbar_period'];
-    holdTimeFromOpen = json['hold_time_from_open'];
-    totalOpenTime = json['total_open_time'];
-    tradeInWaitTime = json['trade_in_wait_time'];
-    tradeOutWaitTime = json['trade_out_wait_time'];
-    tradeInEndTime = json['trade_in_end_time'];
-    tradeOutEndTime = json['trade_out_end_time'];
   }
 
   Map<String, dynamic> toJson() {
-    var data = <String, dynamic>{};
+    final data = <String, dynamic>{};
     data['history_close_period'] = historyClosePeriod;
     data['history_tick_period'] = historyTickPeriod;
     data['history_kbar_period'] = historyKbarPeriod;
-    data['hold_time_from_open'] = holdTimeFromOpen;
-    data['total_open_time'] = totalOpenTime;
-    data['trade_in_wait_time'] = tradeInWaitTime;
-    data['trade_out_wait_time'] = tradeOutWaitTime;
-    data['trade_in_end_time'] = tradeInEndTime;
-    data['trade_out_end_time'] = tradeOutEndTime;
     return data;
   }
 
-  num? historyClosePeriod;
-  num? historyTickPeriod;
-  num? historyKbarPeriod;
-  num? holdTimeFromOpen;
-  num? totalOpenTime;
-  num? tradeInWaitTime;
-  num? tradeOutWaitTime;
-  num? tradeInEndTime;
-  num? tradeOutEndTime;
+  int? historyClosePeriod;
+  int? historyTickPeriod;
+  int? historyKbarPeriod;
 }
 
 class Quota {
@@ -629,7 +593,7 @@ class Quota {
   }
 
   Map<String, dynamic> toJson() {
-    var data = <String, dynamic>{};
+    final data = <String, dynamic>{};
     data['trade_quota'] = tradeQuota;
     data['trade_tax_ratio'] = tradeTaxRatio;
     data['trade_fee_ratio'] = tradeFeeRatio;
@@ -637,41 +601,35 @@ class Quota {
     return data;
   }
 
-  num? tradeQuota;
-  num? tradeTaxRatio;
-  num? tradeFeeRatio;
-  num? feeDiscount;
+  int? tradeQuota;
+  double? tradeTaxRatio;
+  double? tradeFeeRatio;
+  double? feeDiscount;
 }
 
 class TargetCond {
-  TargetCond({this.limitPriceLow, this.limitPriceHigh, this.limitVolume, this.blackStock, this.blackCategory, this.realTimeTargetsCount});
+  TargetCond({this.limitPriceLow, this.limitPriceHigh, this.limitVolume, this.subscribe});
 
   TargetCond.fromJson(Map<String, dynamic> json) {
     limitPriceLow = json['limit_price_low'];
     limitPriceHigh = json['limit_price_high'];
     limitVolume = json['limit_volume'];
-    blackStock = List.from(json['black_stock']);
-    blackCategory = List.from(json['black_category']);
-    realTimeTargetsCount = json['real_time_targets_count'];
+    subscribe = json['subscribe'];
   }
 
   Map<String, dynamic> toJson() {
-    var data = <String, dynamic>{};
+    final data = <String, dynamic>{};
     data['limit_price_low'] = limitPriceLow;
     data['limit_price_high'] = limitPriceHigh;
     data['limit_volume'] = limitVolume;
-    data['black_stock'] = blackStock;
-    data['black_category'] = blackCategory;
-    data['real_time_targets_count'] = realTimeTargetsCount;
+    data['subscribe'] = subscribe;
     return data;
   }
 
-  num? limitPriceLow;
-  num? limitPriceHigh;
-  num? limitVolume;
-  List<String>? blackStock;
-  List<String>? blackCategory;
-  num? realTimeTargetsCount;
+  int? limitPriceLow;
+  int? limitPriceHigh;
+  int? limitVolume;
+  bool? subscribe;
 }
 
 class Analyze {
@@ -689,7 +647,8 @@ class Analyze {
       this.rsiMinCount,
       this.rsiHigh,
       this.rsiLow,
-      this.maxLoss});
+      this.maxLoss,
+      this.maPeriod});
 
   Analyze.fromJson(Map<String, dynamic> json) {
     closeChangeRatioLow = json['close_change_ratio_low'];
@@ -706,10 +665,11 @@ class Analyze {
     rsiHigh = json['rsi_high'];
     rsiLow = json['rsi_low'];
     maxLoss = json['max_loss'];
+    maPeriod = json['ma_period'];
   }
 
   Map<String, dynamic> toJson() {
-    var data = <String, dynamic>{};
+    final data = <String, dynamic>{};
     data['close_change_ratio_low'] = closeChangeRatioLow;
     data['close_change_ratio_high'] = closeChangeRatioHigh;
     data['open_close_change_ratio_low'] = openCloseChangeRatioLow;
@@ -724,40 +684,23 @@ class Analyze {
     data['rsi_high'] = rsiHigh;
     data['rsi_low'] = rsiLow;
     data['max_loss'] = maxLoss;
+    data['ma_period'] = maPeriod;
     return data;
   }
 
-  num? closeChangeRatioLow;
-  num? closeChangeRatioHigh;
-  num? openCloseChangeRatioLow;
-  num? openCloseChangeRatioHigh;
-  num? outInRatio;
-  num? inOutRatio;
-  num? volumePrLow;
-  num? volumePrHigh;
-  num? tickAnalyzeMinPeriod;
-  num? tickAnalyzeMaxPeriod;
-  num? rsiMinCount;
-  num? rsiHigh;
-  num? rsiLow;
-  num? maxLoss;
-}
-
-class Schedule {
-  Schedule({this.cleanEvent, this.restartSinopac});
-
-  Schedule.fromJson(Map<String, dynamic> json) {
-    cleanEvent = json['clean_event'];
-    restartSinopac = json['restart_sinopac'];
-  }
-
-  Map<String, dynamic> toJson() {
-    var data = <String, dynamic>{};
-    data['clean_event'] = cleanEvent;
-    data['restart_sinopac'] = restartSinopac;
-    return data;
-  }
-
-  String? cleanEvent;
-  String? restartSinopac;
+  int? closeChangeRatioLow;
+  int? closeChangeRatioHigh;
+  int? openCloseChangeRatioLow;
+  int? openCloseChangeRatioHigh;
+  int? outInRatio;
+  int? inOutRatio;
+  int? volumePrLow;
+  int? volumePrHigh;
+  int? tickAnalyzeMinPeriod;
+  int? tickAnalyzeMaxPeriod;
+  int? rsiMinCount;
+  double? rsiHigh;
+  double? rsiLow;
+  int? maxLoss;
+  int? maPeriod;
 }

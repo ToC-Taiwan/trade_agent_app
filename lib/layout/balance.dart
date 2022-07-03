@@ -185,7 +185,7 @@ String mathFunc(Match match) {
 Future<List<Balance>> fetchBalance() async {
   var balanceArr = <Balance>[];
   try {
-    final response = await http.get(Uri.parse('$tradeAgentURLPrefix/balance'));
+    final response = await http.get(Uri.parse('$tradeAgentURLPrefix/order/balance'));
     if (response.statusCode == 200) {
       for (final Map<String, dynamic> i in jsonDecode(response.body)) {
         balanceArr.add(Balance.fromJson(i));

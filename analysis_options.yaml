@@ -28,7 +28,7 @@ include: package:flutter_lints/flutter.yaml
 # https://dart.dev/guides/language/analysis-options
 
 analyzer:
-  exclude: ["lib/database.g.dart","lib/firebase_options.dart"]
+  exclude: ["lib/database.g.dart", "lib/firebase_options.dart", "lib/generated"]
 
 linter:
   rules:
