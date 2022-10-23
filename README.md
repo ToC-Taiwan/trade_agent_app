@@ -15,6 +15,12 @@ For help getting started with Flutter, view our
 [online documentation](https://flutter.dev/docs), which offers tutorials,
 samples, guidance on mobile development, and a full API reference.
 
+## Xcode
+
+```sh
+~/Library/Developer/Xcode
+```
+
 ## Git
 
 ```sh
@@ -30,7 +36,7 @@ This error happens if you call setState() on a State object for a widget that no
 
 The preferred solution is to cancel the timer or stop listening to the animation in the dispose() callback. Another solution is to check the "mounted" property of this object before calling setState() to ensure the object is still in the tree.
 
-This error might indicate a memory leak if setState() is being called because another object is retaining a reference to this State object after it has been removed from the tree. To avoid memory leaks, consider breaking the reference to this object during dispose(). 
+This error might indicate a memory leak if setState() is being called because another object is retaining a reference to this State object after it has been removed from the tree. To avoid memory leaks, consider breaking the reference to this object during dispose().
 
 # 0 State.setState.<anonymous closure> (package:flutter/src/widgets/fr<…>
 ```

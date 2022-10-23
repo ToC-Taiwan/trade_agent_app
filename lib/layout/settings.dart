@@ -372,8 +372,8 @@ class _SettingsPageState extends State<SettingsPage> {
                 ? const Icon(Icons.check)
                 : TextButton(
                     style: TextButton.styleFrom(
+                      foregroundColor: Colors.white,
                       backgroundColor: Colors.green[800],
-                      primary: Colors.white,
                     ),
                     onPressed: () {
                       late PurchaseParam purchaseParam;
@@ -401,8 +401,8 @@ class _SettingsPageState extends State<SettingsPage> {
       // subtitle: Text(S.of(context).already_purchased),
       trailing: TextButton(
         style: TextButton.styleFrom(
+          foregroundColor: Colors.white,
           backgroundColor: Colors.green[800],
-          primary: Colors.white,
         ),
         onPressed: () {
           _inAppPurchase.restorePurchases();

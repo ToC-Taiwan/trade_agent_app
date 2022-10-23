@@ -53,5 +53,6 @@
   "read_only": "唯读",
   "restore_purchase": "还原购买",
   "success": "成功",
-  "loading": "读取中"
+  "loading": "读取中",
+  "future_trade": "期货交易"
 }

@@ -42,6 +42,7 @@ class MessageLookup extends MessageLookupByLibrary {
             "Are you sure you want to delete this stock"),
         "developing": MessageLookupByLibrary.simpleMessage("Developing"),
         "display": MessageLookupByLibrary.simpleMessage("Display"),
+        "future_trade": MessageLookupByLibrary.simpleMessage("Future Trade"),
         "group": MessageLookupByLibrary.simpleMessage("Group"),
         "high": MessageLookupByLibrary.simpleMessage("High"),
         "input_must_not_empty":

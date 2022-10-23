@@ -599,6 +599,16 @@ class S {
       args: [],
     );
   }
+
+  /// `Future Trade`
+  String get future_trade {
+    return Intl.message(
+      'Future Trade',
+      name: 'future_trade',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

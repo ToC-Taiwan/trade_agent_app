@@ -41,6 +41,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("确定删除自选股吗？"),
         "developing": MessageLookupByLibrary.simpleMessage("开发中"),
         "display": MessageLookupByLibrary.simpleMessage("显示"),
+        "future_trade": MessageLookupByLibrary.simpleMessage("期货交易"),
         "group": MessageLookupByLibrary.simpleMessage("分组"),
         "high": MessageLookupByLibrary.simpleMessage("高"),
         "input_must_not_empty": MessageLookupByLibrary.simpleMessage("输入不能为空"),
