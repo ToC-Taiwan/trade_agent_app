@@ -54,5 +54,7 @@
   "restore_purchase": "Restore Purchases",
   "success": "Success",
   "loading": "Loading",
-  "future_trade": "Future Trade"
+  "future_trade": "Future Trade",
+  "stock": "Stock",
+  "future": "Future"
 }

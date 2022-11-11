@@ -41,6 +41,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("确定删除自选股吗？"),
         "developing": MessageLookupByLibrary.simpleMessage("开发中"),
         "display": MessageLookupByLibrary.simpleMessage("显示"),
+        "future": MessageLookupByLibrary.simpleMessage("期货"),
         "future_trade": MessageLookupByLibrary.simpleMessage("期货交易"),
         "group": MessageLookupByLibrary.simpleMessage("分组"),
         "high": MessageLookupByLibrary.simpleMessage("高"),
@@ -70,6 +71,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "settings": MessageLookupByLibrary.simpleMessage("设定"),
         "settings_of_notification":
             MessageLookupByLibrary.simpleMessage("通知设定"),
+        "stock": MessageLookupByLibrary.simpleMessage("股票"),
         "stock_dose_not_exist": MessageLookupByLibrary.simpleMessage("股票不存在"),
         "stock_number": MessageLookupByLibrary.simpleMessage("股票代号"),
         "strategy": MessageLookupByLibrary.simpleMessage("策略选股"),

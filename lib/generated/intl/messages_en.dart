@@ -42,6 +42,7 @@ class MessageLookup extends MessageLookupByLibrary {
             "Are you sure you want to delete this stock"),
         "developing": MessageLookupByLibrary.simpleMessage("Developing"),
         "display": MessageLookupByLibrary.simpleMessage("Display"),
+        "future": MessageLookupByLibrary.simpleMessage("Future"),
         "future_trade": MessageLookupByLibrary.simpleMessage("Future Trade"),
         "group": MessageLookupByLibrary.simpleMessage("Group"),
         "high": MessageLookupByLibrary.simpleMessage("High"),
@@ -75,6 +76,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "settings": MessageLookupByLibrary.simpleMessage("Settings"),
         "settings_of_notification":
             MessageLookupByLibrary.simpleMessage("Settings of Notification"),
+        "stock": MessageLookupByLibrary.simpleMessage("Stock"),
         "stock_dose_not_exist":
             MessageLookupByLibrary.simpleMessage("Stock dose not exist"),
         "stock_number": MessageLookupByLibrary.simpleMessage("Stock Number"),

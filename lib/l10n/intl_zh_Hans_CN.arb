@@ -54,5 +54,7 @@
   "restore_purchase": "还原购买",
   "success": "成功",
   "loading": "读取中",
-  "future_trade": "期货交易"
+  "future_trade": "期货交易",
+  "stock": "股票",
+  "future": "期货"
 }

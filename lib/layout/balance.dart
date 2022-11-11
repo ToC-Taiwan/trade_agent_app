@@ -79,136 +79,157 @@ class _BalancePageState extends State<BalancePage> {
 
             if (lastTotal < 0) {
               latestColor = Colors.green;
-            } else {
+            } else if (lastTotal > 0) {
               latestColor = Colors.red;
             }
 
             if (total < 0) {
               totalColor = Colors.green;
-            } else {
+            } else if (total > 0) {
               totalColor = Colors.red;
             }
 
-            return Column(children: [
-              Expanded(
-                flex: 8,
-                child: ListView.separated(
-                  separatorBuilder: (context, index) => const Divider(
-                    height: 0,
-                    color: Colors.grey,
+            return Column(
+              children: [
+                Expanded(
+                  flex: 18,
+                  child: DefaultTabController(
+                    length: 2,
+                    child: Scaffold(
+                      appBar: AppBar(
+                        elevation: 5,
+                        flexibleSpace: TabBar(
+                          labelStyle: const TextStyle(fontSize: 18),
+                          padding: const EdgeInsets.only(top: 5),
+                          tabs: [
+                            Tab(text: S.of(context).future),
+                            Tab(text: S.of(context).stock),
+                          ],
+                        ),
+                      ),
+                      body: TabBarView(
+                        children: [
+                          ListView.separated(
+                            separatorBuilder: (context, index) => const Divider(
+                              height: 0,
+                              color: Colors.grey,
+                            ),
+                            itemCount: reverseFuture.length,
+                            itemBuilder: (context, index) {
+                              var walletColor = Colors.black;
+                              var detailBalance = reverseFuture[index].total!;
+                              if (detailBalance < 0) {
+                                walletColor = Colors.green;
+                              } else if (detailBalance > 0) {
+                                walletColor = Colors.red;
+                              }
+                              return ListTile(
+                                // onTap: () {},
+                                leading: Icon(Icons.account_balance_wallet, color: walletColor),
+                                title: Text(reverseFuture[index].tradeDay!.substring(0, 10)),
+                                subtitle: Text('${S.of(context).trade_count}: ${reverseFuture[index].tradeCount}'),
+                                trailing: Text(
+                                  commaNumber(reverseFuture[index].total.toString()),
+                                  style: TextStyle(
+                                    fontSize: 18,
+                                    color: walletColor,
+                                  ),
+                                ),
+                              );
+                            },
+                          ),
+                          ListView.separated(
+                            separatorBuilder: (context, index) => const Divider(
+                              height: 0,
+                              color: Colors.grey,
+                            ),
+                            itemCount: reverseStock.length,
+                            itemBuilder: (context, index) {
+                              var walletColor = Colors.black;
+                              var detailBalance = reverseFuture[index].total!;
+                              if (detailBalance < 0) {
+                                walletColor = Colors.green;
+                              } else if (detailBalance > 0) {
+                                walletColor = Colors.red;
+                              }
+                              return ListTile(
+                                // onTap: () {},
+                                leading: Icon(Icons.account_balance_wallet, color: walletColor),
+                                title: Text(reverseStock[index].tradeDay!.substring(0, 10)),
+                                subtitle: Text('${S.of(context).trade_count}: ${reverseStock[index].tradeCount}'),
+                                trailing: Text(
+                                  commaNumber(reverseStock[index].total.toString()),
+                                  style: TextStyle(
+                                    fontSize: 18,
+                                    color: walletColor,
+                                  ),
+                                ),
+                              );
+                            },
+                          ),
+                        ],
+                      ),
+                    ),
                   ),
-                  itemCount: reverseFuture.length,
-                  itemBuilder: (context, index) {
-                    Color balance;
-                    if (reverseFuture[index].total! < 0) {
-                      balance = Colors.green;
-                    } else {
-                      balance = Colors.red;
-                    }
-                    return ListTile(
-                      // onTap: () {},
-                      leading: Icon(Icons.account_balance_wallet, color: balance),
-                      title: Text(reverseFuture[index].tradeDay!.substring(0, 10)),
-                      subtitle: Text('${S.of(context).trade_count}: ${reverseFuture[index].tradeCount}'),
-                      trailing: Text(
-                        commaNumber(reverseFuture[index].total.toString()),
-                        style: TextStyle(
-                          fontSize: 18,
-                          color: balance,
+                ),
+                Expanded(
+                  flex: 2,
+                  child: Row(
+                    children: [
+                      Expanded(
+                        flex: 4,
+                        child: ListTile(
+                          title: Text(
+                            S.of(context).latest,
+                            style: const TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                          subtitle: SizedBox(
+                            child: Text(
+                              commaNumber(lastTotal.toString()),
+                              style: TextStyle(fontSize: 22, color: latestColor),
+                            ),
+                          ),
                         ),
                       ),
-                    );
-                  },
-                ),
-              ),
-              Expanded(
-                flex: 8,
-                child: ListView.separated(
-                  separatorBuilder: (context, index) => const Divider(
-                    height: 0,
-                    color: Colors.grey,
+                      Expanded(
+                        flex: 4,
+                        child: ListTile(
+                          title: Text(
+                            S.of(context).total,
+                            style: const TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                          subtitle: SizedBox(
+                            child: Text(
+                              commaNumber(total.toString()),
+                              style: TextStyle(fontSize: 22, color: totalColor),
+                            ),
+                          ),
+                        ),
+                      ),
+                      Expanded(
+                        flex: 2,
+                        child: Padding(
+                          padding: const EdgeInsets.only(right: 26),
+                          child: IconButton(
+                            padding: EdgeInsets.zero,
+                            onPressed: () {
+                              setState(() {
+                                futureBalance = fetchBalance();
+                              });
+                            },
+                            icon: const Icon(
+                              Icons.refresh,
+                              size: 28,
+                            ),
+                            color: Colors.blue,
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
-                  itemCount: reverseStock.length,
-                  itemBuilder: (context, index) {
-                    Color balance;
-                    if (reverseStock[index].total! < 0) {
-                      balance = Colors.green;
-                    } else {
-                      balance = Colors.red;
-                    }
-                    return ListTile(
-                      // onTap: () {},
-                      leading: Icon(Icons.account_balance_wallet, color: balance),
-                      title: Text(reverseStock[index].tradeDay!.substring(0, 10)),
-                      subtitle: Text('${S.of(context).trade_count}: ${reverseStock[index].tradeCount}'),
-                      trailing: Text(
-                        commaNumber(reverseStock[index].total.toString()),
-                        style: TextStyle(
-                          fontSize: 18,
-                          color: balance,
-                        ),
-                      ),
-                    );
-                  },
-                ),
-              ),
-              Expanded(
-                flex: 2,
-                child: Row(
-                  children: [
-                    Expanded(
-                      flex: 4,
-                      child: ListTile(
-                        title: Text(
-                          S.of(context).latest,
-                          style: const TextStyle(fontWeight: FontWeight.bold),
-                        ),
-                        subtitle: SizedBox(
-                          child: Text(
-                            commaNumber(lastTotal.toString()),
-                            style: TextStyle(fontSize: 22, color: latestColor),
-                          ),
-                        ),
-                      ),
-                    ),
-                    Expanded(
-                      flex: 4,
-                      child: ListTile(
-                        title: Text(
-                          S.of(context).total,
-                          style: const TextStyle(fontWeight: FontWeight.bold),
-                        ),
-                        subtitle: SizedBox(
-                          child: Text(
-                            commaNumber(total.toString()),
-                            style: TextStyle(fontSize: 22, color: totalColor),
-                          ),
-                        ),
-                      ),
-                    ),
-                    Expanded(
-                      flex: 2,
-                      child: Padding(
-                        padding: const EdgeInsets.only(right: 26),
-                        child: IconButton(
-                          padding: EdgeInsets.zero,
-                          onPressed: () {
-                            setState(() {
-                              futureBalance = fetchBalance();
-                            });
-                          },
-                          icon: const Icon(
-                            Icons.refresh,
-                            size: 28,
-                          ),
-                          color: Colors.blue,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              )
-            ]);
+                )
+              ],
+            );
           }
           return const Center(
               child: CircularProgressIndicator(

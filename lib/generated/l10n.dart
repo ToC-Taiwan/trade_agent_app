@@ -609,6 +609,26 @@ class S {
       args: [],
     );
   }
+
+  /// `Stock`
+  String get stock {
+    return Intl.message(
+      'Stock',
+      name: 'stock',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Future`
+  String get future {
+    return Intl.message(
+      'Future',
+      name: 'future',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {
