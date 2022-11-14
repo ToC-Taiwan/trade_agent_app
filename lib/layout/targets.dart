@@ -17,7 +17,7 @@ class Targetspage extends StatefulWidget {
   final AppDatabase db;
 
   @override
-  _TargetspageState createState() => _TargetspageState();
+  State<Targetspage> createState() => _TargetspageState();
 }
 
 class _TargetspageState extends State<Targetspage> {

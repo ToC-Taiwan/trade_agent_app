@@ -3,17 +3,15 @@ import 'dart:async';
 import 'package:floor/floor.dart';
 import 'package:sqflite/sqflite.dart' as sqflite;
 import 'package:trade_agent_v2/daos/basic_dao.dart';
-import 'package:trade_agent_v2/daos/future_tick_dao.dart';
 import 'package:trade_agent_v2/daos/pick_stock_dao.dart';
 import 'package:trade_agent_v2/models/model.dart';
 
 part 'database.g.dart';
 
-@Database(version: 1, entities: [PickStock, Basic, RealTimeFutureTick])
+@Database(version: 1, entities: [PickStock, Basic])
 abstract class AppDatabase extends FloorDatabase {
   PickStockDao get pickStockDao;
   BasickDao get basicDao;
-  FutureTickDao get futureTickDao;
 }
 
 // create migration

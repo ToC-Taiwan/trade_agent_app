@@ -31,7 +31,7 @@ void main() async {
     );
   }
 
-  var latestVersion = '3.4.0';
+  var latestVersion = '3.4.1';
 
   // initital floor
   // final db = await $FloorAppDatabase.databaseBuilder('app_database_tr.db').addMigrations([migration1to2]).build();

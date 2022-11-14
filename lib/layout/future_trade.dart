@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:trade_agent_v2/basic/basic.dart';
 import 'package:trade_agent_v2/database.dart';
 import 'package:trade_agent_v2/generated/l10n.dart';
-import 'package:trade_agent_v2/models/future_tick.dart';
 import 'package:trade_agent_v2/utils/app_bar.dart';
 import 'package:web_socket_channel/io.dart';
 
@@ -18,37 +17,58 @@ class FutureTradePage extends StatefulWidget {
 }
 
 class _FutureTradePageState extends State<FutureTradePage> {
-  TextEditingController textFieldController = TextEditingController();
+  var _channel = IOWebSocketChannel.connect(Uri.parse(tradeAgentFutureWSURLPrefix));
 
-  late Future<RealTimeFutureTick?> realTimeFutureTick;
-  late Future<List<RealTimeFutureTick>> realTimeFutureTickArr;
-
-  final _channel = IOWebSocketChannel.connect(Uri.parse(tradeAgentFutureWSURLPrefix));
-
+  int orderQty = 2;
   List<RealTimeFutureTick> tickArr = [];
+
+  Future<RealTimeFutureTick?> realTimeFutureTick = Future.value();
+  Future<List<RealTimeFutureTick>> realTimeFutureTickArr = Future.value([]);
 
   @override
   void initState() {
-    realTimeFutureTick = widget.db.futureTickDao.getLastFutureTick();
-    realTimeFutureTickArr = widget.db.futureTickDao.getAllFutureTick();
-    realTimeFutureTickArr.then((value) => {tickArr = value});
-
     super.initState();
-    _channel.stream.listen((message) {
-      setState(() {
-        realTimeFutureTick = getData(message);
-        realTimeFutureTickArr = fillArr(message, tickArr);
-      });
-    });
+    initialWS();
+    checkConnection();
   }
 
   @override
   void dispose() {
-    textFieldController.dispose();
     _channel.sink.close();
-    widget.db.futureTickDao.deleteAllFutureTick();
-    widget.db.futureTickDao.insertFutureTick(tickArr);
     super.dispose();
+  }
+
+  void initialWS() {
+    _channel.stream.listen(
+      (message) {
+        if (message == 'pong') {
+          return;
+        }
+
+        setState(() {
+          realTimeFutureTick = getData(message);
+          realTimeFutureTickArr = fillArr(message, tickArr);
+        });
+      },
+      onDone: () {
+        if (mounted) {
+          _channel.sink.close();
+          _channel = IOWebSocketChannel.connect(Uri.parse(tradeAgentFutureWSURLPrefix));
+          initialWS();
+        }
+      },
+    );
+  }
+
+  void checkConnection() {
+    var period = const Duration(seconds: 1);
+    Timer.periodic(period, (timer) {
+      try {
+        _channel.sink.add('ping');
+      } catch (e) {
+        timer.cancel();
+      }
+    });
   }
 
   @override
@@ -80,12 +100,13 @@ class _FutureTradePageState extends State<FutureTradePage> {
                         ),
                       );
                     }
-                    Color tmp;
-                    String type;
-                    if (snapshot.data!.priceChg! < 0) {
+                    var tmp = Colors.black;
+                    var type = '';
+                    var priceChg = snapshot.data!.priceChg!;
+                    if (priceChg < 0) {
                       tmp = Colors.green;
                       type = '↘️';
-                    } else {
+                    } else if (priceChg > 0) {
                       tmp = Colors.red;
                       type = '↗️';
                     }
@@ -95,7 +116,7 @@ class _FutureTradePageState extends State<FutureTradePage> {
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
                           Padding(
-                            padding: const EdgeInsets.only(left: 20),
+                            padding: const EdgeInsets.only(left: 20, right: 20),
                             child: Row(
                               children: [
                                 Text(
@@ -131,20 +152,66 @@ class _FutureTradePageState extends State<FutureTradePage> {
                           Padding(
                             padding: const EdgeInsets.only(left: 20, right: 20),
                             child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                Text(
-                                  snapshot.data!.high.toString(),
-                                  style: const TextStyle(
-                                    fontSize: 30,
-                                    fontWeight: FontWeight.bold,
+                                TextButton(
+                                  style: ButtonStyle(
+                                    elevation: MaterialStateProperty.all(10),
+                                    backgroundColor: MaterialStateProperty.all(Colors.red),
+                                  ),
+                                  onPressed: () {
+                                    _channel.sink.add(jsonEncode({
+                                      'topic': 'future_trade',
+                                      'future_order': {
+                                        'code': snapshot.data!.code,
+                                        'action': 1,
+                                        'price': snapshot.data!.close,
+                                        'qty': orderQty,
+                                      },
+                                    }));
+                                  },
+                                  child: const SizedBox(
+                                    width: 150,
+                                    height: 50,
+                                    child: Center(
+                                      child: Text(
+                                        'Buy',
+                                        style: TextStyle(
+                                          fontSize: 30,
+                                          color: Colors.white,
+                                        ),
+                                      ),
+                                    ),
                                   ),
                                 ),
-                                Text(
-                                  snapshot.data!.low.toString(),
-                                  // snapshot.data!.priceChg.toString(),
-                                  style: const TextStyle(
-                                    fontSize: 30,
+                                TextButton(
+                                  style: ButtonStyle(
+                                    elevation: MaterialStateProperty.all(10),
+                                    backgroundColor: MaterialStateProperty.all(Colors.green),
+                                  ),
+                                  onPressed: () {
+                                    _channel.sink.add(jsonEncode({
+                                      'topic': 'future_trade',
+                                      'future_order': {
+                                        'code': snapshot.data!.code,
+                                        'action': 2,
+                                        'price': snapshot.data!.close,
+                                        'qty': orderQty,
+                                      },
+                                    }));
+                                  },
+                                  child: const SizedBox(
+                                    width: 150,
+                                    height: 50,
+                                    child: Center(
+                                      child: Text(
+                                        'Sell',
+                                        style: TextStyle(
+                                          fontSize: 30,
+                                          color: Colors.white,
+                                        ),
+                                      ),
+                                    ),
                                   ),
                                 ),
                               ],
@@ -236,4 +303,93 @@ Future<List<RealTimeFutureTick>> fillArr(String message, List<RealTimeFutureTick
   }
   originalArr.add(RealTimeFutureTick.fromJson(jsonDecode(message)));
   return originalArr.reversed.toList();
+}
+
+class RealTimeFutureTick {
+  RealTimeFutureTick(
+      this.code,
+      this.tickTime,
+      this.open,
+      this.underlyingPrice,
+      this.bidSideTotalVol,
+      this.askSideTotalVol,
+      this.avgPrice,
+      this.close,
+      this.high,
+      this.low,
+      this.amount,
+      this.totalAmount,
+      this.volume,
+      this.totalVolume,
+      this.tickType,
+      this.chgType,
+      this.priceChg,
+      this.pctChg,
+      this.simtrade);
+
+  RealTimeFutureTick.fromJson(Map<String, dynamic> json) {
+    code = json['code'];
+    tickTime = json['tick_time'];
+    open = json['open'];
+    underlyingPrice = json['underlying_price'];
+    bidSideTotalVol = json['bid_side_total_vol'];
+    askSideTotalVol = json['ask_side_total_vol'];
+    avgPrice = json['avg_price'];
+    close = json['close'];
+    high = json['high'];
+    low = json['low'];
+    amount = json['amount'];
+    totalAmount = json['total_amount'];
+    volume = json['volume'];
+    totalVolume = json['total_volume'];
+    tickType = json['tick_type'];
+    chgType = json['chg_type'];
+    priceChg = json['price_chg'];
+    pctChg = json['pct_chg'];
+    simtrade = json['simtrade'];
+  }
+
+  String? code = '';
+  String? tickTime = '';
+  num? open = 0;
+  num? underlyingPrice = 0;
+  num? bidSideTotalVol = 0;
+  num? askSideTotalVol = 0;
+  num? avgPrice = 0;
+  num? close = 0;
+  num? high = 0;
+  num? low = 0;
+  num? amount = 0;
+  num? totalAmount = 0;
+  num? volume = 0;
+  num? totalVolume = 0;
+  num? tickType = 0;
+  num? chgType = 0;
+  num? priceChg = 0;
+  num? pctChg = 0;
+  num? simtrade = 0;
+
+  Map<String, dynamic> toJson() {
+    final data = <String, dynamic>{};
+    data['code'] = code;
+    data['tick_time'] = tickTime;
+    data['open'] = open;
+    data['underlying_price'] = underlyingPrice;
+    data['bid_side_total_vol'] = bidSideTotalVol;
+    data['ask_side_total_vol'] = askSideTotalVol;
+    data['avg_price'] = avgPrice;
+    data['close'] = close;
+    data['high'] = high;
+    data['low'] = low;
+    data['amount'] = amount;
+    data['total_amount'] = totalAmount;
+    data['volume'] = volume;
+    data['total_volume'] = totalVolume;
+    data['tick_type'] = tickType;
+    data['chg_type'] = chgType;
+    data['price_chg'] = priceChg;
+    data['pct_chg'] = pctChg;
+    data['simtrade'] = simtrade;
+    return data;
+  }
 }

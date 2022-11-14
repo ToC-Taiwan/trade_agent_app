@@ -19,73 +19,19 @@ class PickStockPage extends StatefulWidget {
 }
 
 class _PickStockPageState extends State<PickStockPage> {
+  var _channel = IOWebSocketChannel.connect(Uri.parse(tradeAgentWSURLPrefix));
+
   TextEditingController textFieldController = TextEditingController();
-  late Future<List<PickStock>> stockArray;
-  final _channel = IOWebSocketChannel.connect(Uri.parse(tradeAgentWSURLPrefix));
 
   List<PickStock> stockList = [];
+  late Future<List<PickStock>> stockArray;
 
   @override
   void initState() {
     super.initState();
     stockArray = widget.db.pickStockDao.getAllPickStock();
-    _channel.stream.listen((message) {
-      for (final Map<String, dynamic> i in jsonDecode(message)) {
-        for (final j in stockList) {
-          if (i['stock_num'] == j.stockNum) {
-            if (i['price_change'] is int) {
-              var tmp = i['price_change'] as int;
-              i['price_change'] = tmp.toDouble();
-            }
-            if (i['price_change_rate'] is int) {
-              var tmp = i['price_change_rate'] as int;
-              i['price_change_rate'] = tmp.toDouble();
-            }
-            if (i['price'] is int) {
-              var tmp = i['price'] as int;
-              i['price'] = tmp.toDouble();
-            }
-            var tmp = PickStock(
-              i['stock_num'],
-              i['stock_name'],
-              0,
-              i['price_change'],
-              i['price_change_rate'],
-              i['price'],
-              id: j.id,
-              createTime: j.createTime,
-              updateTime: j.updateTime,
-            );
-            if (i['wrong']) {
-              widget.db.pickStockDao.deletePickStock(tmp);
-              showDialog(
-                context: context,
-                builder: (context) => AlertDialog(
-                  title: Text(S.of(context).warning),
-                  content: Text('${tmp.stockNum} ${S.of(context).stock_dose_not_exist}'),
-                  actions: [
-                    ElevatedButton(
-                      child: Text(
-                        S.of(context).ok,
-                        style: const TextStyle(color: Colors.black),
-                      ),
-                      onPressed: () => Navigator.pop(context),
-                    ),
-                  ],
-                ),
-              );
-            } else {
-              widget.db.pickStockDao.updatePickStock(tmp);
-            }
-            break;
-          }
-        }
-      }
-      setState(() {
-        stockArray = widget.db.pickStockDao.getAllPickStock();
-      });
-    });
-    // _channel.sink.add(jsonEncode({'topic': 'pick_stock'}));
+    initialWS();
+    checkConnection();
   }
 
   @override
@@ -93,6 +39,89 @@ class _PickStockPageState extends State<PickStockPage> {
     textFieldController.dispose();
     _channel.sink.close();
     super.dispose();
+  }
+
+  void initialWS() {
+    _channel.stream.listen(
+      (message) {
+        if (message == 'pong') {
+          return;
+        }
+
+        for (final Map<String, dynamic> i in jsonDecode(message)) {
+          for (final j in stockList) {
+            if (i['stock_num'] == j.stockNum) {
+              if (i['price_change'] is int) {
+                var tmp = i['price_change'] as int;
+                i['price_change'] = tmp.toDouble();
+              }
+              if (i['price_change_rate'] is int) {
+                var tmp = i['price_change_rate'] as int;
+                i['price_change_rate'] = tmp.toDouble();
+              }
+              if (i['price'] is int) {
+                var tmp = i['price'] as int;
+                i['price'] = tmp.toDouble();
+              }
+              var tmp = PickStock(
+                i['stock_num'],
+                i['stock_name'],
+                0,
+                i['price_change'],
+                i['price_change_rate'],
+                i['price'],
+                id: j.id,
+                createTime: j.createTime,
+                updateTime: j.updateTime,
+              );
+              if (i['wrong']) {
+                widget.db.pickStockDao.deletePickStock(tmp);
+                showDialog(
+                  context: context,
+                  builder: (context) => AlertDialog(
+                    title: Text(S.of(context).warning),
+                    content: Text('${tmp.stockNum} ${S.of(context).stock_dose_not_exist}'),
+                    actions: [
+                      ElevatedButton(
+                        child: Text(
+                          S.of(context).ok,
+                          style: const TextStyle(color: Colors.black),
+                        ),
+                        onPressed: () => Navigator.pop(context),
+                      ),
+                    ],
+                  ),
+                );
+              } else {
+                widget.db.pickStockDao.updatePickStock(tmp);
+              }
+              break;
+            }
+          }
+        }
+        setState(() {
+          stockArray = widget.db.pickStockDao.getAllPickStock();
+        });
+      },
+      onDone: () {
+        if (mounted) {
+          _channel.sink.close();
+          _channel = IOWebSocketChannel.connect(Uri.parse(tradeAgentFutureWSURLPrefix));
+          initialWS();
+        }
+      },
+    );
+  }
+
+  void checkConnection() {
+    var period = const Duration(seconds: 1);
+    Timer.periodic(period, (timer) {
+      try {
+        _channel.sink.add('ping');
+      } catch (e) {
+        timer.cancel();
+      }
+    });
   }
 
   @override
@@ -123,9 +152,8 @@ class _PickStockPageState extends State<PickStockPage> {
                     widget.db.pickStockDao.deleteAllPickStock();
                     stockList = [];
                     _channel.sink.add(jsonEncode({
-                      'data': {
-                        'pick_stock_list': [],
-                      }
+                      'topic': 'pick_stock',
+                      'pick_stock_list': [],
                     }));
                     setState(() {
                       stockArray = widget.db.pickStockDao.getAllPickStock();
@@ -235,9 +263,8 @@ class _PickStockPageState extends State<PickStockPage> {
           if (snapshot.hasData) {
             if (snapshot.data!.isEmpty) {
               _channel.sink.add(jsonEncode({
-                'data': {
-                  'pick_stock_list': [],
-                }
+                'topic': 'pick_stock',
+                'pick_stock_list': [],
               }));
               return Center(
                 child: Column(
@@ -258,16 +285,15 @@ class _PickStockPageState extends State<PickStockPage> {
                 ),
               );
             } else {
-              var numList = [];
+              var numList = <String>[];
               stockList = [];
               for (final s in snapshot.data!) {
                 stockList.add(s);
                 numList.add(s.stockNum);
               }
               _channel.sink.add(jsonEncode({
-                'data': {
-                  'pick_stock_list': numList,
-                }
+                'topic': 'pick_stock',
+                'pick_stock_list': numList,
               }));
             }
             return ListView.separated(

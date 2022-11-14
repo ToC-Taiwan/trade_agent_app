@@ -8,7 +8,7 @@ class IntroPage extends StatefulWidget {
   final AppDatabase db;
 
   @override
-  _IntroPageState createState() => _IntroPageState();
+  State<IntroPage> createState() => _IntroPageState();
 }
 
 class _IntroPageState extends State<IntroPage> with TickerProviderStateMixin {

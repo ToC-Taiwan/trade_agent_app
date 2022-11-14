@@ -65,10 +65,11 @@ class _$AppDatabase extends AppDatabase {
 
   BasickDao? _basicDaoInstance;
 
-  FutureTickDao? _futureTickDaoInstance;
-
-  Future<sqflite.Database> open(String path, List<Migration> migrations,
-      [Callback? callback]) async {
+  Future<sqflite.Database> open(
+    String path,
+    List<Migration> migrations, [
+    Callback? callback,
+  ]) async {
     final databaseOptions = sqflite.OpenDatabaseOptions(
       version: 1,
       onConfigure: (database) async {
@@ -89,8 +90,6 @@ class _$AppDatabase extends AppDatabase {
             'CREATE TABLE IF NOT EXISTS `pick_stock` (`stock_num` TEXT NOT NULL, `stock_name` TEXT NOT NULL, `price` REAL NOT NULL, `price_change_rate` REAL NOT NULL, `price_change` REAL NOT NULL, `is_target` INTEGER NOT NULL, `id` INTEGER PRIMARY KEY AUTOINCREMENT, `create_time` INTEGER NOT NULL, `update_time` INTEGER NOT NULL)');
         await database.execute(
             'CREATE TABLE IF NOT EXISTS `basic` (`key` TEXT NOT NULL, `value` TEXT NOT NULL, `id` INTEGER PRIMARY KEY AUTOINCREMENT, `create_time` INTEGER NOT NULL, `update_time` INTEGER NOT NULL)');
-        await database.execute(
-            'CREATE TABLE IF NOT EXISTS `future_tick` (`code` TEXT, `tick_time` TEXT, `open` INTEGER, `underlying_price` REAL, `bid_side_total_vol` INTEGER, `ask_side_total_vol` INTEGER, `avg_price` REAL, `close` INTEGER, `high` INTEGER, `low` INTEGER, `amount` INTEGER, `total_amount` INTEGER, `volume` INTEGER, `total_volume` INTEGER, `tick_type` INTEGER, `chg_type` INTEGER, `price_chg` INTEGER, `pct_chg` REAL, `simtrade` INTEGER, `id` INTEGER PRIMARY KEY AUTOINCREMENT, `create_time` INTEGER NOT NULL, `update_time` INTEGER NOT NULL)');
 
         await callback?.onCreate?.call(database, version);
       },
@@ -107,16 +106,13 @@ class _$AppDatabase extends AppDatabase {
   BasickDao get basicDao {
     return _basicDaoInstance ??= _$BasickDao(database, changeListener);
   }
-
-  @override
-  FutureTickDao get futureTickDao {
-    return _futureTickDaoInstance ??= _$FutureTickDao(database, changeListener);
-  }
 }
 
 class _$PickStockDao extends PickStockDao {
-  _$PickStockDao(this.database, this.changeListener)
-      : _queryAdapter = QueryAdapter(database),
+  _$PickStockDao(
+    this.database,
+    this.changeListener,
+  )   : _queryAdapter = QueryAdapter(database),
         _pickStockInsertionAdapter = InsertionAdapter(
             database,
             'pick_stock',
@@ -233,8 +229,10 @@ class _$PickStockDao extends PickStockDao {
 }
 
 class _$BasickDao extends BasickDao {
-  _$BasickDao(this.database, this.changeListener)
-      : _queryAdapter = QueryAdapter(database),
+  _$BasickDao(
+    this.database,
+    this.changeListener,
+  )   : _queryAdapter = QueryAdapter(database),
         _basicInsertionAdapter = InsertionAdapter(
             database,
             'basic',
@@ -325,114 +323,5 @@ class _$BasickDao extends BasickDao {
   @override
   Future<void> deleteBasic(Basic record) async {
     await _basicDeletionAdapter.delete(record);
-  }
-}
-
-class _$FutureTickDao extends FutureTickDao {
-  _$FutureTickDao(this.database, this.changeListener)
-      : _queryAdapter = QueryAdapter(database),
-        _realTimeFutureTickInsertionAdapter = InsertionAdapter(
-            database,
-            'future_tick',
-            (RealTimeFutureTick item) => <String, Object?>{
-                  'code': item.code,
-                  'tick_time': item.tickTime,
-                  'open': item.open,
-                  'underlying_price': item.underlyingPrice,
-                  'bid_side_total_vol': item.bidSideTotalVol,
-                  'ask_side_total_vol': item.askSideTotalVol,
-                  'avg_price': item.avgPrice,
-                  'close': item.close,
-                  'high': item.high,
-                  'low': item.low,
-                  'amount': item.amount,
-                  'total_amount': item.totalAmount,
-                  'volume': item.volume,
-                  'total_volume': item.totalVolume,
-                  'tick_type': item.tickType,
-                  'chg_type': item.chgType,
-                  'price_chg': item.priceChg,
-                  'pct_chg': item.pctChg,
-                  'simtrade': item.simtrade,
-                  'id': item.id,
-                  'create_time': item.createTime,
-                  'update_time': item.updateTime
-                });
-
-  final sqflite.DatabaseExecutor database;
-
-  final StreamController<String> changeListener;
-
-  final QueryAdapter _queryAdapter;
-
-  final InsertionAdapter<RealTimeFutureTick>
-      _realTimeFutureTickInsertionAdapter;
-
-  @override
-  Future<RealTimeFutureTick?> getLastFutureTick() async {
-    return _queryAdapter.query(
-        'SELECT * FROM future_tick Order by id desc limit 1',
-        mapper: (Map<String, Object?> row) => RealTimeFutureTick(
-            row['code'] as String?,
-            row['tick_time'] as String?,
-            row['open'] as int?,
-            row['underlying_price'] as double?,
-            row['bid_side_total_vol'] as int?,
-            row['ask_side_total_vol'] as int?,
-            row['avg_price'] as double?,
-            row['close'] as int?,
-            row['high'] as int?,
-            row['low'] as int?,
-            row['amount'] as int?,
-            row['total_amount'] as int?,
-            row['volume'] as int?,
-            row['total_volume'] as int?,
-            row['tick_type'] as int?,
-            row['chg_type'] as int?,
-            row['price_chg'] as int?,
-            row['pct_chg'] as double?,
-            row['simtrade'] as int?,
-            id: row['id'] as int?,
-            createTime: row['create_time'] as int?,
-            updateTime: row['update_time'] as int?));
-  }
-
-  @override
-  Future<List<RealTimeFutureTick>> getAllFutureTick() async {
-    return _queryAdapter.queryList('SELECT * FROM future_tick',
-        mapper: (Map<String, Object?> row) => RealTimeFutureTick(
-            row['code'] as String?,
-            row['tick_time'] as String?,
-            row['open'] as int?,
-            row['underlying_price'] as double?,
-            row['bid_side_total_vol'] as int?,
-            row['ask_side_total_vol'] as int?,
-            row['avg_price'] as double?,
-            row['close'] as int?,
-            row['high'] as int?,
-            row['low'] as int?,
-            row['amount'] as int?,
-            row['total_amount'] as int?,
-            row['volume'] as int?,
-            row['total_volume'] as int?,
-            row['tick_type'] as int?,
-            row['chg_type'] as int?,
-            row['price_chg'] as int?,
-            row['pct_chg'] as double?,
-            row['simtrade'] as int?,
-            id: row['id'] as int?,
-            createTime: row['create_time'] as int?,
-            updateTime: row['update_time'] as int?));
-  }
-
-  @override
-  Future<void> deleteAllFutureTick() async {
-    await _queryAdapter.queryNoReturn('DELETE FROM future_tick WHERE id !=0');
-  }
-
-  @override
-  Future<void> insertFutureTick(List<RealTimeFutureTick> records) async {
-    await _realTimeFutureTickInsertionAdapter.insertList(
-        records, OnConflictStrategy.replace);
   }
 }
