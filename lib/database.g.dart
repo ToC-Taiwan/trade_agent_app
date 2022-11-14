@@ -65,8 +65,11 @@ class _$AppDatabase extends AppDatabase {
 
   BasickDao? _basicDaoInstance;
 
-  Future<sqflite.Database> open(String path, List<Migration> migrations,
-      [Callback? callback]) async {
+  Future<sqflite.Database> open(
+    String path,
+    List<Migration> migrations, [
+    Callback? callback,
+  ]) async {
     final databaseOptions = sqflite.OpenDatabaseOptions(
       version: 1,
       onConfigure: (database) async {
@@ -106,8 +109,10 @@ class _$AppDatabase extends AppDatabase {
 }
 
 class _$PickStockDao extends PickStockDao {
-  _$PickStockDao(this.database, this.changeListener)
-      : _queryAdapter = QueryAdapter(database),
+  _$PickStockDao(
+    this.database,
+    this.changeListener,
+  )   : _queryAdapter = QueryAdapter(database),
         _pickStockInsertionAdapter = InsertionAdapter(
             database,
             'pick_stock',
@@ -224,8 +229,10 @@ class _$PickStockDao extends PickStockDao {
 }
 
 class _$BasickDao extends BasickDao {
-  _$BasickDao(this.database, this.changeListener)
-      : _queryAdapter = QueryAdapter(database),
+  _$BasickDao(
+    this.database,
+    this.changeListener,
+  )   : _queryAdapter = QueryAdapter(database),
         _basicInsertionAdapter = InsertionAdapter(
             database,
             'basic',

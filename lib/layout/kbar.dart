@@ -35,11 +35,11 @@ class _KbarState extends State<Kbar> {
   Future<List<Candle>> fetchCandles(String stockNum, String startDate, String interval) async {
     var candleArr = <Candle>[];
     try {
-      final response = await http.get(Uri.parse('$tradeAgentURLPrefix/history/day_kbar/$stockNum/$startDate/$interval'));
+      final response = await http.get(Uri.parse('$tradeAgentURLPrefix/history/day-kbar/$stockNum/$startDate/$interval'));
       if (response.statusCode == 200) {
         for (final Map<String, dynamic> i in jsonDecode(response.body)) {
           var tmp = KbarData.fromJson(i);
-          var time = DateTime.parse(tmp.tickTime!);
+          var time = DateTime.parse(tmp.kbarTime!);
           candleArr.add(Candle(
               date: time.add(const Duration(hours: 8)),
               high: tmp.high!.toDouble(),
@@ -165,10 +165,10 @@ class _KbarState extends State<Kbar> {
 }
 
 class KbarData {
-  KbarData({this.tickTime, this.close, this.open, this.high, this.low, this.volume});
+  KbarData({this.kbarTime, this.close, this.open, this.high, this.low, this.volume});
 
   KbarData.fromJson(Map<String, dynamic> json) {
-    tickTime = json['tick_time'];
+    kbarTime = json['kbar_time'];
     close = json['close'];
     open = json['open'];
     high = json['high'];
@@ -178,7 +178,7 @@ class KbarData {
 
   Map<String, dynamic> toJson() {
     final data = <String, dynamic>{};
-    data['tick_time'] = tickTime;
+    data['kbar_time'] = kbarTime;
     data['close'] = close;
     data['open'] = open;
     data['high'] = high;
@@ -187,7 +187,7 @@ class KbarData {
     return data;
   }
 
-  String? tickTime;
+  String? kbarTime;
   num? close;
   num? open;
   num? high;

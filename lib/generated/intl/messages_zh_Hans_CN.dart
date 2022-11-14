@@ -26,6 +26,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "add": MessageLookupByLibrary.simpleMessage("增加"),
         "already_purchased": MessageLookupByLibrary.simpleMessage("已经购买?"),
         "balance": MessageLookupByLibrary.simpleMessage("损益"),
+        "buy": MessageLookupByLibrary.simpleMessage("买入"),
         "cancel": MessageLookupByLibrary.simpleMessage("取消"),
         "change_type": MessageLookupByLibrary.simpleMessage("涨跌"),
         "click_plus_to_add_stock":
@@ -41,6 +42,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("确定删除自选股吗？"),
         "developing": MessageLookupByLibrary.simpleMessage("开发中"),
         "display": MessageLookupByLibrary.simpleMessage("显示"),
+        "future": MessageLookupByLibrary.simpleMessage("期货"),
+        "future_trade": MessageLookupByLibrary.simpleMessage("期货交易"),
         "group": MessageLookupByLibrary.simpleMessage("分组"),
         "high": MessageLookupByLibrary.simpleMessage("高"),
         "input_must_not_empty": MessageLookupByLibrary.simpleMessage("输入不能为空"),
@@ -66,9 +69,11 @@ class MessageLookup extends MessageLookupByLibrary {
         "restore": MessageLookupByLibrary.simpleMessage("还原"),
         "restore_purchase": MessageLookupByLibrary.simpleMessage("还原购买"),
         "search": MessageLookupByLibrary.simpleMessage("搜寻"),
+        "sell": MessageLookupByLibrary.simpleMessage("卖出"),
         "settings": MessageLookupByLibrary.simpleMessage("设定"),
         "settings_of_notification":
             MessageLookupByLibrary.simpleMessage("通知设定"),
+        "stock": MessageLookupByLibrary.simpleMessage("股票"),
         "stock_dose_not_exist": MessageLookupByLibrary.simpleMessage("股票不存在"),
         "stock_number": MessageLookupByLibrary.simpleMessage("股票代号"),
         "strategy": MessageLookupByLibrary.simpleMessage("策略选股"),

@@ -2,6 +2,7 @@ import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:trade_agent_v2/database.dart';
 import 'package:trade_agent_v2/layout/balance.dart';
+import 'package:trade_agent_v2/layout/future_trade.dart';
 import 'package:trade_agent_v2/layout/pick_stock.dart';
 import 'package:trade_agent_v2/layout/strategy.dart';
 import 'package:trade_agent_v2/layout/targets.dart';
@@ -32,6 +33,9 @@ class _MyHomePageState extends State<MyHomePage> {
       StrategyPage(
         db: widget.db,
       ),
+      FutureTradePage(
+        db: widget.db,
+      ),
       PickStockPage(
         db: widget.db,
       ),
@@ -55,6 +59,7 @@ class _MyHomePageState extends State<MyHomePage> {
         items: const <Widget>[
           Icon(Icons.assignment_outlined, size: 30),
           Icon(Icons.call_to_action_rounded, size: 30),
+          Icon(Icons.account_balance_outlined, size: 30),
           Icon(Icons.dashboard_customize, size: 30),
           Icon(Icons.today_outlined, size: 30),
           Icon(Icons.money, size: 30),

@@ -201,5 +201,7 @@
         <string>3qcr597p9d.skadnetwork</string>
       </dict>
     </array>
-  </dict>
+  	<key>CADisableMinimumFrameDurationOnPhone</key>
+	<true/>
+</dict>
 </plist>

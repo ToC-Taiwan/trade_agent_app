@@ -53,5 +53,10 @@
   "read_only": "Read Only",
   "restore_purchase": "Restore Purchases",
   "success": "Success",
-  "loading": "Loading"
+  "loading": "Loading",
+  "future_trade": "Future Trade",
+  "stock": "Stock",
+  "future": "Future",
+  "buy": "Buy",
+  "sell": "Sell"
 }

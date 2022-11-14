@@ -17,7 +17,7 @@ class Targetspage extends StatefulWidget {
   final AppDatabase db;
 
   @override
-  _TargetspageState createState() => _TargetspageState();
+  State<Targetspage> createState() => _TargetspageState();
 }
 
 class _TargetspageState extends State<Targetspage> {
@@ -344,11 +344,10 @@ Future<List<Target>> fetchTargets(List<Target> current, num opt) async {
 }
 
 class Target {
-  Target({this.stock, this.stockId, this.tradeDay, this.rank, this.volume});
+  Target({this.stock, this.tradeDay, this.rank, this.volume});
 
   Target.fromJson(Map<String, dynamic> json) {
     stock = json['stock'] != null ? Stock.fromJson(json['stock']) : null;
-    stockId = json['stock_id'];
     tradeDay = json['trade_day'];
     rank = json['rank'];
     volume = json['volume'];
@@ -359,7 +358,6 @@ class Target {
     if (stock != null) {
       data['stock'] = stock!.toJson();
     }
-    data['stock_id'] = stockId;
     data['trade_day'] = tradeDay;
     data['rank'] = rank;
     data['volume'] = volume;
@@ -367,7 +365,6 @@ class Target {
   }
 
   Stock? stock;
-  num? stockId;
   String? tradeDay;
   num? rank;
   num? volume;

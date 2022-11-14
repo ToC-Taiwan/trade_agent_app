@@ -599,6 +599,56 @@ class S {
       args: [],
     );
   }
+
+  /// `Future Trade`
+  String get future_trade {
+    return Intl.message(
+      'Future Trade',
+      name: 'future_trade',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Stock`
+  String get stock {
+    return Intl.message(
+      'Stock',
+      name: 'stock',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Future`
+  String get future {
+    return Intl.message(
+      'Future',
+      name: 'future',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Buy`
+  String get buy {
+    return Intl.message(
+      'Buy',
+      name: 'buy',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Sell`
+  String get sell {
+    return Intl.message(
+      'Sell',
+      name: 'sell',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

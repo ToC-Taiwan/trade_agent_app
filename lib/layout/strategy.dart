@@ -389,7 +389,7 @@ void addTargets(String opt, BuildContext context) async {
 Future<List<Strategy>> fetchStrategy() async {
   var straregyArr = <Strategy>[];
   try {
-    final response = await http.get(Uri.parse('$tradeAgentURLPrefix/targets/quater'));
+    final response = await http.get(Uri.parse('$tradeAgentURLPrefix/analyze/reborn'));
     if (response.statusCode == 200) {
       for (final Map<String, dynamic> i in jsonDecode(response.body)) {
         straregyArr.add(Strategy.fromJson(i));

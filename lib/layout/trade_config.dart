@@ -44,7 +44,7 @@ class _TradeConfigPageState extends State<TradeConfigPage> {
           builder: (context, snapshot) {
             if (snapshot.hasData) {
               var data = snapshot.data!;
-              if (data.server == null) {
+              if (data.http == null) {
                 return Text(
                   S.of(context).no_data,
                   style: const TextStyle(
@@ -61,190 +61,183 @@ class _TradeConfigPageState extends State<TradeConfigPage> {
                   ExpansionTile(
                     leading: const Icon(Icons.computer, color: Colors.black),
                     title: const Text(
-                      'Server',
+                      'HTTP',
                       style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
                     ),
                     children: [
                       Padding(
                         padding: const EdgeInsets.only(left: 10, right: 10),
                         child: ListTile(
-                          title: const Text('Run Mode'),
-                          trailing: Text(data.server!.runMode!),
+                          title: const Text('Port'),
+                          trailing: Text(data.http!.port!),
                         ),
                       ),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 10, right: 10),
-                        child: ListTile(
-                          title: const Text('HTTP Port'),
-                          trailing: Text(data.server!.httpPort!),
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 10, right: 10),
-                        child: ListTile(
-                          title: const Text('Sinopac MQ SRV Host'),
-                          trailing: Text(data.server!.sinopacSrvHost!),
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 10, right: 10),
-                        child: ListTile(
-                          title: const Text('Sinopac MQ SRV Port'),
-                          trailing: Text(data.server!.sinopacSrvPort!),
-                        ),
-                      )
                     ],
                   ),
                   ExpansionTile(
                     leading: const Icon(Icons.document_scanner, color: Colors.black),
                     title: const Text(
-                      'Database',
+                      'Postgres',
                       style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
                     ),
                     children: [
                       Padding(
                         padding: const EdgeInsets.only(left: 10, right: 10),
                         child: ListTile(
-                          title: const Text('Host'),
-                          trailing: Text(data.database!.host!),
+                          title: const Text('Pool Max'),
+                          trailing: Text(data.postgres!.poolMax!.toString()),
                         ),
                       ),
                       Padding(
                         padding: const EdgeInsets.only(left: 10, right: 10),
                         child: ListTile(
-                          title: const Text('Port'),
-                          trailing: Text(data.database!.port!),
+                          title: const Text('DB Name'),
+                          trailing: Text(data.postgres!.dbName!),
                         ),
                       ),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 10, right: 10),
-                        child: ListTile(
-                          title: const Text('User'),
-                          trailing: Text(data.database!.user!),
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 10, right: 10),
-                        child: ListTile(
-                          title: const Text('Database'),
-                          trailing: Text(data.database!.database!),
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 10, right: 10),
-                        child: ListTile(
-                          title: const Text('Time Zone'),
-                          trailing: Text(data.database!.timeZone!),
-                        ),
-                      )
                     ],
                   ),
                   ExpansionTile(
                     leading: const Icon(Icons.radio, color: Colors.black),
                     title: const Text(
-                      'MQTT',
+                      'Sinopac',
                       style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
                     ),
                     children: [
                       Padding(
                         padding: const EdgeInsets.only(left: 10, right: 10),
                         child: ListTile(
-                          title: const Text('Host'),
-                          trailing: Text(data.mqtt!.host!),
+                          title: const Text('Pool Max'),
+                          trailing: Text(data.sinopac!.poolMax!.toString()),
                         ),
                       ),
                       Padding(
                         padding: const EdgeInsets.only(left: 10, right: 10),
                         child: ListTile(
-                          title: const Text('Port'),
-                          trailing: Text(data.mqtt!.port!),
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 10, right: 10),
-                        child: ListTile(
-                          title: const Text('User'),
-                          trailing: Text(data.mqtt!.user!),
+                          title: const Text('URL'),
+                          trailing: Text(data.sinopac!.url!),
                         ),
                       ),
                     ],
                   ),
-                  ExpansionTile(
-                    leading: const Icon(Icons.money, color: Colors.black),
-                    title: const Text(
-                      'Trade Switch',
-                      style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
-                    ),
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.only(left: 10, right: 10),
-                        child: ListTile(
-                          title: const Text('Simulation'),
-                          trailing: Text(data.tradeSwitch!.simulation!.toString()),
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 10, right: 10),
-                        child: ListTile(
-                          title: const Text('Buy'),
-                          trailing: Text(data.tradeSwitch!.buy!.toString()),
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 10, right: 10),
-                        child: ListTile(
-                          title: const Text('Sell'),
-                          trailing: Text(data.tradeSwitch!.sell!.toString()),
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 10, right: 10),
-                        child: ListTile(
-                          title: const Text('Sell First'),
-                          trailing: Text(data.tradeSwitch!.sellFirst!.toString()),
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 10, right: 10),
-                        child: ListTile(
-                          title: const Text('Buy Later'),
-                          trailing: Text(data.tradeSwitch!.buyLater!.toString()),
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 10, right: 10),
-                        child: ListTile(
-                          title: const Text('Mean Time Forward'),
-                          trailing: Text(data.tradeSwitch!.meanTimeForward!.toString()),
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 10, right: 10),
-                        child: ListTile(
-                          title: const Text('Mean Time Reverse'),
-                          trailing: Text(data.tradeSwitch!.meanTimeReverse!.toString()),
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 10, right: 10),
-                        child: ListTile(
-                          title: const Text('Forward MAX'),
-                          trailing: Text(data.tradeSwitch!.forwardMax!.toString()),
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 10, right: 10),
-                        child: ListTile(
-                          title: const Text('Reverse MAX'),
-                          trailing: Text(data.tradeSwitch!.reverseMax!.toString()),
-                        ),
-                      ),
-                    ],
-                  ),
+                  // ExpansionTile(
+                  //   leading: const Icon(Icons.money, color: Colors.black),
+                  //   title: const Text(
+                  //     'Trade Switch',
+                  //     style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
+                  //   ),
+                  //   children: [
+                  //     Padding(
+                  //       padding: const EdgeInsets.only(left: 10, right: 10),
+                  //       child: ListTile(
+                  //         title: const Text('Simulation'),
+                  //         trailing: Text(data.tradeSwitch!.simulation!.toString()),
+                  //       ),
+                  //     ),
+                  //     Padding(
+                  //       padding: const EdgeInsets.only(left: 10, right: 10),
+                  //       child: ListTile(
+                  //         title: const Text('Buy'),
+                  //         trailing: Text(data.tradeSwitch!.buy!.toString()),
+                  //       ),
+                  //     ),
+                  //     Padding(
+                  //       padding: const EdgeInsets.only(left: 10, right: 10),
+                  //       child: ListTile(
+                  //         title: const Text('Sell'),
+                  //         trailing: Text(data.tradeSwitch!.sell!.toString()),
+                  //       ),
+                  //     ),
+                  //     Padding(
+                  //       padding: const EdgeInsets.only(left: 10, right: 10),
+                  //       child: ListTile(
+                  //         title: const Text('Sell First'),
+                  //         trailing: Text(data.tradeSwitch!.sellFirst!.toString()),
+                  //       ),
+                  //     ),
+                  //     Padding(
+                  //       padding: const EdgeInsets.only(left: 10, right: 10),
+                  //       child: ListTile(
+                  //         title: const Text('Buy Later'),
+                  //         trailing: Text(data.tradeSwitch!.buyLater!.toString()),
+                  //       ),
+                  //     ),
+                  //     Padding(
+                  //       padding: const EdgeInsets.only(left: 10, right: 10),
+                  //       child: ListTile(
+                  //         title: const Text('Mean Time Forward'),
+                  //         trailing: Text(data.tradeSwitch!.meanTimeForward!.toString()),
+                  //       ),
+                  //     ),
+                  //     Padding(
+                  //       padding: const EdgeInsets.only(left: 10, right: 10),
+                  //       child: ListTile(
+                  //         title: const Text('Mean Time Reverse'),
+                  //         trailing: Text(data.tradeSwitch!.meanTimeReverse!.toString()),
+                  //       ),
+                  //     ),
+                  //     Padding(
+                  //       padding: const EdgeInsets.only(left: 10, right: 10),
+                  //       child: ListTile(
+                  //         title: const Text('Forward MAX'),
+                  //         trailing: Text(data.tradeSwitch!.forwardMax!.toString()),
+                  //       ),
+                  //     ),
+                  //     Padding(
+                  //       padding: const EdgeInsets.only(left: 10, right: 10),
+                  //       child: ListTile(
+                  //         title: const Text('Reverse MAX'),
+                  //         trailing: Text(data.tradeSwitch!.reverseMax!.toString()),
+                  //       ),
+                  //     ),
+                  //     Padding(
+                  //       padding: const EdgeInsets.only(left: 10, right: 10),
+                  //       child: ListTile(
+                  //         title: const Text('Hold Time From Open'),
+                  //         trailing: Text(data.tradeSwitch!.holdTimeFromOpen!.toString()),
+                  //       ),
+                  //     ),
+                  //     Padding(
+                  //       padding: const EdgeInsets.only(left: 10, right: 10),
+                  //       child: ListTile(
+                  //         title: const Text('Total Open Time'),
+                  //         trailing: Text(data.tradeSwitch!.totalOpenTime!.toString()),
+                  //       ),
+                  //     ),
+                  //     Padding(
+                  //       padding: const EdgeInsets.only(left: 10, right: 10),
+                  //       child: ListTile(
+                  //         title: const Text('Trade IN Wait Time'),
+                  //         trailing: Text(data.tradeSwitch!.tradeInWaitTime!.toString()),
+                  //       ),
+                  //     ),
+                  //     Padding(
+                  //       padding: const EdgeInsets.only(left: 10, right: 10),
+                  //       child: ListTile(
+                  //         title: const Text('Trade OUT Wait Time'),
+                  //         trailing: Text(data.tradeSwitch!.tradeOutWaitTime!.toString()),
+                  //       ),
+                  //     ),
+                  //     Padding(
+                  //       padding: const EdgeInsets.only(left: 10, right: 10),
+                  //       child: ListTile(
+                  //         title: const Text('Trade IN End Time'),
+                  //         trailing: Text(data.tradeSwitch!.tradeInEndTime!.toString()),
+                  //       ),
+                  //     ),
+                  //     Padding(
+                  //       padding: const EdgeInsets.only(left: 10, right: 10),
+                  //       child: ListTile(
+                  //         title: const Text('Trade OUT Wait Time'),
+                  //         trailing: Text(data.tradeSwitch!.tradeOutEndTime!.toString()),
+                  //       ),
+                  //     ),
+                  //   ],
+                  // ),
                   ExpansionTile(
                     leading: const Icon(Icons.currency_exchange, color: Colors.black),
                     title: const Text(
-                      'Trade',
+                      'History',
                       style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
                     ),
                     children: [
@@ -252,104 +245,62 @@ class _TradeConfigPageState extends State<TradeConfigPage> {
                         padding: const EdgeInsets.only(left: 10, right: 10),
                         child: ListTile(
                           title: const Text('History Close Period'),
-                          trailing: Text(data.trade!.historyClosePeriod!.toString()),
+                          trailing: Text(data.history!.historyClosePeriod!.toString()),
                         ),
                       ),
                       Padding(
                         padding: const EdgeInsets.only(left: 10, right: 10),
                         child: ListTile(
                           title: const Text('History Tick Period'),
-                          trailing: Text(data.trade!.historyTickPeriod!.toString()),
+                          trailing: Text(data.history!.historyTickPeriod!.toString()),
                         ),
                       ),
                       Padding(
                         padding: const EdgeInsets.only(left: 10, right: 10),
                         child: ListTile(
                           title: const Text('History Kbar Period'),
-                          trailing: Text(data.trade!.historyKbarPeriod!.toString()),
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 10, right: 10),
-                        child: ListTile(
-                          title: const Text('Hold Time From Open'),
-                          trailing: Text(data.trade!.holdTimeFromOpen!.toString()),
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 10, right: 10),
-                        child: ListTile(
-                          title: const Text('Total Open Time'),
-                          trailing: Text(data.trade!.totalOpenTime!.toString()),
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 10, right: 10),
-                        child: ListTile(
-                          title: const Text('Trade IN Wait Time'),
-                          trailing: Text(data.trade!.tradeInWaitTime!.toString()),
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 10, right: 10),
-                        child: ListTile(
-                          title: const Text('Trade OUT Wait Time'),
-                          trailing: Text(data.trade!.tradeOutWaitTime!.toString()),
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 10, right: 10),
-                        child: ListTile(
-                          title: const Text('Trade IN End Time'),
-                          trailing: Text(data.trade!.tradeInEndTime!.toString()),
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 10, right: 10),
-                        child: ListTile(
-                          title: const Text('Trade OUT Wait Time'),
-                          trailing: Text(data.trade!.tradeOutEndTime!.toString()),
+                          trailing: Text(data.history!.historyKbarPeriod!.toString()),
                         ),
                       ),
                     ],
                   ),
-                  ExpansionTile(
-                    leading: const Icon(Icons.account_balance_wallet, color: Colors.black),
-                    title: const Text(
-                      'Quota',
-                      style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
-                    ),
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.only(left: 10, right: 10),
-                        child: ListTile(
-                          title: const Text('Trade Quota'),
-                          trailing: Text(data.quota!.tradeQuota!.toString()),
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 10, right: 10),
-                        child: ListTile(
-                          title: const Text('Trade Tax Ratio'),
-                          trailing: Text(data.quota!.tradeTaxRatio!.toString()),
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 10, right: 10),
-                        child: ListTile(
-                          title: const Text('Trade Fee Ratio'),
-                          trailing: Text(data.quota!.tradeFeeRatio!.toString()),
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 10, right: 10),
-                        child: ListTile(
-                          title: const Text('Fee Discount'),
-                          trailing: Text(data.quota!.feeDiscount!.toString()),
-                        ),
-                      ),
-                    ],
-                  ),
+                  // ExpansionTile(
+                  //   leading: const Icon(Icons.account_balance_wallet, color: Colors.black),
+                  //   title: const Text(
+                  //     'Quota',
+                  //     style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
+                  //   ),
+                  //   children: [
+                  //     Padding(
+                  //       padding: const EdgeInsets.only(left: 10, right: 10),
+                  //       child: ListTile(
+                  //         title: const Text('Trade Quota'),
+                  //         trailing: Text(data.quota!.tradeQuota!.toString()),
+                  //       ),
+                  //     ),
+                  //     Padding(
+                  //       padding: const EdgeInsets.only(left: 10, right: 10),
+                  //       child: ListTile(
+                  //         title: const Text('Trade Tax Ratio'),
+                  //         trailing: Text(data.quota!.tradeTaxRatio!.toString()),
+                  //       ),
+                  //     ),
+                  //     Padding(
+                  //       padding: const EdgeInsets.only(left: 10, right: 10),
+                  //       child: ListTile(
+                  //         title: const Text('Trade Fee Ratio'),
+                  //         trailing: Text(data.quota!.tradeFeeRatio!.toString()),
+                  //       ),
+                  //     ),
+                  //     Padding(
+                  //       padding: const EdgeInsets.only(left: 10, right: 10),
+                  //       child: ListTile(
+                  //         title: const Text('Fee Discount'),
+                  //         trailing: Text(data.quota!.feeDiscount!.toString()),
+                  //       ),
+                  //     ),
+                  //   ],
+                  // ),
                 ],
               );
             }
@@ -366,7 +317,7 @@ class _TradeConfigPageState extends State<TradeConfigPage> {
 
 Future<Config> fetchConfig() async {
   try {
-    final response = await http.get(Uri.parse('$tradeAgentURLPrefix/config'));
+    final response = await http.get(Uri.parse('$tradeAgentURLPrefix/basic/config'));
     if (response.statusCode == 200) {
       return Config.fromJson(jsonDecode(response.body));
     } else {
@@ -378,36 +329,71 @@ Future<Config> fetchConfig() async {
 }
 
 class Config {
-  Config({this.server, this.database, this.mqtt, this.tradeSwitch, this.trade, this.quota, this.targetCond, this.analyze, this.schedule});
+  Config(
+      {this.http,
+      this.postgres,
+      this.sinopac,
+      this.rabbitmq,
+      this.simulation,
+      this.stockTradeSwitch,
+      this.futureTradeSwitch,
+      this.history,
+      this.quota,
+      this.targetCond,
+      this.stockAnalyze,
+      this.futureAnalyze});
 
   Config.fromJson(Map<String, dynamic> json) {
-    server = json['server'] != null ? Server.fromJson(json['server']) : null;
-    database = json['database'] != null ? Database.fromJson(json['database']) : null;
-    mqtt = json['mqtt'] != null ? Mqtt.fromJson(json['mqtt']) : null;
-    tradeSwitch = json['trade_switch'] != null ? TradeSwitch.fromJson(json['trade_switch']) : null;
-    trade = json['trade'] != null ? Trade.fromJson(json['trade']) : null;
+    http = json['http'] != null ? Http.fromJson(json['http']) : null;
+    postgres = json['postgres'] != null ? Postgres.fromJson(json['postgres']) : null;
+    sinopac = json['sinopac'] != null ? Sinopac.fromJson(json['sinopac']) : null;
+    rabbitmq = json['rabbitmq'] != null ? Rabbitmq.fromJson(json['rabbitmq']) : null;
+    simulation = json['simulation'];
+    stockTradeSwitch = json['stock_trade_switch'] != null ? StockTradeSwitch.fromJson(json['stock_trade_switch']) : null;
+    futureTradeSwitch = json['future_trade_switch'] != null ? FutureTradeSwitch.fromJson(json['future_trade_switch']) : null;
+    history = json['history'] != null ? History.fromJson(json['history']) : null;
     quota = json['quota'] != null ? Quota.fromJson(json['quota']) : null;
     targetCond = json['target_cond'] != null ? TargetCond.fromJson(json['target_cond']) : null;
-    analyze = json['analyze'] != null ? Analyze.fromJson(json['analyze']) : null;
-    schedule = json['schedule'] != null ? Schedule.fromJson(json['schedule']) : null;
+    stockAnalyze = json['stock_analyze'] != null ? StockAnalyze.fromJson(json['stock_analyze']) : null;
+    futureAnalyze = json['future_analyze'] != null ? FutureAnalyze.fromJson(json['future_analyze']) : null;
   }
 
+  Http? http;
+  Postgres? postgres;
+  Sinopac? sinopac;
+  Rabbitmq? rabbitmq;
+  bool? simulation;
+  StockTradeSwitch? stockTradeSwitch;
+  FutureTradeSwitch? futureTradeSwitch;
+  History? history;
+  Quota? quota;
+  TargetCond? targetCond;
+  StockAnalyze? stockAnalyze;
+  FutureAnalyze? futureAnalyze;
+
   Map<String, dynamic> toJson() {
-    var data = <String, dynamic>{};
-    if (server != null) {
-      data['server'] = server!.toJson();
+    final data = <String, dynamic>{};
+    if (http != null) {
+      data['http'] = http!.toJson();
     }
-    if (database != null) {
-      data['database'] = database!.toJson();
+    if (postgres != null) {
+      data['postgres'] = postgres!.toJson();
     }
-    if (mqtt != null) {
-      data['mqtt'] = mqtt!.toJson();
+    if (sinopac != null) {
+      data['sinopac'] = sinopac!.toJson();
     }
-    if (tradeSwitch != null) {
-      data['trade_switch'] = tradeSwitch!.toJson();
+    if (rabbitmq != null) {
+      data['rabbitmq'] = rabbitmq!.toJson();
     }
-    if (trade != null) {
-      data['trade'] = trade!.toJson();
+    data['simulation'] = simulation;
+    if (stockTradeSwitch != null) {
+      data['stock_trade_switch'] = stockTradeSwitch!.toJson();
+    }
+    if (futureTradeSwitch != null) {
+      data['future_trade_switch'] = futureTradeSwitch!.toJson();
+    }
+    if (history != null) {
+      data['history'] = history!.toJson();
     }
     if (quota != null) {
       data['quota'] = quota!.toJson();
@@ -415,349 +401,324 @@ class Config {
     if (targetCond != null) {
       data['target_cond'] = targetCond!.toJson();
     }
-    if (analyze != null) {
-      data['analyze'] = analyze!.toJson();
+    if (stockAnalyze != null) {
+      data['stock_analyze'] = stockAnalyze!.toJson();
     }
-    if (schedule != null) {
-      data['schedule'] = schedule!.toJson();
+    if (futureAnalyze != null) {
+      data['future_analyze'] = futureAnalyze!.toJson();
     }
     return data;
   }
-
-  Server? server;
-  Database? database;
-  Mqtt? mqtt;
-  TradeSwitch? tradeSwitch;
-  Trade? trade;
-  Quota? quota;
-  TargetCond? targetCond;
-  Analyze? analyze;
-  Schedule? schedule;
 }
 
-class Server {
-  Server({this.runMode, this.httpPort, this.sinopacSrvHost, this.sinopacSrvPort});
-
-  Server.fromJson(Map<String, dynamic> json) {
-    runMode = json['run_mode'];
-    httpPort = json['http_port'];
-    sinopacSrvHost = json['sinopac_srv_host'];
-    sinopacSrvPort = json['sinopac_srv_port'];
-  }
-
-  Map<String, dynamic> toJson() {
-    var data = <String, dynamic>{};
-    data['run_mode'] = runMode;
-    data['http_port'] = httpPort;
-    data['sinopac_srv_host'] = sinopacSrvHost;
-    data['sinopac_srv_port'] = sinopacSrvPort;
-    return data;
-  }
-
-  String? runMode;
-  String? httpPort;
-  String? sinopacSrvHost;
-  String? sinopacSrvPort;
-}
-
-class Database {
-  Database({this.host, this.port, this.user, this.passwd, this.database, this.timeZone});
-
-  Database.fromJson(Map<String, dynamic> json) {
-    host = json['host'];
+class Http {
+  Http({this.port});
+  Http.fromJson(Map<String, dynamic> json) {
     port = json['port'];
-    user = json['user'];
-    passwd = json['passwd'];
-    database = json['database'];
-    timeZone = json['time_zone'];
   }
-
-  Map<String, dynamic> toJson() {
-    var data = <String, dynamic>{};
-    data['host'] = host;
-    data['port'] = port;
-    data['user'] = user;
-    data['passwd'] = passwd;
-    data['database'] = database;
-    data['time_zone'] = timeZone;
-    return data;
-  }
-
-  String? host;
   String? port;
-  String? user;
-  String? passwd;
-  String? database;
-  String? timeZone;
-}
-
-class Mqtt {
-  Mqtt({this.host, this.port, this.user, this.passwd, this.clientId, this.caPath, this.certPath, this.keyPath});
-
-  Mqtt.fromJson(Map<String, dynamic> json) {
-    host = json['host'];
-    port = json['port'];
-    user = json['user'];
-    passwd = json['passwd'];
-    clientId = json['client_id'];
-    caPath = json['ca_path'];
-    certPath = json['cert_path'];
-    keyPath = json['key_path'];
-  }
 
   Map<String, dynamic> toJson() {
-    var data = <String, dynamic>{};
-    data['host'] = host;
+    final data = <String, dynamic>{};
     data['port'] = port;
-    data['user'] = user;
-    data['passwd'] = passwd;
-    data['client_id'] = clientId;
-    data['ca_path'] = caPath;
-    data['cert_path'] = certPath;
-    data['key_path'] = keyPath;
     return data;
   }
-
-  String? host;
-  String? port;
-  String? user;
-  String? passwd;
-  String? clientId;
-  String? caPath;
-  String? certPath;
-  String? keyPath;
 }
 
-class TradeSwitch {
-  TradeSwitch(
-      {this.simulation, this.buy, this.sell, this.sellFirst, this.buyLater, this.meanTimeForward, this.meanTimeReverse, this.forwardMax, this.reverseMax});
-
-  TradeSwitch.fromJson(Map<String, dynamic> json) {
-    simulation = json['simulation'];
-    buy = json['buy'];
-    sell = json['sell'];
-    sellFirst = json['sell_first'];
-    buyLater = json['buy_later'];
-    meanTimeForward = json['mean_time_forward'];
-    meanTimeReverse = json['mean_time_reverse'];
-    forwardMax = json['forward_max'];
-    reverseMax = json['reverse_max'];
+class Postgres {
+  Postgres({this.poolMax, this.url, this.dbName});
+  Postgres.fromJson(Map<String, dynamic> json) {
+    poolMax = json['pool_max'];
+    url = json['url'];
+    dbName = json['db_name'];
   }
+  int? poolMax;
+  String? url;
+  String? dbName;
 
   Map<String, dynamic> toJson() {
-    var data = <String, dynamic>{};
-    data['simulation'] = simulation;
-    data['buy'] = buy;
-    data['sell'] = sell;
-    data['sell_first'] = sellFirst;
-    data['buy_later'] = buyLater;
-    data['mean_time_forward'] = meanTimeForward;
-    data['mean_time_reverse'] = meanTimeReverse;
-    data['forward_max'] = forwardMax;
-    data['reverse_max'] = reverseMax;
+    final data = <String, dynamic>{};
+    data['pool_max'] = poolMax;
+    data['url'] = url;
+    data['db_name'] = dbName;
     return data;
   }
-
-  bool? simulation;
-  bool? buy;
-  bool? sell;
-  bool? sellFirst;
-  bool? buyLater;
-  num? meanTimeForward;
-  num? meanTimeReverse;
-  num? forwardMax;
-  num? reverseMax;
 }
 
-class Trade {
-  Trade(
-      {this.historyClosePeriod,
-      this.historyTickPeriod,
-      this.historyKbarPeriod,
-      this.holdTimeFromOpen,
-      this.totalOpenTime,
-      this.tradeInWaitTime,
-      this.tradeOutWaitTime,
-      this.tradeInEndTime,
-      this.tradeOutEndTime});
+class Sinopac {
+  Sinopac({this.poolMax, this.url});
+  Sinopac.fromJson(Map<String, dynamic> json) {
+    poolMax = json['pool_max'];
+    url = json['url'];
+  }
+  int? poolMax;
+  String? url;
 
-  Trade.fromJson(Map<String, dynamic> json) {
+  Map<String, dynamic> toJson() {
+    final data = <String, dynamic>{};
+    data['pool_max'] = poolMax;
+    data['url'] = url;
+    return data;
+  }
+}
+
+class Rabbitmq {
+  Rabbitmq({this.url, this.exchange, this.waitTime, this.attempts});
+  Rabbitmq.fromJson(Map<String, dynamic> json) {
+    url = json['url'];
+    exchange = json['exchange'];
+    waitTime = json['wait_time'];
+    attempts = json['attempts'];
+  }
+  String? url;
+  String? exchange;
+  int? waitTime;
+  int? attempts;
+
+  Map<String, dynamic> toJson() {
+    final data = <String, dynamic>{};
+    data['url'] = url;
+    data['exchange'] = exchange;
+    data['wait_time'] = waitTime;
+    data['attempts'] = attempts;
+    return data;
+  }
+}
+
+class StockTradeSwitch {
+  StockTradeSwitch(
+      {this.allowTrade, this.holdTimeFromOpen, this.totalOpenTime, this.tradeInEndTime, this.tradeInWaitTime, this.tradeOutWaitTime, this.cancelWaitTime});
+  StockTradeSwitch.fromJson(Map<String, dynamic> json) {
+    allowTrade = json['allow_trade'];
+    holdTimeFromOpen = json['hold_time_from_open'];
+    totalOpenTime = json['total_open_time'];
+    tradeInEndTime = json['trade_in_end_time'];
+    tradeInWaitTime = json['trade_in_wait_time'];
+    tradeOutWaitTime = json['trade_out_wait_time'];
+    cancelWaitTime = json['cancel_wait_time'];
+  }
+  bool? allowTrade;
+  int? holdTimeFromOpen;
+  int? totalOpenTime;
+  int? tradeInEndTime;
+  int? tradeInWaitTime;
+  int? tradeOutWaitTime;
+  int? cancelWaitTime;
+
+  Map<String, dynamic> toJson() {
+    final data = <String, dynamic>{};
+    data['allow_trade'] = allowTrade;
+    data['hold_time_from_open'] = holdTimeFromOpen;
+    data['total_open_time'] = totalOpenTime;
+    data['trade_in_end_time'] = tradeInEndTime;
+    data['trade_in_wait_time'] = tradeInWaitTime;
+    data['trade_out_wait_time'] = tradeOutWaitTime;
+    data['cancel_wait_time'] = cancelWaitTime;
+    return data;
+  }
+}
+
+class FutureTradeSwitch {
+  FutureTradeSwitch({this.allowTrade, this.quantity, this.tradeInWaitTime, this.tradeOutWaitTime, this.cancelWaitTime, this.tradeTimeRange});
+  FutureTradeSwitch.fromJson(Map<String, dynamic> json) {
+    allowTrade = json['allow_trade'];
+    quantity = json['quantity'];
+    tradeInWaitTime = json['trade_in_wait_time'];
+    tradeOutWaitTime = json['trade_out_wait_time'];
+    cancelWaitTime = json['cancel_wait_time'];
+    tradeTimeRange = json['trade_time_range'] != null ? TradeTimeRange.fromJson(json['trade_time_range']) : null;
+  }
+  bool? allowTrade;
+  int? quantity;
+  int? tradeInWaitTime;
+  int? tradeOutWaitTime;
+  int? cancelWaitTime;
+  TradeTimeRange? tradeTimeRange;
+
+  Map<String, dynamic> toJson() {
+    final data = <String, dynamic>{};
+    data['allow_trade'] = allowTrade;
+    data['quantity'] = quantity;
+    data['trade_in_wait_time'] = tradeInWaitTime;
+    data['trade_out_wait_time'] = tradeOutWaitTime;
+    data['cancel_wait_time'] = cancelWaitTime;
+    if (tradeTimeRange != null) {
+      data['trade_time_range'] = tradeTimeRange!.toJson();
+    }
+    return data;
+  }
+}
+
+class TradeTimeRange {
+  TradeTimeRange({this.firstPartDuration, this.secondPartDuration});
+  TradeTimeRange.fromJson(Map<String, dynamic> json) {
+    firstPartDuration = json['first_part_duration'];
+    secondPartDuration = json['second_part_duration'];
+  }
+  int? firstPartDuration;
+  int? secondPartDuration;
+
+  Map<String, dynamic> toJson() {
+    final data = <String, dynamic>{};
+    data['first_part_duration'] = firstPartDuration;
+    data['second_part_duration'] = secondPartDuration;
+    return data;
+  }
+}
+
+class History {
+  History({this.historyClosePeriod, this.historyTickPeriod, this.historyKbarPeriod});
+  History.fromJson(Map<String, dynamic> json) {
     historyClosePeriod = json['history_close_period'];
     historyTickPeriod = json['history_tick_period'];
     historyKbarPeriod = json['history_kbar_period'];
-    holdTimeFromOpen = json['hold_time_from_open'];
-    totalOpenTime = json['total_open_time'];
-    tradeInWaitTime = json['trade_in_wait_time'];
-    tradeOutWaitTime = json['trade_out_wait_time'];
-    tradeInEndTime = json['trade_in_end_time'];
-    tradeOutEndTime = json['trade_out_end_time'];
   }
+  int? historyClosePeriod;
+  int? historyTickPeriod;
+  int? historyKbarPeriod;
 
   Map<String, dynamic> toJson() {
-    var data = <String, dynamic>{};
+    final data = <String, dynamic>{};
     data['history_close_period'] = historyClosePeriod;
     data['history_tick_period'] = historyTickPeriod;
     data['history_kbar_period'] = historyKbarPeriod;
-    data['hold_time_from_open'] = holdTimeFromOpen;
-    data['total_open_time'] = totalOpenTime;
-    data['trade_in_wait_time'] = tradeInWaitTime;
-    data['trade_out_wait_time'] = tradeOutWaitTime;
-    data['trade_in_end_time'] = tradeInEndTime;
-    data['trade_out_end_time'] = tradeOutEndTime;
     return data;
   }
-
-  num? historyClosePeriod;
-  num? historyTickPeriod;
-  num? historyKbarPeriod;
-  num? holdTimeFromOpen;
-  num? totalOpenTime;
-  num? tradeInWaitTime;
-  num? tradeOutWaitTime;
-  num? tradeInEndTime;
-  num? tradeOutEndTime;
 }
 
 class Quota {
-  Quota({this.tradeQuota, this.tradeTaxRatio, this.tradeFeeRatio, this.feeDiscount});
-
+  Quota({this.stockTradeQuota, this.stockFeeDiscount, this.futureTradeFee});
   Quota.fromJson(Map<String, dynamic> json) {
-    tradeQuota = json['trade_quota'];
-    tradeTaxRatio = json['trade_tax_ratio'];
-    tradeFeeRatio = json['trade_fee_ratio'];
-    feeDiscount = json['fee_discount'];
+    stockTradeQuota = json['stock_trade_quota'];
+    stockFeeDiscount = json['stock_fee_discount'];
+    futureTradeFee = json['future_trade_fee'];
   }
+  int? stockTradeQuota;
+  double? stockFeeDiscount;
+  int? futureTradeFee;
 
   Map<String, dynamic> toJson() {
-    var data = <String, dynamic>{};
-    data['trade_quota'] = tradeQuota;
-    data['trade_tax_ratio'] = tradeTaxRatio;
-    data['trade_fee_ratio'] = tradeFeeRatio;
-    data['fee_discount'] = feeDiscount;
+    final data = <String, dynamic>{};
+    data['stock_trade_quota'] = stockTradeQuota;
+    data['stock_fee_discount'] = stockFeeDiscount;
+    data['future_trade_fee'] = futureTradeFee;
     return data;
   }
-
-  num? tradeQuota;
-  num? tradeTaxRatio;
-  num? tradeFeeRatio;
-  num? feeDiscount;
 }
 
 class TargetCond {
-  TargetCond({this.limitPriceLow, this.limitPriceHigh, this.limitVolume, this.blackStock, this.blackCategory, this.realTimeTargetsCount});
-
+  TargetCond({this.blackStock, this.blackCategory, this.realTimeRank, this.limitVolume, this.priceLimit});
   TargetCond.fromJson(Map<String, dynamic> json) {
-    limitPriceLow = json['limit_price_low'];
-    limitPriceHigh = json['limit_price_high'];
+    blackStock = json['black_stock'].cast<String>();
+    blackCategory = json['black_category'].cast<String>();
+    realTimeRank = json['real_time_rank'];
     limitVolume = json['limit_volume'];
-    blackStock = List.from(json['black_stock']);
-    blackCategory = List.from(json['black_category']);
-    realTimeTargetsCount = json['real_time_targets_count'];
+    if (json['price_limit'] != null) {
+      priceLimit = <PriceLimit>[];
+      json['price_limit'].forEach((v) {
+        priceLimit!.add(PriceLimit.fromJson(v));
+      });
+    }
   }
-
-  Map<String, dynamic> toJson() {
-    var data = <String, dynamic>{};
-    data['limit_price_low'] = limitPriceLow;
-    data['limit_price_high'] = limitPriceHigh;
-    data['limit_volume'] = limitVolume;
-    data['black_stock'] = blackStock;
-    data['black_category'] = blackCategory;
-    data['real_time_targets_count'] = realTimeTargetsCount;
-    return data;
-  }
-
-  num? limitPriceLow;
-  num? limitPriceHigh;
-  num? limitVolume;
   List<String>? blackStock;
   List<String>? blackCategory;
-  num? realTimeTargetsCount;
+  int? realTimeRank;
+  int? limitVolume;
+  List<PriceLimit>? priceLimit;
+
+  Map<String, dynamic> toJson() {
+    final data = <String, dynamic>{};
+    data['black_stock'] = blackStock;
+    data['black_category'] = blackCategory;
+    data['real_time_rank'] = realTimeRank;
+    data['limit_volume'] = limitVolume;
+    if (priceLimit != null) {
+      data['price_limit'] = priceLimit!.map((v) => v.toJson()).toList();
+    }
+    return data;
+  }
 }
 
-class Analyze {
-  Analyze(
-      {this.closeChangeRatioLow,
-      this.closeChangeRatioHigh,
-      this.openCloseChangeRatioLow,
-      this.openCloseChangeRatioHigh,
-      this.outInRatio,
-      this.inOutRatio,
-      this.volumePrLow,
-      this.volumePrHigh,
-      this.tickAnalyzeMinPeriod,
-      this.tickAnalyzeMaxPeriod,
-      this.rsiMinCount,
-      this.rsiHigh,
-      this.rsiLow,
-      this.maxLoss});
+class PriceLimit {
+  PriceLimit({this.low, this.high});
+  PriceLimit.fromJson(Map<String, dynamic> json) {
+    low = json['low'];
+    high = json['high'];
+  }
+  int? low;
+  int? high;
 
-  Analyze.fromJson(Map<String, dynamic> json) {
+  Map<String, dynamic> toJson() {
+    final data = <String, dynamic>{};
+    data['low'] = low;
+    data['high'] = high;
+    return data;
+  }
+}
+
+class StockAnalyze {
+  StockAnalyze(
+      {this.maxHoldTime,
+      this.closeChangeRatioLow,
+      this.closeChangeRatioHigh,
+      this.allOutInRatio,
+      this.allInOutRatio,
+      this.volumePrLimit,
+      this.tickAnalyzePeriod,
+      this.rsiMinCount,
+      this.maPeriod});
+  StockAnalyze.fromJson(Map<String, dynamic> json) {
+    maxHoldTime = json['max_hold_time'];
     closeChangeRatioLow = json['close_change_ratio_low'];
     closeChangeRatioHigh = json['close_change_ratio_high'];
-    openCloseChangeRatioLow = json['open_close_change_ratio_low'];
-    openCloseChangeRatioHigh = json['open_close_change_ratio_high'];
-    outInRatio = json['out_in_ratio'];
-    inOutRatio = json['in_out_ratio'];
-    volumePrLow = json['volume_pr_low'];
-    volumePrHigh = json['volume_pr_high'];
-    tickAnalyzeMinPeriod = json['tick_analyze_min_period'];
-    tickAnalyzeMaxPeriod = json['tick_analyze_max_period'];
+    allOutInRatio = json['all_out_in_ratio'];
+    allInOutRatio = json['all_in_out_ratio'];
+    volumePrLimit = json['volume_pr_limit'];
+    tickAnalyzePeriod = json['tick_analyze_period'];
     rsiMinCount = json['rsi_min_count'];
-    rsiHigh = json['rsi_high'];
-    rsiLow = json['rsi_low'];
-    maxLoss = json['max_loss'];
+    maPeriod = json['ma_period'];
   }
+  int? maxHoldTime;
+  int? closeChangeRatioLow;
+  int? closeChangeRatioHigh;
+  int? allOutInRatio;
+  int? allInOutRatio;
+  int? volumePrLimit;
+  int? tickAnalyzePeriod;
+  int? rsiMinCount;
+  int? maPeriod;
 
   Map<String, dynamic> toJson() {
-    var data = <String, dynamic>{};
+    final data = <String, dynamic>{};
+    data['max_hold_time'] = maxHoldTime;
     data['close_change_ratio_low'] = closeChangeRatioLow;
     data['close_change_ratio_high'] = closeChangeRatioHigh;
-    data['open_close_change_ratio_low'] = openCloseChangeRatioLow;
-    data['open_close_change_ratio_high'] = openCloseChangeRatioHigh;
-    data['out_in_ratio'] = outInRatio;
-    data['in_out_ratio'] = inOutRatio;
-    data['volume_pr_low'] = volumePrLow;
-    data['volume_pr_high'] = volumePrHigh;
-    data['tick_analyze_min_period'] = tickAnalyzeMinPeriod;
-    data['tick_analyze_max_period'] = tickAnalyzeMaxPeriod;
+    data['all_out_in_ratio'] = allOutInRatio;
+    data['all_in_out_ratio'] = allInOutRatio;
+    data['volume_pr_limit'] = volumePrLimit;
+    data['tick_analyze_period'] = tickAnalyzePeriod;
     data['rsi_min_count'] = rsiMinCount;
-    data['rsi_high'] = rsiHigh;
-    data['rsi_low'] = rsiLow;
-    data['max_loss'] = maxLoss;
+    data['ma_period'] = maPeriod;
     return data;
   }
-
-  num? closeChangeRatioLow;
-  num? closeChangeRatioHigh;
-  num? openCloseChangeRatioLow;
-  num? openCloseChangeRatioHigh;
-  num? outInRatio;
-  num? inOutRatio;
-  num? volumePrLow;
-  num? volumePrHigh;
-  num? tickAnalyzeMinPeriod;
-  num? tickAnalyzeMaxPeriod;
-  num? rsiMinCount;
-  num? rsiHigh;
-  num? rsiLow;
-  num? maxLoss;
 }
 
-class Schedule {
-  Schedule({this.cleanEvent, this.restartSinopac});
-
-  Schedule.fromJson(Map<String, dynamic> json) {
-    cleanEvent = json['clean_event'];
-    restartSinopac = json['restart_sinopac'];
+class FutureAnalyze {
+  FutureAnalyze({this.maxHoldTime, this.tickArrAnalyzeCount, this.tickArrAnalyzeUnit});
+  FutureAnalyze.fromJson(Map<String, dynamic> json) {
+    maxHoldTime = json['max_hold_time'];
+    tickArrAnalyzeCount = json['tick_arr_analyze_count'];
+    tickArrAnalyzeUnit = json['tick_arr_analyze_unit'];
   }
+  int? maxHoldTime;
+  int? tickArrAnalyzeCount;
+  int? tickArrAnalyzeUnit;
 
   Map<String, dynamic> toJson() {
-    var data = <String, dynamic>{};
-    data['clean_event'] = cleanEvent;
-    data['restart_sinopac'] = restartSinopac;
+    final data = <String, dynamic>{};
+    data['max_hold_time'] = maxHoldTime;
+    data['tick_arr_analyze_count'] = tickArrAnalyzeCount;
+    data['tick_arr_analyze_unit'] = tickArrAnalyzeUnit;
     return data;
   }
-
-  String? cleanEvent;
-  String? restartSinopac;
 }

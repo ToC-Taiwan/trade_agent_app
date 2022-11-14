@@ -131,7 +131,7 @@ class _TSEPageState extends State<TSEPage> {
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             var data = snapshot.data!;
-            if (data.tickTime.toString().length < 10) {
+            if (data.snapTime.toString().length < 10) {
               return Center(
                 child: Text(
                   S.of(context).no_data,
@@ -157,7 +157,7 @@ class _TSEPageState extends State<TSEPage> {
                 Column(
                   // shrinkWrap: true,
                   children: [
-                    generateRow(S.of(context).date, data.tickTime.toString().substring(0, 10), Colors.black),
+                    generateRow(S.of(context).date, data.snapTime.toString().substring(0, 10), Colors.black),
                     generateRow(S.of(context).open, commaNumber(data.open.toString()), Colors.black),
                     generateRow(S.of(context).close, commaNumber(data.close.toString()), tmp),
                     const Divider(
@@ -252,7 +252,7 @@ Widget generateRow(String columnName, String value, Color textColor) {
 
 Future<TSE> fetchTSE() async {
   try {
-    final response = await http.get(Uri.parse('$tradeAgentURLPrefix/tse/real-time'));
+    final response = await http.get(Uri.parse('$tradeAgentURLPrefix/stream/tse/snapshot'));
     if (response.statusCode == 200) {
       return TSE.fromJson(jsonDecode(response.body));
     } else {
@@ -265,8 +265,8 @@ Future<TSE> fetchTSE() async {
 
 class TSE {
   TSE(
-      {this.stock,
-      this.tickTime,
+      // {this.stock,
+      {this.snapTime,
       this.open,
       this.high,
       this.low,
@@ -283,8 +283,7 @@ class TSE {
       this.volumeRatio});
 
   TSE.fromJson(Map<String, dynamic> json) {
-    stock = json['stock'] != null ? Stock.fromJson(json['stock']) : null;
-    tickTime = json['tick_time'];
+    snapTime = json['snap_time'];
     open = json['open'];
     high = json['high'];
     low = json['low'];
@@ -303,10 +302,7 @@ class TSE {
 
   Map<String, dynamic> toJson() {
     var data = <String, dynamic>{};
-    if (stock != null) {
-      data['stock'] = stock!.toJson();
-    }
-    data['tick_time'] = tickTime;
+    data['snap_time'] = snapTime;
     data['open'] = open;
     data['high'] = high;
     data['low'] = low;
@@ -324,8 +320,7 @@ class TSE {
     return data;
   }
 
-  Stock? stock;
-  String? tickTime;
+  String? snapTime;
   num? open;
   num? high;
   num? low;
@@ -340,29 +335,4 @@ class TSE {
   num? amountSum;
   num? yesterdayVolume;
   num? volumeRatio;
-}
-
-class Stock {
-  Stock({this.number, this.name, this.exchange, this.category});
-
-  Stock.fromJson(Map<String, dynamic> json) {
-    number = json['number'];
-    name = json['name'];
-    exchange = json['exchange'];
-    category = json['category'];
-  }
-
-  Map<String, dynamic> toJson() {
-    var data = <String, dynamic>{};
-    data['number'] = number;
-    data['name'] = name;
-    data['exchange'] = exchange;
-    data['category'] = category;
-    return data;
-  }
-
-  String? number;
-  String? name;
-  String? exchange;
-  String? category;
 }
