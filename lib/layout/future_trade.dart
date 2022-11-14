@@ -170,13 +170,13 @@ class _FutureTradePageState extends State<FutureTradePage> {
                                       },
                                     }));
                                   },
-                                  child: const SizedBox(
+                                  child: SizedBox(
                                     width: 150,
                                     height: 50,
                                     child: Center(
                                       child: Text(
-                                        'Buy',
-                                        style: TextStyle(
+                                        S.of(context).buy,
+                                        style: const TextStyle(
                                           fontSize: 30,
                                           color: Colors.white,
                                         ),
@@ -200,13 +200,13 @@ class _FutureTradePageState extends State<FutureTradePage> {
                                       },
                                     }));
                                   },
-                                  child: const SizedBox(
+                                  child: SizedBox(
                                     width: 150,
                                     height: 50,
                                     child: Center(
                                       child: Text(
-                                        'Sell',
-                                        style: TextStyle(
+                                        S.of(context).sell,
+                                        style: const TextStyle(
                                           fontSize: 30,
                                           color: Colors.white,
                                         ),

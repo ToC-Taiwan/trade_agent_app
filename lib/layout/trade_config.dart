@@ -120,120 +120,120 @@ class _TradeConfigPageState extends State<TradeConfigPage> {
                       ),
                     ],
                   ),
-                  ExpansionTile(
-                    leading: const Icon(Icons.money, color: Colors.black),
-                    title: const Text(
-                      'Trade Switch',
-                      style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
-                    ),
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.only(left: 10, right: 10),
-                        child: ListTile(
-                          title: const Text('Simulation'),
-                          trailing: Text(data.tradeSwitch!.simulation!.toString()),
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 10, right: 10),
-                        child: ListTile(
-                          title: const Text('Buy'),
-                          trailing: Text(data.tradeSwitch!.buy!.toString()),
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 10, right: 10),
-                        child: ListTile(
-                          title: const Text('Sell'),
-                          trailing: Text(data.tradeSwitch!.sell!.toString()),
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 10, right: 10),
-                        child: ListTile(
-                          title: const Text('Sell First'),
-                          trailing: Text(data.tradeSwitch!.sellFirst!.toString()),
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 10, right: 10),
-                        child: ListTile(
-                          title: const Text('Buy Later'),
-                          trailing: Text(data.tradeSwitch!.buyLater!.toString()),
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 10, right: 10),
-                        child: ListTile(
-                          title: const Text('Mean Time Forward'),
-                          trailing: Text(data.tradeSwitch!.meanTimeForward!.toString()),
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 10, right: 10),
-                        child: ListTile(
-                          title: const Text('Mean Time Reverse'),
-                          trailing: Text(data.tradeSwitch!.meanTimeReverse!.toString()),
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 10, right: 10),
-                        child: ListTile(
-                          title: const Text('Forward MAX'),
-                          trailing: Text(data.tradeSwitch!.forwardMax!.toString()),
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 10, right: 10),
-                        child: ListTile(
-                          title: const Text('Reverse MAX'),
-                          trailing: Text(data.tradeSwitch!.reverseMax!.toString()),
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 10, right: 10),
-                        child: ListTile(
-                          title: const Text('Hold Time From Open'),
-                          trailing: Text(data.tradeSwitch!.holdTimeFromOpen!.toString()),
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 10, right: 10),
-                        child: ListTile(
-                          title: const Text('Total Open Time'),
-                          trailing: Text(data.tradeSwitch!.totalOpenTime!.toString()),
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 10, right: 10),
-                        child: ListTile(
-                          title: const Text('Trade IN Wait Time'),
-                          trailing: Text(data.tradeSwitch!.tradeInWaitTime!.toString()),
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 10, right: 10),
-                        child: ListTile(
-                          title: const Text('Trade OUT Wait Time'),
-                          trailing: Text(data.tradeSwitch!.tradeOutWaitTime!.toString()),
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 10, right: 10),
-                        child: ListTile(
-                          title: const Text('Trade IN End Time'),
-                          trailing: Text(data.tradeSwitch!.tradeInEndTime!.toString()),
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 10, right: 10),
-                        child: ListTile(
-                          title: const Text('Trade OUT Wait Time'),
-                          trailing: Text(data.tradeSwitch!.tradeOutEndTime!.toString()),
-                        ),
-                      ),
-                    ],
-                  ),
+                  // ExpansionTile(
+                  //   leading: const Icon(Icons.money, color: Colors.black),
+                  //   title: const Text(
+                  //     'Trade Switch',
+                  //     style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
+                  //   ),
+                  //   children: [
+                  //     Padding(
+                  //       padding: const EdgeInsets.only(left: 10, right: 10),
+                  //       child: ListTile(
+                  //         title: const Text('Simulation'),
+                  //         trailing: Text(data.tradeSwitch!.simulation!.toString()),
+                  //       ),
+                  //     ),
+                  //     Padding(
+                  //       padding: const EdgeInsets.only(left: 10, right: 10),
+                  //       child: ListTile(
+                  //         title: const Text('Buy'),
+                  //         trailing: Text(data.tradeSwitch!.buy!.toString()),
+                  //       ),
+                  //     ),
+                  //     Padding(
+                  //       padding: const EdgeInsets.only(left: 10, right: 10),
+                  //       child: ListTile(
+                  //         title: const Text('Sell'),
+                  //         trailing: Text(data.tradeSwitch!.sell!.toString()),
+                  //       ),
+                  //     ),
+                  //     Padding(
+                  //       padding: const EdgeInsets.only(left: 10, right: 10),
+                  //       child: ListTile(
+                  //         title: const Text('Sell First'),
+                  //         trailing: Text(data.tradeSwitch!.sellFirst!.toString()),
+                  //       ),
+                  //     ),
+                  //     Padding(
+                  //       padding: const EdgeInsets.only(left: 10, right: 10),
+                  //       child: ListTile(
+                  //         title: const Text('Buy Later'),
+                  //         trailing: Text(data.tradeSwitch!.buyLater!.toString()),
+                  //       ),
+                  //     ),
+                  //     Padding(
+                  //       padding: const EdgeInsets.only(left: 10, right: 10),
+                  //       child: ListTile(
+                  //         title: const Text('Mean Time Forward'),
+                  //         trailing: Text(data.tradeSwitch!.meanTimeForward!.toString()),
+                  //       ),
+                  //     ),
+                  //     Padding(
+                  //       padding: const EdgeInsets.only(left: 10, right: 10),
+                  //       child: ListTile(
+                  //         title: const Text('Mean Time Reverse'),
+                  //         trailing: Text(data.tradeSwitch!.meanTimeReverse!.toString()),
+                  //       ),
+                  //     ),
+                  //     Padding(
+                  //       padding: const EdgeInsets.only(left: 10, right: 10),
+                  //       child: ListTile(
+                  //         title: const Text('Forward MAX'),
+                  //         trailing: Text(data.tradeSwitch!.forwardMax!.toString()),
+                  //       ),
+                  //     ),
+                  //     Padding(
+                  //       padding: const EdgeInsets.only(left: 10, right: 10),
+                  //       child: ListTile(
+                  //         title: const Text('Reverse MAX'),
+                  //         trailing: Text(data.tradeSwitch!.reverseMax!.toString()),
+                  //       ),
+                  //     ),
+                  //     Padding(
+                  //       padding: const EdgeInsets.only(left: 10, right: 10),
+                  //       child: ListTile(
+                  //         title: const Text('Hold Time From Open'),
+                  //         trailing: Text(data.tradeSwitch!.holdTimeFromOpen!.toString()),
+                  //       ),
+                  //     ),
+                  //     Padding(
+                  //       padding: const EdgeInsets.only(left: 10, right: 10),
+                  //       child: ListTile(
+                  //         title: const Text('Total Open Time'),
+                  //         trailing: Text(data.tradeSwitch!.totalOpenTime!.toString()),
+                  //       ),
+                  //     ),
+                  //     Padding(
+                  //       padding: const EdgeInsets.only(left: 10, right: 10),
+                  //       child: ListTile(
+                  //         title: const Text('Trade IN Wait Time'),
+                  //         trailing: Text(data.tradeSwitch!.tradeInWaitTime!.toString()),
+                  //       ),
+                  //     ),
+                  //     Padding(
+                  //       padding: const EdgeInsets.only(left: 10, right: 10),
+                  //       child: ListTile(
+                  //         title: const Text('Trade OUT Wait Time'),
+                  //         trailing: Text(data.tradeSwitch!.tradeOutWaitTime!.toString()),
+                  //       ),
+                  //     ),
+                  //     Padding(
+                  //       padding: const EdgeInsets.only(left: 10, right: 10),
+                  //       child: ListTile(
+                  //         title: const Text('Trade IN End Time'),
+                  //         trailing: Text(data.tradeSwitch!.tradeInEndTime!.toString()),
+                  //       ),
+                  //     ),
+                  //     Padding(
+                  //       padding: const EdgeInsets.only(left: 10, right: 10),
+                  //       child: ListTile(
+                  //         title: const Text('Trade OUT Wait Time'),
+                  //         trailing: Text(data.tradeSwitch!.tradeOutEndTime!.toString()),
+                  //       ),
+                  //     ),
+                  //   ],
+                  // ),
                   ExpansionTile(
                     leading: const Icon(Icons.currency_exchange, color: Colors.black),
                     title: const Text(
@@ -264,43 +264,43 @@ class _TradeConfigPageState extends State<TradeConfigPage> {
                       ),
                     ],
                   ),
-                  ExpansionTile(
-                    leading: const Icon(Icons.account_balance_wallet, color: Colors.black),
-                    title: const Text(
-                      'Quota',
-                      style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
-                    ),
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.only(left: 10, right: 10),
-                        child: ListTile(
-                          title: const Text('Trade Quota'),
-                          trailing: Text(data.quota!.tradeQuota!.toString()),
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 10, right: 10),
-                        child: ListTile(
-                          title: const Text('Trade Tax Ratio'),
-                          trailing: Text(data.quota!.tradeTaxRatio!.toString()),
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 10, right: 10),
-                        child: ListTile(
-                          title: const Text('Trade Fee Ratio'),
-                          trailing: Text(data.quota!.tradeFeeRatio!.toString()),
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 10, right: 10),
-                        child: ListTile(
-                          title: const Text('Fee Discount'),
-                          trailing: Text(data.quota!.feeDiscount!.toString()),
-                        ),
-                      ),
-                    ],
-                  ),
+                  // ExpansionTile(
+                  //   leading: const Icon(Icons.account_balance_wallet, color: Colors.black),
+                  //   title: const Text(
+                  //     'Quota',
+                  //     style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
+                  //   ),
+                  //   children: [
+                  //     Padding(
+                  //       padding: const EdgeInsets.only(left: 10, right: 10),
+                  //       child: ListTile(
+                  //         title: const Text('Trade Quota'),
+                  //         trailing: Text(data.quota!.tradeQuota!.toString()),
+                  //       ),
+                  //     ),
+                  //     Padding(
+                  //       padding: const EdgeInsets.only(left: 10, right: 10),
+                  //       child: ListTile(
+                  //         title: const Text('Trade Tax Ratio'),
+                  //         trailing: Text(data.quota!.tradeTaxRatio!.toString()),
+                  //       ),
+                  //     ),
+                  //     Padding(
+                  //       padding: const EdgeInsets.only(left: 10, right: 10),
+                  //       child: ListTile(
+                  //         title: const Text('Trade Fee Ratio'),
+                  //         trailing: Text(data.quota!.tradeFeeRatio!.toString()),
+                  //       ),
+                  //     ),
+                  //     Padding(
+                  //       padding: const EdgeInsets.only(left: 10, right: 10),
+                  //       child: ListTile(
+                  //         title: const Text('Fee Discount'),
+                  //         trailing: Text(data.quota!.feeDiscount!.toString()),
+                  //       ),
+                  //     ),
+                  //   ],
+                  // ),
                 ],
               );
             }
@@ -329,36 +329,47 @@ Future<Config> fetchConfig() async {
 }
 
 class Config {
-  Config({
-    this.http,
-    this.postgres,
-    this.sinopac,
-    this.rabbitmq,
-    this.tradeSwitch,
-    this.history,
-    this.quota,
-    this.targetCond,
-    this.analyze,
-    this.deployment,
-  });
+  Config(
+      {this.http,
+      this.postgres,
+      this.sinopac,
+      this.rabbitmq,
+      this.simulation,
+      this.stockTradeSwitch,
+      this.futureTradeSwitch,
+      this.history,
+      this.quota,
+      this.targetCond,
+      this.stockAnalyze,
+      this.futureAnalyze});
 
   Config.fromJson(Map<String, dynamic> json) {
     http = json['http'] != null ? Http.fromJson(json['http']) : null;
     postgres = json['postgres'] != null ? Postgres.fromJson(json['postgres']) : null;
     sinopac = json['sinopac'] != null ? Sinopac.fromJson(json['sinopac']) : null;
     rabbitmq = json['rabbitmq'] != null ? Rabbitmq.fromJson(json['rabbitmq']) : null;
-    tradeSwitch = json['trade_switch'] != null ? TradeSwitch.fromJson(json['trade_switch']) : null;
+    simulation = json['simulation'];
+    stockTradeSwitch = json['stock_trade_switch'] != null ? StockTradeSwitch.fromJson(json['stock_trade_switch']) : null;
+    futureTradeSwitch = json['future_trade_switch'] != null ? FutureTradeSwitch.fromJson(json['future_trade_switch']) : null;
     history = json['history'] != null ? History.fromJson(json['history']) : null;
     quota = json['quota'] != null ? Quota.fromJson(json['quota']) : null;
-    if (json['target_cond'] != null) {
-      targetCond = <TargetCond>[];
-      json['target_cond'].forEach((v) {
-        targetCond!.add(TargetCond.fromJson(v));
-      });
-    }
-    analyze = json['analyze'] != null ? Analyze.fromJson(json['analyze']) : null;
-    deployment = json['deployment'];
+    targetCond = json['target_cond'] != null ? TargetCond.fromJson(json['target_cond']) : null;
+    stockAnalyze = json['stock_analyze'] != null ? StockAnalyze.fromJson(json['stock_analyze']) : null;
+    futureAnalyze = json['future_analyze'] != null ? FutureAnalyze.fromJson(json['future_analyze']) : null;
   }
+
+  Http? http;
+  Postgres? postgres;
+  Sinopac? sinopac;
+  Rabbitmq? rabbitmq;
+  bool? simulation;
+  StockTradeSwitch? stockTradeSwitch;
+  FutureTradeSwitch? futureTradeSwitch;
+  History? history;
+  Quota? quota;
+  TargetCond? targetCond;
+  StockAnalyze? stockAnalyze;
+  FutureAnalyze? futureAnalyze;
 
   Map<String, dynamic> toJson() {
     final data = <String, dynamic>{};
@@ -374,8 +385,12 @@ class Config {
     if (rabbitmq != null) {
       data['rabbitmq'] = rabbitmq!.toJson();
     }
-    if (tradeSwitch != null) {
-      data['trade_switch'] = tradeSwitch!.toJson();
+    data['simulation'] = simulation;
+    if (stockTradeSwitch != null) {
+      data['stock_trade_switch'] = stockTradeSwitch!.toJson();
+    }
+    if (futureTradeSwitch != null) {
+      data['future_trade_switch'] = futureTradeSwitch!.toJson();
     }
     if (history != null) {
       data['history'] = history!.toJson();
@@ -384,51 +399,42 @@ class Config {
       data['quota'] = quota!.toJson();
     }
     if (targetCond != null) {
-      data['target_cond'] = targetCond!.map((v) => v.toJson()).toList();
+      data['target_cond'] = targetCond!.toJson();
     }
-    if (analyze != null) {
-      data['analyze'] = analyze!.toJson();
+    if (stockAnalyze != null) {
+      data['stock_analyze'] = stockAnalyze!.toJson();
     }
-    data['deployment'] = deployment;
+    if (futureAnalyze != null) {
+      data['future_analyze'] = futureAnalyze!.toJson();
+    }
     return data;
   }
-
-  Http? http;
-  Postgres? postgres;
-  Sinopac? sinopac;
-  Rabbitmq? rabbitmq;
-  TradeSwitch? tradeSwitch;
-  History? history;
-  Quota? quota;
-  List<TargetCond>? targetCond;
-  Analyze? analyze;
-  String? deployment;
 }
 
 class Http {
   Http({this.port});
-
   Http.fromJson(Map<String, dynamic> json) {
     port = json['port'];
   }
+  String? port;
 
   Map<String, dynamic> toJson() {
     final data = <String, dynamic>{};
     data['port'] = port;
     return data;
   }
-
-  String? port;
 }
 
 class Postgres {
   Postgres({this.poolMax, this.url, this.dbName});
-
   Postgres.fromJson(Map<String, dynamic> json) {
     poolMax = json['pool_max'];
     url = json['url'];
     dbName = json['db_name'];
   }
+  int? poolMax;
+  String? url;
+  String? dbName;
 
   Map<String, dynamic> toJson() {
     final data = <String, dynamic>{};
@@ -437,19 +443,16 @@ class Postgres {
     data['db_name'] = dbName;
     return data;
   }
-
-  int? poolMax;
-  String? url;
-  String? dbName;
 }
 
 class Sinopac {
   Sinopac({this.poolMax, this.url});
-
   Sinopac.fromJson(Map<String, dynamic> json) {
     poolMax = json['pool_max'];
     url = json['url'];
   }
+  int? poolMax;
+  String? url;
 
   Map<String, dynamic> toJson() {
     final data = <String, dynamic>{};
@@ -457,20 +460,20 @@ class Sinopac {
     data['url'] = url;
     return data;
   }
-
-  int? poolMax;
-  String? url;
 }
 
 class Rabbitmq {
   Rabbitmq({this.url, this.exchange, this.waitTime, this.attempts});
-
   Rabbitmq.fromJson(Map<String, dynamic> json) {
     url = json['url'];
     exchange = json['exchange'];
     waitTime = json['wait_time'];
     attempts = json['attempts'];
   }
+  String? url;
+  String? exchange;
+  int? waitTime;
+  int? attempts;
 
   Map<String, dynamic> toJson() {
     final data = <String, dynamic>{};
@@ -480,94 +483,99 @@ class Rabbitmq {
     data['attempts'] = attempts;
     return data;
   }
-
-  String? url;
-  String? exchange;
-  int? waitTime;
-  int? attempts;
 }
 
-class TradeSwitch {
-  TradeSwitch(
-      {this.simulation,
-      this.buy,
-      this.sell,
-      this.sellFirst,
-      this.buyLater,
-      this.holdTimeFromOpen,
-      this.totalOpenTime,
-      this.tradeInWaitTime,
-      this.tradeOutWaitTime,
-      this.tradeInEndTime,
-      this.tradeOutEndTime,
-      this.meanTimeForward,
-      this.meanTimeReverse,
-      this.forwardMax,
-      this.reverseMax});
-
-  TradeSwitch.fromJson(Map<String, dynamic> json) {
-    simulation = json['simulation'];
-    buy = json['buy'];
-    sell = json['sell'];
-    sellFirst = json['sell_first'];
-    buyLater = json['buy_later'];
+class StockTradeSwitch {
+  StockTradeSwitch(
+      {this.allowTrade, this.holdTimeFromOpen, this.totalOpenTime, this.tradeInEndTime, this.tradeInWaitTime, this.tradeOutWaitTime, this.cancelWaitTime});
+  StockTradeSwitch.fromJson(Map<String, dynamic> json) {
+    allowTrade = json['allow_trade'];
     holdTimeFromOpen = json['hold_time_from_open'];
     totalOpenTime = json['total_open_time'];
+    tradeInEndTime = json['trade_in_end_time'];
     tradeInWaitTime = json['trade_in_wait_time'];
     tradeOutWaitTime = json['trade_out_wait_time'];
-    tradeInEndTime = json['trade_in_end_time'];
-    tradeOutEndTime = json['trade_out_end_time'];
-    meanTimeForward = json['mean_time_forward'];
-    meanTimeReverse = json['mean_time_reverse'];
-    forwardMax = json['forward_max'];
-    reverseMax = json['reverse_max'];
+    cancelWaitTime = json['cancel_wait_time'];
   }
+  bool? allowTrade;
+  int? holdTimeFromOpen;
+  int? totalOpenTime;
+  int? tradeInEndTime;
+  int? tradeInWaitTime;
+  int? tradeOutWaitTime;
+  int? cancelWaitTime;
 
   Map<String, dynamic> toJson() {
     final data = <String, dynamic>{};
-    data['simulation'] = simulation;
-    data['buy'] = buy;
-    data['sell'] = sell;
-    data['sell_first'] = sellFirst;
-    data['buy_later'] = buyLater;
+    data['allow_trade'] = allowTrade;
     data['hold_time_from_open'] = holdTimeFromOpen;
     data['total_open_time'] = totalOpenTime;
+    data['trade_in_end_time'] = tradeInEndTime;
     data['trade_in_wait_time'] = tradeInWaitTime;
     data['trade_out_wait_time'] = tradeOutWaitTime;
-    data['trade_in_end_time'] = tradeInEndTime;
-    data['trade_out_end_time'] = tradeOutEndTime;
-    data['mean_time_forward'] = meanTimeForward;
-    data['mean_time_reverse'] = meanTimeReverse;
-    data['forward_max'] = forwardMax;
-    data['reverse_max'] = reverseMax;
+    data['cancel_wait_time'] = cancelWaitTime;
     return data;
   }
+}
 
-  bool? simulation;
-  bool? buy;
-  bool? sell;
-  bool? sellFirst;
-  bool? buyLater;
-  int? holdTimeFromOpen;
-  int? totalOpenTime;
+class FutureTradeSwitch {
+  FutureTradeSwitch({this.allowTrade, this.quantity, this.tradeInWaitTime, this.tradeOutWaitTime, this.cancelWaitTime, this.tradeTimeRange});
+  FutureTradeSwitch.fromJson(Map<String, dynamic> json) {
+    allowTrade = json['allow_trade'];
+    quantity = json['quantity'];
+    tradeInWaitTime = json['trade_in_wait_time'];
+    tradeOutWaitTime = json['trade_out_wait_time'];
+    cancelWaitTime = json['cancel_wait_time'];
+    tradeTimeRange = json['trade_time_range'] != null ? TradeTimeRange.fromJson(json['trade_time_range']) : null;
+  }
+  bool? allowTrade;
+  int? quantity;
   int? tradeInWaitTime;
   int? tradeOutWaitTime;
-  int? tradeInEndTime;
-  int? tradeOutEndTime;
-  int? meanTimeForward;
-  int? meanTimeReverse;
-  int? forwardMax;
-  int? reverseMax;
+  int? cancelWaitTime;
+  TradeTimeRange? tradeTimeRange;
+
+  Map<String, dynamic> toJson() {
+    final data = <String, dynamic>{};
+    data['allow_trade'] = allowTrade;
+    data['quantity'] = quantity;
+    data['trade_in_wait_time'] = tradeInWaitTime;
+    data['trade_out_wait_time'] = tradeOutWaitTime;
+    data['cancel_wait_time'] = cancelWaitTime;
+    if (tradeTimeRange != null) {
+      data['trade_time_range'] = tradeTimeRange!.toJson();
+    }
+    return data;
+  }
+}
+
+class TradeTimeRange {
+  TradeTimeRange({this.firstPartDuration, this.secondPartDuration});
+  TradeTimeRange.fromJson(Map<String, dynamic> json) {
+    firstPartDuration = json['first_part_duration'];
+    secondPartDuration = json['second_part_duration'];
+  }
+  int? firstPartDuration;
+  int? secondPartDuration;
+
+  Map<String, dynamic> toJson() {
+    final data = <String, dynamic>{};
+    data['first_part_duration'] = firstPartDuration;
+    data['second_part_duration'] = secondPartDuration;
+    return data;
+  }
 }
 
 class History {
   History({this.historyClosePeriod, this.historyTickPeriod, this.historyKbarPeriod});
-
   History.fromJson(Map<String, dynamic> json) {
     historyClosePeriod = json['history_close_period'];
     historyTickPeriod = json['history_tick_period'];
     historyKbarPeriod = json['history_kbar_period'];
   }
+  int? historyClosePeriod;
+  int? historyTickPeriod;
+  int? historyKbarPeriod;
 
   Map<String, dynamic> toJson() {
     final data = <String, dynamic>{};
@@ -576,131 +584,141 @@ class History {
     data['history_kbar_period'] = historyKbarPeriod;
     return data;
   }
-
-  int? historyClosePeriod;
-  int? historyTickPeriod;
-  int? historyKbarPeriod;
 }
 
 class Quota {
-  Quota({this.tradeQuota, this.tradeTaxRatio, this.tradeFeeRatio, this.feeDiscount});
-
+  Quota({this.stockTradeQuota, this.stockFeeDiscount, this.futureTradeFee});
   Quota.fromJson(Map<String, dynamic> json) {
-    tradeQuota = json['trade_quota'];
-    tradeTaxRatio = json['trade_tax_ratio'];
-    tradeFeeRatio = json['trade_fee_ratio'];
-    feeDiscount = json['fee_discount'];
+    stockTradeQuota = json['stock_trade_quota'];
+    stockFeeDiscount = json['stock_fee_discount'];
+    futureTradeFee = json['future_trade_fee'];
   }
+  int? stockTradeQuota;
+  double? stockFeeDiscount;
+  int? futureTradeFee;
 
   Map<String, dynamic> toJson() {
     final data = <String, dynamic>{};
-    data['trade_quota'] = tradeQuota;
-    data['trade_tax_ratio'] = tradeTaxRatio;
-    data['trade_fee_ratio'] = tradeFeeRatio;
-    data['fee_discount'] = feeDiscount;
+    data['stock_trade_quota'] = stockTradeQuota;
+    data['stock_fee_discount'] = stockFeeDiscount;
+    data['future_trade_fee'] = futureTradeFee;
     return data;
   }
-
-  int? tradeQuota;
-  double? tradeTaxRatio;
-  double? tradeFeeRatio;
-  double? feeDiscount;
 }
 
 class TargetCond {
-  TargetCond({this.limitPriceLow, this.limitPriceHigh, this.limitVolume, this.subscribe});
-
+  TargetCond({this.blackStock, this.blackCategory, this.realTimeRank, this.limitVolume, this.priceLimit});
   TargetCond.fromJson(Map<String, dynamic> json) {
-    limitPriceLow = json['limit_price_low'];
-    limitPriceHigh = json['limit_price_high'];
+    blackStock = json['black_stock'].cast<String>();
+    blackCategory = json['black_category'].cast<String>();
+    realTimeRank = json['real_time_rank'];
     limitVolume = json['limit_volume'];
-    subscribe = json['subscribe'];
+    if (json['price_limit'] != null) {
+      priceLimit = <PriceLimit>[];
+      json['price_limit'].forEach((v) {
+        priceLimit!.add(PriceLimit.fromJson(v));
+      });
+    }
   }
+  List<String>? blackStock;
+  List<String>? blackCategory;
+  int? realTimeRank;
+  int? limitVolume;
+  List<PriceLimit>? priceLimit;
 
   Map<String, dynamic> toJson() {
     final data = <String, dynamic>{};
-    data['limit_price_low'] = limitPriceLow;
-    data['limit_price_high'] = limitPriceHigh;
+    data['black_stock'] = blackStock;
+    data['black_category'] = blackCategory;
+    data['real_time_rank'] = realTimeRank;
     data['limit_volume'] = limitVolume;
-    data['subscribe'] = subscribe;
+    if (priceLimit != null) {
+      data['price_limit'] = priceLimit!.map((v) => v.toJson()).toList();
+    }
     return data;
   }
-
-  int? limitPriceLow;
-  int? limitPriceHigh;
-  int? limitVolume;
-  bool? subscribe;
 }
 
-class Analyze {
-  Analyze(
-      {this.closeChangeRatioLow,
-      this.closeChangeRatioHigh,
-      this.openCloseChangeRatioLow,
-      this.openCloseChangeRatioHigh,
-      this.outInRatio,
-      this.inOutRatio,
-      this.volumePrLow,
-      this.volumePrHigh,
-      this.tickAnalyzeMinPeriod,
-      this.tickAnalyzeMaxPeriod,
-      this.rsiMinCount,
-      this.rsiHigh,
-      this.rsiLow,
-      this.maxLoss,
-      this.maPeriod});
-
-  Analyze.fromJson(Map<String, dynamic> json) {
-    closeChangeRatioLow = json['close_change_ratio_low'];
-    closeChangeRatioHigh = json['close_change_ratio_high'];
-    openCloseChangeRatioLow = json['open_close_change_ratio_low'];
-    openCloseChangeRatioHigh = json['open_close_change_ratio_high'];
-    outInRatio = json['out_in_ratio'];
-    inOutRatio = json['in_out_ratio'];
-    volumePrLow = json['volume_pr_low'];
-    volumePrHigh = json['volume_pr_high'];
-    tickAnalyzeMinPeriod = json['tick_analyze_min_period'];
-    tickAnalyzeMaxPeriod = json['tick_analyze_max_period'];
-    rsiMinCount = json['rsi_min_count'];
-    rsiHigh = json['rsi_high'];
-    rsiLow = json['rsi_low'];
-    maxLoss = json['max_loss'];
-    maPeriod = json['ma_period'];
+class PriceLimit {
+  PriceLimit({this.low, this.high});
+  PriceLimit.fromJson(Map<String, dynamic> json) {
+    low = json['low'];
+    high = json['high'];
   }
+  int? low;
+  int? high;
 
   Map<String, dynamic> toJson() {
     final data = <String, dynamic>{};
+    data['low'] = low;
+    data['high'] = high;
+    return data;
+  }
+}
+
+class StockAnalyze {
+  StockAnalyze(
+      {this.maxHoldTime,
+      this.closeChangeRatioLow,
+      this.closeChangeRatioHigh,
+      this.allOutInRatio,
+      this.allInOutRatio,
+      this.volumePrLimit,
+      this.tickAnalyzePeriod,
+      this.rsiMinCount,
+      this.maPeriod});
+  StockAnalyze.fromJson(Map<String, dynamic> json) {
+    maxHoldTime = json['max_hold_time'];
+    closeChangeRatioLow = json['close_change_ratio_low'];
+    closeChangeRatioHigh = json['close_change_ratio_high'];
+    allOutInRatio = json['all_out_in_ratio'];
+    allInOutRatio = json['all_in_out_ratio'];
+    volumePrLimit = json['volume_pr_limit'];
+    tickAnalyzePeriod = json['tick_analyze_period'];
+    rsiMinCount = json['rsi_min_count'];
+    maPeriod = json['ma_period'];
+  }
+  int? maxHoldTime;
+  int? closeChangeRatioLow;
+  int? closeChangeRatioHigh;
+  int? allOutInRatio;
+  int? allInOutRatio;
+  int? volumePrLimit;
+  int? tickAnalyzePeriod;
+  int? rsiMinCount;
+  int? maPeriod;
+
+  Map<String, dynamic> toJson() {
+    final data = <String, dynamic>{};
+    data['max_hold_time'] = maxHoldTime;
     data['close_change_ratio_low'] = closeChangeRatioLow;
     data['close_change_ratio_high'] = closeChangeRatioHigh;
-    data['open_close_change_ratio_low'] = openCloseChangeRatioLow;
-    data['open_close_change_ratio_high'] = openCloseChangeRatioHigh;
-    data['out_in_ratio'] = outInRatio;
-    data['in_out_ratio'] = inOutRatio;
-    data['volume_pr_low'] = volumePrLow;
-    data['volume_pr_high'] = volumePrHigh;
-    data['tick_analyze_min_period'] = tickAnalyzeMinPeriod;
-    data['tick_analyze_max_period'] = tickAnalyzeMaxPeriod;
+    data['all_out_in_ratio'] = allOutInRatio;
+    data['all_in_out_ratio'] = allInOutRatio;
+    data['volume_pr_limit'] = volumePrLimit;
+    data['tick_analyze_period'] = tickAnalyzePeriod;
     data['rsi_min_count'] = rsiMinCount;
-    data['rsi_high'] = rsiHigh;
-    data['rsi_low'] = rsiLow;
-    data['max_loss'] = maxLoss;
     data['ma_period'] = maPeriod;
     return data;
   }
+}
 
-  int? closeChangeRatioLow;
-  int? closeChangeRatioHigh;
-  int? openCloseChangeRatioLow;
-  int? openCloseChangeRatioHigh;
-  int? outInRatio;
-  int? inOutRatio;
-  int? volumePrLow;
-  int? volumePrHigh;
-  int? tickAnalyzeMinPeriod;
-  int? tickAnalyzeMaxPeriod;
-  int? rsiMinCount;
-  double? rsiHigh;
-  double? rsiLow;
-  int? maxLoss;
-  int? maPeriod;
+class FutureAnalyze {
+  FutureAnalyze({this.maxHoldTime, this.tickArrAnalyzeCount, this.tickArrAnalyzeUnit});
+  FutureAnalyze.fromJson(Map<String, dynamic> json) {
+    maxHoldTime = json['max_hold_time'];
+    tickArrAnalyzeCount = json['tick_arr_analyze_count'];
+    tickArrAnalyzeUnit = json['tick_arr_analyze_unit'];
+  }
+  int? maxHoldTime;
+  int? tickArrAnalyzeCount;
+  int? tickArrAnalyzeUnit;
+
+  Map<String, dynamic> toJson() {
+    final data = <String, dynamic>{};
+    data['max_hold_time'] = maxHoldTime;
+    data['tick_arr_analyze_count'] = tickArrAnalyzeCount;
+    data['tick_arr_analyze_unit'] = tickArrAnalyzeUnit;
+    return data;
+  }
 }

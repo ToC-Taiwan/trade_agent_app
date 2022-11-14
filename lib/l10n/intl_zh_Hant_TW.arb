@@ -56,5 +56,7 @@
   "loading": "讀取中",
   "future_trade": "期貨交易",
   "stock": "股票",
-  "future": "期貨"
+  "future": "期貨",
+  "buy": "買進",
+  "sell": "賣出"
 }

@@ -27,6 +27,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "already_purchased":
             MessageLookupByLibrary.simpleMessage("Already Purchased?"),
         "balance": MessageLookupByLibrary.simpleMessage("Balance"),
+        "buy": MessageLookupByLibrary.simpleMessage("Buy"),
         "cancel": MessageLookupByLibrary.simpleMessage("Cancel"),
         "change_type": MessageLookupByLibrary.simpleMessage("Change Type"),
         "click_plus_to_add_stock":
@@ -73,6 +74,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "restore_purchase":
             MessageLookupByLibrary.simpleMessage("Restore Purchases"),
         "search": MessageLookupByLibrary.simpleMessage("Search"),
+        "sell": MessageLookupByLibrary.simpleMessage("Sell"),
         "settings": MessageLookupByLibrary.simpleMessage("Settings"),
         "settings_of_notification":
             MessageLookupByLibrary.simpleMessage("Settings of Notification"),

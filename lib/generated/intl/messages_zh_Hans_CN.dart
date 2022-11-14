@@ -26,6 +26,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "add": MessageLookupByLibrary.simpleMessage("增加"),
         "already_purchased": MessageLookupByLibrary.simpleMessage("已经购买?"),
         "balance": MessageLookupByLibrary.simpleMessage("损益"),
+        "buy": MessageLookupByLibrary.simpleMessage("买入"),
         "cancel": MessageLookupByLibrary.simpleMessage("取消"),
         "change_type": MessageLookupByLibrary.simpleMessage("涨跌"),
         "click_plus_to_add_stock":
@@ -68,6 +69,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "restore": MessageLookupByLibrary.simpleMessage("还原"),
         "restore_purchase": MessageLookupByLibrary.simpleMessage("还原购买"),
         "search": MessageLookupByLibrary.simpleMessage("搜寻"),
+        "sell": MessageLookupByLibrary.simpleMessage("卖出"),
         "settings": MessageLookupByLibrary.simpleMessage("设定"),
         "settings_of_notification":
             MessageLookupByLibrary.simpleMessage("通知设定"),
