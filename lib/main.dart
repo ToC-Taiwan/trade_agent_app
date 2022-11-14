@@ -11,6 +11,7 @@ import 'package:trade_agent_v2/firebase_options.dart';
 import 'package:trade_agent_v2/generated/l10n.dart';
 import 'package:trade_agent_v2/intro.dart';
 import 'package:trade_agent_v2/models/model.dart';
+import 'package:yaml/yaml.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -31,7 +32,9 @@ void main() async {
     );
   }
 
-  var latestVersion = '3.5.0';
+  final data = await rootBundle.loadString('pubspec.yaml');
+  final mapData = loadYaml(data);
+  var latestVersion = mapData['version'];
 
   // initital floor
   // final db = await $FloorAppDatabase.databaseBuilder('app_database_tr.db').addMigrations([migration1to2]).build();
