@@ -58,5 +58,8 @@
   "stock": "股票",
   "future": "期货",
   "buy": "买入",
-  "sell": "卖出"
+  "sell": "卖出",
+  "future_quantity": "期货数量",
+  "enter_future_quantity": "输入期货数量",
+  "edit": "编辑"
 }

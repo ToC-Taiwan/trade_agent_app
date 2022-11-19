@@ -649,6 +649,36 @@ class S {
       args: [],
     );
   }
+
+  /// `Future Quantity`
+  String get future_quantity {
+    return Intl.message(
+      'Future Quantity',
+      name: 'future_quantity',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Enter Future Quantity`
+  String get enter_future_quantity {
+    return Intl.message(
+      'Enter Future Quantity',
+      name: 'enter_future_quantity',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Edit`
+  String get edit {
+    return Intl.message(
+      'Edit',
+      name: 'edit',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {
