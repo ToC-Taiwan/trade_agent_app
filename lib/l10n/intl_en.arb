@@ -58,5 +58,8 @@
   "stock": "Stock",
   "future": "Future",
   "buy": "Buy",
-  "sell": "Sell"
+  "sell": "Sell",
+  "future_quantity": "Future Quantity",
+  "enter_future_quantity": "Enter Future Quantity",
+  "edit": "Edit"
 }

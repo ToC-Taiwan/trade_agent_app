@@ -43,7 +43,12 @@ class MessageLookup extends MessageLookupByLibrary {
             "Are you sure you want to delete this stock"),
         "developing": MessageLookupByLibrary.simpleMessage("Developing"),
         "display": MessageLookupByLibrary.simpleMessage("Display"),
+        "edit": MessageLookupByLibrary.simpleMessage("Edit"),
+        "enter_future_quantity":
+            MessageLookupByLibrary.simpleMessage("Enter Future Quantity"),
         "future": MessageLookupByLibrary.simpleMessage("Future"),
+        "future_quantity":
+            MessageLookupByLibrary.simpleMessage("Future Quantity"),
         "future_trade": MessageLookupByLibrary.simpleMessage("Future Trade"),
         "group": MessageLookupByLibrary.simpleMessage("Group"),
         "high": MessageLookupByLibrary.simpleMessage("High"),

@@ -58,5 +58,8 @@
   "stock": "股票",
   "future": "期貨",
   "buy": "買進",
-  "sell": "賣出"
+  "sell": "賣出",
+  "future_quantity": "期貨數量",
+  "enter_future_quantity": "輸入期貨數量",
+  "edit": "編輯"
 }
