@@ -23,7 +23,10 @@ class FutureTradePage extends StatefulWidget {
 class _FutureTradePageState extends State<FutureTradePage> {
   var _channel = IOWebSocketChannel.connect(Uri.parse(tradeAgentFutureWSURLPrefix));
   late Future<Basic?> futureQty;
+
   bool automationTrade = false;
+  bool automationByTimer = false;
+  bool automationByBalance = false;
 
   Future<RealTimeFutureTick?> realTimeFutureTick = Future.value();
   Future<TradeRate?> tradeRate = Future.value();
@@ -184,7 +187,8 @@ class _FutureTradePageState extends State<FutureTradePage> {
                                           alignment: Alignment.centerLeft,
                                           child: Text(
                                             snapshot.data!.code!,
-                                            style: GoogleFonts.getFont('Source Code Pro', fontStyle: FontStyle.normal, fontSize: 40, color: Colors.blueGrey),
+                                            style: GoogleFonts.getFont('Source Code Pro',
+                                                fontStyle: FontStyle.normal, fontSize: 40, color: Colors.blueGrey, fontWeight: FontWeight.bold),
                                           ),
                                         ),
                                         Align(
@@ -197,14 +201,14 @@ class _FutureTradePageState extends State<FutureTradePage> {
                                                 if (snapshot.hasData) {
                                                   if (snapshot.data!.direction == 'Buy') {
                                                     return Text(
-                                                      'Buy: ${snapshot.data!.quantity}',
+                                                      'Buy: ${snapshot.data!.quantity}\nAvg: ${snapshot.data!.price}',
                                                       style:
                                                           GoogleFonts.getFont('Source Code Pro', fontStyle: FontStyle.normal, fontSize: 15, color: Colors.grey),
                                                     );
                                                   }
                                                   if (snapshot.data!.direction == 'Sell') {
                                                     return Text(
-                                                      'Sell: ${snapshot.data!.quantity}',
+                                                      'Sell: ${snapshot.data!.quantity}\nAvg: ${snapshot.data!.price}',
                                                       style:
                                                           GoogleFonts.getFont('Source Code Pro', fontStyle: FontStyle.normal, fontSize: 15, color: Colors.grey),
                                                     );
@@ -510,9 +514,9 @@ class _FutureTradePageState extends State<FutureTradePage> {
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              TextButton(
+                              ElevatedButton(
                                 style: ButtonStyle(
-                                  elevation: MaterialStateProperty.all(10),
+                                  elevation: MaterialStateProperty.all(16),
                                   backgroundColor: MaterialStateProperty.all(Colors.red),
                                 ),
                                 onPressed: () {
@@ -527,8 +531,8 @@ class _FutureTradePageState extends State<FutureTradePage> {
                                   }));
                                 },
                                 child: SizedBox(
-                                  width: 150,
-                                  height: 50,
+                                  width: 130,
+                                  height: 70,
                                   child: Center(
                                     child: Text(
                                       S.of(context).buy,
@@ -540,9 +544,9 @@ class _FutureTradePageState extends State<FutureTradePage> {
                                   ),
                                 ),
                               ),
-                              TextButton(
+                              ElevatedButton(
                                 style: ButtonStyle(
-                                  elevation: MaterialStateProperty.all(10),
+                                  elevation: MaterialStateProperty.all(16),
                                   backgroundColor: MaterialStateProperty.all(Colors.green),
                                 ),
                                 onPressed: () {
@@ -557,8 +561,8 @@ class _FutureTradePageState extends State<FutureTradePage> {
                                   }));
                                 },
                                 child: SizedBox(
-                                  width: 150,
-                                  height: 50,
+                                  width: 130,
+                                  height: 70,
                                   child: Center(
                                     child: Text(
                                       S.of(context).sell,
@@ -655,19 +659,66 @@ class _FutureTradePageState extends State<FutureTradePage> {
             Expanded(
               child: ListTile(
                 leading: const Icon(
-                  Icons.query_stats_sharp,
-                  color: Colors.black,
+                  Icons.assistant,
+                  color: Colors.teal,
                 ),
-                title: Text(S.of(context).future_quantity),
+                title: const Text('Assist'),
                 trailing: SizedBox(
-                  width: 180,
+                  width: 200,
                   child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                      IconButton(
+                        onPressed: () {
+                          setState(() {
+                            automationByBalance = !automationByBalance;
+                          });
+                        },
+                        icon: Icon(Icons.monetization_on, color: automationByBalance ? Colors.blueAccent : Colors.grey),
+                      ),
+                      IconButton(
+                        onPressed: () {
+                          setState(() {
+                            automationByTimer = !automationByTimer;
+                          });
+                        },
+                        icon: Icon(Icons.timer, color: automationByTimer ? Colors.blueAccent : Colors.grey),
+                      ),
+                      Checkbox(
+                        shape: const CircleBorder(),
+                        checkColor: Colors.blue,
+                        value: automationTrade,
+                        onChanged: (value) {
+                          setState(() {
+                            automationTrade = value!;
+                          });
+                        },
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+            Expanded(
+              child: ListTile(
+                leading: const Icon(
+                  Icons.numbers_outlined,
+                  color: Colors.teal,
+                ),
+                title: Text(S.of(context).quantity),
+                trailing: SizedBox(
+                  width: 200,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
                     children: [
                       ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          shape: const CircleBorder(),
+                          backgroundColor: Colors.yellow[50],
+                        ),
                         child: const Text(
                           '-',
-                          style: TextStyle(color: Colors.black),
+                          style: TextStyle(color: Colors.black, fontSize: 22),
                         ),
                         onPressed: () async {
                           await widget.db.basicDao.getBasicByKey('future_qty').then((value) async {
@@ -689,26 +740,31 @@ class _FutureTradePageState extends State<FutureTradePage> {
                         builder: (context, snapshot) {
                           if (snapshot.hasData) {
                             qty = int.parse(snapshot.data!.value);
-                            return Padding(
-                              padding: const EdgeInsets.only(left: 20, right: 20),
-                              child: Text(
-                                snapshot.data!.value,
-                                style: const TextStyle(fontSize: 16, color: Colors.black),
-                              ),
+                            return Text(
+                              snapshot.data!.value,
+                              style: GoogleFonts.getFont('Source Code Pro',
+                                  fontStyle: FontStyle.normal, fontSize: 23, color: Colors.black, fontWeight: FontWeight.bold),
                             );
                           }
                           return const Text('-');
                         },
                       ),
                       ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          shape: const CircleBorder(),
+                          backgroundColor: Colors.yellow[50],
+                        ),
                         child: const Text(
                           '+',
-                          style: TextStyle(color: Colors.black),
+                          style: TextStyle(color: Colors.black, fontSize: 22),
                         ),
                         onPressed: () async {
                           await widget.db.basicDao.getBasicByKey('future_qty').then((value) async {
                             if (value != null) {
                               value.value = (int.parse(value.value) + 1).toString();
+                              if (value.value == '10') {
+                                value.value = '9';
+                              }
                               await widget.db.basicDao.updateBasic(value);
                             }
                           });
@@ -722,22 +778,8 @@ class _FutureTradePageState extends State<FutureTradePage> {
                 ),
               ),
             ),
-            Expanded(
-              child: ListTile(
-                leading: const Icon(
-                  Icons.rice_bowl_outlined,
-                  color: Colors.black,
-                ),
-                title: const Text('Half-Auto'),
-                trailing: Checkbox(
-                    checkColor: Colors.black,
-                    value: automationTrade,
-                    onChanged: (value) {
-                      setState(() {
-                        automationTrade = value!;
-                      });
-                    }),
-              ),
+            const Divider(
+              color: Colors.transparent,
             ),
           ],
         ),
@@ -747,28 +789,39 @@ class _FutureTradePageState extends State<FutureTradePage> {
 }
 
 void _showDialog(BuildContext context, String message) {
-  showDialog(
-    context: context,
-    builder: (context) => AlertDialog(
-      icon: const Icon(
-        Icons.warning,
-        color: Colors.teal,
-      ),
-      title: Text(S.of(context).notification),
-      content: Text(message),
-      actions: [
-        ElevatedButton(
-          child: Text(
-            S.of(context).ok,
-            style: const TextStyle(color: Colors.black),
-          ),
-          onPressed: () {
-            Navigator.pop(context);
-          },
+  if (message.isNotEmpty) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        iconColor: Colors.teal,
+        icon: const Icon(
+          Icons.warning,
+          size: 40,
         ),
-      ],
-    ),
-  );
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10),
+        ),
+        title: Text(S.of(context).notification),
+        content: Text(
+          message,
+          textAlign: TextAlign.center,
+        ),
+        actions: [
+          Center(
+            child: ElevatedButton(
+              child: Text(
+                S.of(context).ok,
+                style: const TextStyle(color: Colors.black),
+              ),
+              onPressed: () {
+                Navigator.pop(context);
+              },
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 }
 
 Color _generateColorByTickType(num tickType) {
@@ -1091,22 +1144,22 @@ class FutureOrder {
 
     var actionStr = baseOrder!.action == 1 ? 'Buy' : 'Sell';
     switch (baseOrder!.status) {
-      case 1:
-        return '$actionStr ${baseOrder!.price} PendingSubmit';
-      case 2:
-        return '$actionStr ${baseOrder!.price} PreSubmitted';
-      case 3:
-        return '$actionStr ${baseOrder!.price} Submitted';
+      // case 1:
+      //   return '$actionStr ${baseOrder!.price}\nPendingSubmit';
+      // case 2:
+      //   return '$actionStr ${baseOrder!.price}\nPreSubmitted';
+      // case 3:
+      //   return '$actionStr ${baseOrder!.price}\nSubmitted';
       case 4:
-        return '$actionStr ${baseOrder!.price} Failed';
+        return '$actionStr ${baseOrder!.price}\nFailed';
       case 5:
-        return '$actionStr ${baseOrder!.price} Cancelled';
+        return '$actionStr ${baseOrder!.price}\nCancelled';
       case 6:
-        return '$actionStr ${baseOrder!.price} Filled';
+        return '$actionStr ${baseOrder!.price}\nFilled';
       case 7:
-        return '$actionStr ${baseOrder!.price} Filling';
+        return '$actionStr ${baseOrder!.price}\nFilling';
       default:
-        return 'Unknown';
+        return '';
     }
   }
 
