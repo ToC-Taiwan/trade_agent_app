@@ -2,10 +2,12 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:http/http.dart' as http;
 import 'package:trade_agent_v2/basic/basic.dart';
 import 'package:trade_agent_v2/database.dart';
 import 'package:trade_agent_v2/generated/l10n.dart';
+import 'package:trade_agent_v2/layout/orders.dart';
 import 'package:trade_agent_v2/utils/app_bar.dart';
 
 class BalancePage extends StatefulWidget {
@@ -17,18 +19,121 @@ class BalancePage extends StatefulWidget {
 }
 
 class _BalancePageState extends State<BalancePage> {
+  static const _insets = 16.0;
+  BannerAd? _inlineAdaptiveAd;
+  bool _isLoaded = false;
+  AdSize? _adSize;
+  late Orientation _currentOrientation;
+
+  double get _adWidth => MediaQuery.of(context).size.width - (4 * _insets);
+
   late Future<Balance> futureBalance;
 
   @override
   void initState() {
     super.initState();
     futureBalance = fetchBalance();
+    widget.db.basicDao.getBasicByKey('remove_ad_status').then((value) => {
+          if (value != null) {alreadyRemovedAd = value.value == 'true'}
+        });
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _currentOrientation = MediaQuery.of(context).orientation;
+    _loadAd();
+  }
+
+  void _loadAd() async {
+    await _inlineAdaptiveAd?.dispose();
+    setState(() {
+      _inlineAdaptiveAd = null;
+      _isLoaded = false;
+    });
+
+    // Get an inline adaptive size for the current orientation.
+    AdSize size = AdSize.getInlineAdaptiveBannerAdSize(_adWidth.truncate(), 60);
+    _inlineAdaptiveAd = BannerAd(
+      adUnitId: bannerAdUnitID,
+      size: size,
+      request: const AdRequest(),
+      listener: BannerAdListener(
+        onAdLoaded: (ad) async {
+          // After the ad is loaded, get the platform ad size and use it to
+          // update the height of the container. This is necessary because the
+          // height can change after the ad is loaded.
+          var bannerAd = ad as BannerAd;
+          final size = await bannerAd.getPlatformAdSize();
+          if (size == null) {
+            return;
+          }
+
+          setState(() {
+            _inlineAdaptiveAd = bannerAd;
+            _isLoaded = true;
+            _adSize = size;
+          });
+        },
+        onAdFailedToLoad: (ad, error) {
+          ad.dispose();
+        },
+      ),
+    );
+    await _inlineAdaptiveAd!.load();
+  }
+
+  /// Gets a widget containing the ad, if one is loaded.
+  /// Returns an empty container if no ad is loaded, or the orientation
+  /// has changed. Also loads a new ad if the orientation changes.
+  Widget _getAdWidget() {
+    return OrientationBuilder(
+      builder: (context, orientation) {
+        if (_currentOrientation == orientation && _inlineAdaptiveAd != null && _isLoaded && _adSize != null) {
+          return Align(
+            child: SizedBox(
+              width: _adWidth,
+              height: _adSize!.height.toDouble(),
+              child: AdWidget(
+                ad: _inlineAdaptiveAd!,
+              ),
+            ),
+          );
+        }
+        // Reload the ad if the orientation changes.
+        if (_currentOrientation != orientation) {
+          _currentOrientation = orientation;
+          _loadAd();
+        }
+        return Container();
+      },
+    );
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _inlineAdaptiveAd?.dispose();
+  }
+
+  bool alreadyRemovedAd = false;
+  Widget _buildAd() {
+    if (alreadyRemovedAd) {
+      return Padding(
+        padding: const EdgeInsets.only(top: 10),
+        child: Container(),
+      );
+    }
+    return Padding(
+      padding: const EdgeInsets.only(top: 10),
+      child: _getAdWidget(),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      // backgroundColor: Colors.white,
       appBar: trAppbar(
         context,
         S.of(context).balance,
@@ -92,7 +197,7 @@ class _BalancePageState extends State<BalancePage> {
             return Column(
               children: [
                 Expanded(
-                  flex: 18,
+                  flex: 23,
                   child: DefaultTabController(
                     length: 2,
                     child: Scaffold(
@@ -124,7 +229,16 @@ class _BalancePageState extends State<BalancePage> {
                                 walletColor = Colors.red;
                               }
                               return ListTile(
-                                // onTap: () {},
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => OrderPage(
+                                        date: reverseFuture[index].tradeDay!.substring(0, 10),
+                                      ),
+                                    ),
+                                  );
+                                },
                                 leading: Icon(Icons.account_balance_wallet, color: walletColor),
                                 title: Text(reverseFuture[index].tradeDay!.substring(0, 10)),
                                 subtitle: Text('${S.of(context).trade_count}: ${reverseFuture[index].tradeCount}'),
@@ -173,7 +287,11 @@ class _BalancePageState extends State<BalancePage> {
                   ),
                 ),
                 Expanded(
-                  flex: 2,
+                  flex: 4,
+                  child: _buildAd(),
+                ),
+                Expanded(
+                  flex: 3,
                   child: Row(
                     children: [
                       Expanded(

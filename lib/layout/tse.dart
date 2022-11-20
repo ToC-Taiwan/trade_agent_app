@@ -265,7 +265,6 @@ Future<TSE> fetchTSE() async {
 
 class TSE {
   TSE(
-      // {this.stock,
       {this.snapTime,
       this.open,
       this.high,

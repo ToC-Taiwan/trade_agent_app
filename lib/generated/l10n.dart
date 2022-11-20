@@ -650,21 +650,21 @@ class S {
     );
   }
 
-  /// `Future Quantity`
-  String get future_quantity {
+  /// `Quantity`
+  String get quantity {
     return Intl.message(
-      'Future Quantity',
-      name: 'future_quantity',
+      'Quantity',
+      name: 'quantity',
       desc: '',
       args: [],
     );
   }
 
-  /// `Enter Future Quantity`
-  String get enter_future_quantity {
+  /// `Enter Quantity`
+  String get enter_quantity {
     return Intl.message(
-      'Enter Future Quantity',
-      name: 'enter_future_quantity',
+      'Enter Quantity',
+      name: 'enter_quantity',
       desc: '',
       args: [],
     );

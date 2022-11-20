@@ -44,11 +44,9 @@ class MessageLookup extends MessageLookupByLibrary {
         "developing": MessageLookupByLibrary.simpleMessage("Developing"),
         "display": MessageLookupByLibrary.simpleMessage("Display"),
         "edit": MessageLookupByLibrary.simpleMessage("Edit"),
-        "enter_future_quantity":
-            MessageLookupByLibrary.simpleMessage("Enter Future Quantity"),
+        "enter_quantity":
+            MessageLookupByLibrary.simpleMessage("Enter Quantity"),
         "future": MessageLookupByLibrary.simpleMessage("Future"),
-        "future_quantity":
-            MessageLookupByLibrary.simpleMessage("Future Quantity"),
         "future_trade": MessageLookupByLibrary.simpleMessage("Future Trade"),
         "group": MessageLookupByLibrary.simpleMessage("Group"),
         "high": MessageLookupByLibrary.simpleMessage("High"),
@@ -70,6 +68,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "price_change": MessageLookupByLibrary.simpleMessage("Price Change"),
         "product_list_abnormal":
             MessageLookupByLibrary.simpleMessage("Product List Abnormal"),
+        "quantity": MessageLookupByLibrary.simpleMessage("Quantity"),
         "read_only": MessageLookupByLibrary.simpleMessage("Read Only"),
         "refresh": MessageLookupByLibrary.simpleMessage("Refresh"),
         "remove_ads": MessageLookupByLibrary.simpleMessage("Remove Ads"),
