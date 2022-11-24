@@ -4,7 +4,7 @@ import 'package:date_format/date_format.dart' as df;
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
-import 'package:trade_agent_v2/basic/basic.dart';
+import 'package:trade_agent_v2/basic/base.dart';
 
 class OrderPage extends StatefulWidget {
   const OrderPage({super.key, required this.date});
@@ -48,6 +48,7 @@ class _OrderPage extends State<OrderPage> {
             future: futureOrder,
             builder: (context, snapshot) {
               if (snapshot.hasData) {
+                var orderList = snapshot.data!.orders!.reversed.toList();
                 var count = snapshot.data!.orders!.length;
                 return ListView.separated(
                   separatorBuilder: (context, index) => const Divider(
@@ -56,24 +57,20 @@ class _OrderPage extends State<OrderPage> {
                   ),
                   itemCount: count,
                   itemBuilder: (context, index) {
-                    var walletColor = Colors.black;
-                    if (snapshot.data!.orders![index].baseOrder!.action == 1 || snapshot.data!.orders![index].baseOrder!.action == 4) {
-                      walletColor = Colors.red;
-                    } else {
-                      walletColor = Colors.green;
-                    }
+                    var order = orderList[index].baseOrder!;
+                    var code = orderList[index].code;
                     return ListTile(
-                      leading: Icon(Icons.book_outlined, color: walletColor),
-                      title: Text(snapshot.data!.orders![index].code!),
-                      subtitle: Text(df.formatDate(DateTime.parse(snapshot.data!.orders![index].baseOrder!.orderTime!).add(const Duration(hours: 8)),
+                      leading: Icon(Icons.book_outlined, color: (order.action == 1 || order.action == 4) ? Colors.red : Colors.green),
+                      title: Text(code!),
+                      subtitle: Text(df.formatDate(DateTime.parse(order.orderTime!).add(const Duration(hours: 8)),
                           [df.yyyy, '-', df.mm, '-', df.dd, ' ', df.HH, ':', df.nn, ':', df.ss])),
                       trailing: Text(
-                        '${snapshot.data!.orders![index].baseOrder!.price.toString()} x ${snapshot.data!.orders![index].baseOrder!.quantity.toString()}',
+                        '${order.price.toString()} x ${order.quantity.toString()}',
                         style: GoogleFonts.getFont(
                           'Source Code Pro',
                           fontStyle: FontStyle.normal,
                           fontSize: 20,
-                          color: walletColor,
+                          color: (order.action == 1 || order.action == 4) ? Colors.red : Colors.green,
                           fontWeight: FontWeight.bold,
                         ),
                       ),

@@ -3,7 +3,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:trade_agent_v2/basic/basic.dart';
+import 'package:trade_agent_v2/basic/base.dart';
 import 'package:trade_agent_v2/generated/l10n.dart';
 
 class TradeConfigPage extends StatefulWidget {

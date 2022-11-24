@@ -47,11 +47,6 @@ void main() async {
     await db.basicDao.updateBasic(version);
   }
 
-  var futureQty = await db.basicDao.getBasicByKey('future_qty');
-  if (futureQty == null) {
-    await db.basicDao.insertBasic(Basic('future_qty', '1'));
-  }
-
   var dbLanguageSetup = await db.basicDao.getBasicByKey('language_setup');
   if (dbLanguageSetup == null) {
     final defaultLocale = Platform.localeName;

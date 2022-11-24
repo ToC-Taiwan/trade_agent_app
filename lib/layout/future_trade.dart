@@ -5,10 +5,9 @@ import 'package:date_format/date_format.dart' as df;
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:percent_indicator/percent_indicator.dart';
-import 'package:trade_agent_v2/basic/basic.dart';
+import 'package:trade_agent_v2/basic/base.dart';
 import 'package:trade_agent_v2/database.dart';
 import 'package:trade_agent_v2/generated/l10n.dart';
-import 'package:trade_agent_v2/models/model.dart';
 import 'package:trade_agent_v2/utils/app_bar.dart';
 import 'package:web_socket_channel/io.dart';
 
@@ -22,36 +21,37 @@ class FutureTradePage extends StatefulWidget {
 
 class _FutureTradePageState extends State<FutureTradePage> {
   var _channel = IOWebSocketChannel.connect(Uri.parse(tradeAgentFutureWSURLPrefix));
-  late Future<Basic?> futureQty;
+
+  List<RealTimeFutureTick> tickArr = [];
+  int qty = 1;
+  String mxfCode = '';
 
   bool automationTrade = false;
   bool automationByTimer = false;
   bool automationByBalance = false;
 
+  bool allowBuy = true;
+  bool allowSell = true;
+
   Future<RealTimeFutureTick?> realTimeFutureTick = Future.value();
-  Future<TradeRate?> tradeRate = Future.value();
+  Future<PeriodOutInVolume?> periodVolume = Future.value();
   Future<FuturePosition?> futurePosition = Future.value();
   Future<TradeIndex?> tradeIndex = Future.value();
   Future<List<RealTimeFutureTick>> realTimeFutureTickArr = Future.value([]);
 
-  List<RealTimeFutureTick> tickArr = [];
-
-  int qty = 1;
-  String mxfCode = '';
+  YahooPrice previousNasdaq = YahooPrice('');
+  YahooPrice previousNF = YahooPrice('');
+  Snapshot previousTSE = Snapshot('');
+  Snapshot previousOTC = Snapshot('');
 
   int nsadaqBreakCount = 0;
-  num previousNasdaq = 0;
   int nfBreakCount = 0;
-  num previousNF = 0;
   int tseBreakCount = 0;
-  num previousTSE = 0;
   int otcBreakCount = 0;
-  num previousOTC = 0;
 
   @override
   void initState() {
     super.initState();
-    futureQty = widget.db.basicDao.getBasicByKey('future_qty');
     initialWS();
     checkConnection();
   }
@@ -68,45 +68,49 @@ class _FutureTradePageState extends State<FutureTradePage> {
         if (message == 'pong') {
           return;
         }
-
         Map<String, dynamic> msg = jsonDecode(message);
+
         if (msg.containsKey('underlying_price')) {
           setState(() {
             realTimeFutureTick = getData(msg);
             realTimeFutureTickArr = fillArr(msg, tickArr);
           });
+          return;
         }
 
-        if (msg.containsKey('out_rate')) {
+        if (msg.containsKey('first_period')) {
           setState(() {
-            tradeRate = updateTradeRate(msg);
+            periodVolume = updateTradeRate(msg);
           });
+          return;
+        }
+
+        if (msg.containsKey('base_order')) {
+          if (mounted) {
+            _showDialog(context, FutureOrder.fromJson(msg).generateStatusMessage());
+          }
+          return;
         }
 
         if (msg.containsKey('tse')) {
           setState(() {
             tradeIndex = updateTradeIndex(msg);
           });
+          return;
         }
 
         if (msg.containsKey('position')) {
-          if (mxfCode.isEmpty) {
-            return;
+          if (mxfCode.isNotEmpty) {
+            futurePosition = updateFuturePosition(msg, mxfCode);
           }
-          futurePosition = updateFuturePosition(msg, mxfCode);
-        }
-
-        if (msg.containsKey('base_order')) {
-          var order = FutureOrder.fromJson(msg);
-          if (mounted) {
-            _showDialog(context, order.generateStatusMessage());
-          }
+          return;
         }
 
         if (msg.containsKey('err_msg')) {
           if (mounted) {
             _showDialog(context, msg['err_msg']);
           }
+          return;
         }
       },
       onDone: () {
@@ -138,12 +142,48 @@ class _FutureTradePageState extends State<FutureTradePage> {
         context,
         S.of(context).future_trade,
         widget.db,
+        actions: [
+          IconButton(
+            onPressed: () {
+              setState(() {
+                automationByBalance = !automationByBalance;
+              });
+            },
+            icon: Icon(Icons.monetization_on, color: automationByBalance ? Colors.blueAccent : Colors.grey),
+          ),
+          IconButton(
+            onPressed: () {
+              setState(() {
+                automationByTimer = !automationByTimer;
+              });
+            },
+            icon: Icon(Icons.timer, color: automationByTimer ? Colors.blueAccent : Colors.grey),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(right: 10),
+            child: IconButton(
+              onPressed: () {
+                setState(() {
+                  automationTrade = !automationTrade;
+                  if (automationTrade) {
+                    allowBuy = false;
+                    allowSell = false;
+                  } else {
+                    allowBuy = true;
+                    allowSell = true;
+                  }
+                });
+              },
+              icon: Icon(Icons.power_settings_new_rounded, color: automationTrade ? Colors.greenAccent : Colors.grey),
+            ),
+          ),
+        ],
       ),
       body: SizedBox(
         child: Column(
           children: [
             Expanded(
-              flex: 5,
+              flex: 8,
               child: FutureBuilder<RealTimeFutureTick?>(
                 future: realTimeFutureTick,
                 builder: (context, snapshot) {
@@ -159,16 +199,8 @@ class _FutureTradePageState extends State<FutureTradePage> {
                         ),
                       );
                     }
-                    var tmp = Colors.black;
-                    var type = '';
                     var priceChg = snapshot.data!.priceChg!;
-                    if (priceChg < 0) {
-                      tmp = Colors.green;
-                      type = '↘️';
-                    } else if (priceChg > 0) {
-                      tmp = Colors.red;
-                      type = '↗️';
-                    }
+                    var type = (priceChg > 0) ? '↗️' : '↘️';
 
                     return Column(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -233,24 +265,19 @@ class _FutureTradePageState extends State<FutureTradePage> {
                                     future: tradeIndex,
                                     builder: (context, snapshot) {
                                       if (snapshot.hasData) {
-                                        nsadaqBreakCount = _processBreakCount(snapshot.data!.nasdaq!.price!, previousNasdaq, nsadaqBreakCount);
-                                        var nsadaqBreakCountShow = nsadaqBreakCount.abs();
-                                        previousNasdaq = snapshot.data!.nasdaq!.price!;
+                                        nsadaqBreakCount = snapshot.data!.nasdaq!._processBreakCount(previousNasdaq, nsadaqBreakCount);
+                                        var nasdaqChg = snapshot.data!.nasdaq!._getChangeCompareToPrevious();
+                                        previousNasdaq = snapshot.data!.nasdaq!;
 
-                                        nfBreakCount = _processBreakCount(snapshot.data!.nf!.price!, previousNF, nfBreakCount);
-                                        var nfBreakCountShow = nfBreakCount.abs();
-                                        previousNF = snapshot.data!.nf!.price!;
+                                        nfBreakCount = snapshot.data!.nf!._processBreakCount(previousNF, nfBreakCount);
+                                        var nfChg = snapshot.data!.nf!._getChangeCompareToPrevious();
+                                        previousNF = snapshot.data!.nf!;
 
-                                        tseBreakCount = _processBreakCount(snapshot.data!.tse!.close!, previousTSE, tseBreakCount);
-                                        var tseBreakCountShow = tseBreakCount.abs();
-                                        previousTSE = snapshot.data!.tse!.close!;
+                                        tseBreakCount = snapshot.data!.tse!._processBreakCount(previousTSE, tseBreakCount);
+                                        previousTSE = snapshot.data!.tse!;
 
-                                        otcBreakCount = _processBreakCount(snapshot.data!.otc!.close!, previousOTC, otcBreakCount);
-                                        var otcBreakCountShow = otcBreakCount.abs();
-                                        previousOTC = snapshot.data!.otc!.close!;
-
-                                        var nasdaqChange = snapshot.data!.nasdaq!.price! - snapshot.data!.nasdaq!.last!;
-                                        var nfChange = snapshot.data!.nf!.price! - snapshot.data!.nf!.last!;
+                                        otcBreakCount = snapshot.data!.otc!._processBreakCount(previousOTC, otcBreakCount);
+                                        previousOTC = snapshot.data!.otc!;
                                         return SizedBox(
                                           child: Row(
                                             children: [
@@ -321,11 +348,11 @@ class _FutureTradePageState extends State<FutureTradePage> {
                                                             child: Align(
                                                               alignment: Alignment.centerRight,
                                                               child: Text(
-                                                                nasdaqChange.toStringAsFixed(2),
+                                                                nasdaqChg.toStringAsFixed(2),
                                                                 style: GoogleFonts.getFont('Source Code Pro',
                                                                     fontStyle: FontStyle.normal,
                                                                     fontSize: 15,
-                                                                    color: _generateColorByPriceChange(nasdaqChange)),
+                                                                    color: nasdaqChg < 0 ? Colors.green : Colors.red),
                                                               ),
                                                             ),
                                                           ),
@@ -333,12 +360,12 @@ class _FutureTradePageState extends State<FutureTradePage> {
                                                             child: Align(
                                                               alignment: Alignment.centerRight,
                                                               child: Text(
-                                                                '!$nsadaqBreakCountShow',
+                                                                '!${nsadaqBreakCount.abs()}',
                                                                 style: GoogleFonts.getFont(
                                                                   'Source Code Pro',
                                                                   fontStyle: FontStyle.normal,
                                                                   fontSize: 15,
-                                                                  color: _generateColorByPriceChange(nsadaqBreakCount),
+                                                                  color: nsadaqBreakCount < 0 ? Colors.green : Colors.red,
                                                                 ),
                                                               ),
                                                             ),
@@ -354,12 +381,12 @@ class _FutureTradePageState extends State<FutureTradePage> {
                                                             child: Align(
                                                               alignment: Alignment.centerRight,
                                                               child: Text(
-                                                                nfChange.toStringAsFixed(2),
+                                                                nfChg.toStringAsFixed(2),
                                                                 style: GoogleFonts.getFont(
                                                                   'Source Code Pro',
                                                                   fontStyle: FontStyle.normal,
                                                                   fontSize: 15,
-                                                                  color: _generateColorByPriceChange(nfChange),
+                                                                  color: nfChg < 0 ? Colors.green : Colors.red,
                                                                 ),
                                                               ),
                                                             ),
@@ -368,11 +395,11 @@ class _FutureTradePageState extends State<FutureTradePage> {
                                                             child: Align(
                                                               alignment: Alignment.centerRight,
                                                               child: Text(
-                                                                '!$nfBreakCountShow',
+                                                                '!${nfBreakCount.abs()}',
                                                                 style: GoogleFonts.getFont('Source Code Pro',
                                                                     fontStyle: FontStyle.normal,
                                                                     fontSize: 15,
-                                                                    color: _generateColorByPriceChange(nfBreakCount)),
+                                                                    color: nfBreakCount < 0 ? Colors.green : Colors.red),
                                                               ),
                                                             ),
                                                           ),
@@ -391,7 +418,7 @@ class _FutureTradePageState extends State<FutureTradePage> {
                                                                 style: GoogleFonts.getFont('Source Code Pro',
                                                                     fontStyle: FontStyle.normal,
                                                                     fontSize: 15,
-                                                                    color: _generateColorByPriceChange(snapshot.data!.tse!.priceChg!)),
+                                                                    color: snapshot.data!.tse!.priceChg! < 0 ? Colors.green : Colors.red),
                                                               ),
                                                             ),
                                                           ),
@@ -399,11 +426,11 @@ class _FutureTradePageState extends State<FutureTradePage> {
                                                             child: Align(
                                                               alignment: Alignment.centerRight,
                                                               child: Text(
-                                                                '!$tseBreakCountShow',
+                                                                '!${tseBreakCount.abs()}',
                                                                 style: GoogleFonts.getFont('Source Code Pro',
                                                                     fontStyle: FontStyle.normal,
                                                                     fontSize: 15,
-                                                                    color: _generateColorByPriceChange(tseBreakCount)),
+                                                                    color: tseBreakCount < 0 ? Colors.green : Colors.red),
                                                               ),
                                                             ),
                                                           ),
@@ -422,7 +449,7 @@ class _FutureTradePageState extends State<FutureTradePage> {
                                                                 style: GoogleFonts.getFont('Source Code Pro',
                                                                     fontStyle: FontStyle.normal,
                                                                     fontSize: 15,
-                                                                    color: _generateColorByPriceChange(snapshot.data!.otc!.priceChg!)),
+                                                                    color: snapshot.data!.otc!.priceChg! < 0 ? Colors.green : Colors.red),
                                                               ),
                                                             ),
                                                           ),
@@ -430,11 +457,11 @@ class _FutureTradePageState extends State<FutureTradePage> {
                                                             child: Align(
                                                               alignment: Alignment.centerRight,
                                                               child: Text(
-                                                                '!$otcBreakCountShow',
+                                                                '!${otcBreakCount.abs()}',
                                                                 style: GoogleFonts.getFont('Source Code Pro',
                                                                     fontStyle: FontStyle.normal,
                                                                     fontSize: 15,
-                                                                    color: _generateColorByPriceChange(otcBreakCount)),
+                                                                    color: otcBreakCount < 0 ? Colors.green : Colors.red),
                                                               ),
                                                             ),
                                                           ),
@@ -475,10 +502,9 @@ class _FutureTradePageState extends State<FutureTradePage> {
                               ),
                               Text(
                                 '$type ${snapshot.data!.priceChg.toString()}',
-                                // snapshot.data!.priceChg.toString(),
                                 style: TextStyle(
                                   fontSize: 50,
-                                  color: tmp,
+                                  color: priceChg > 0 ? Colors.red : Colors.green,
                                 ),
                               ),
                             ],
@@ -486,23 +512,40 @@ class _FutureTradePageState extends State<FutureTradePage> {
                         ),
                         Padding(
                           padding: const EdgeInsets.only(left: 20, right: 20),
-                          child: FutureBuilder<TradeRate?>(
-                            future: tradeRate,
+                          child: FutureBuilder<PeriodOutInVolume?>(
+                            future: periodVolume,
                             builder: (context, snapshot) {
                               if (snapshot.hasData) {
-                                var percent = snapshot.data!.outRate! / (snapshot.data!.outRate! + snapshot.data!.inRate!);
-                                return LinearPercentIndicator(
-                                  leading: Text(snapshot.data!.outRate!.toString()),
-                                  trailing: Text(snapshot.data!.inRate!.toString()),
-                                  barRadius: const Radius.circular(5),
-                                  lineHeight: 20,
-                                  center: Text(
-                                    '${(percent * 100).toStringAsFixed(2)}%',
-                                    style: const TextStyle(color: Colors.white),
-                                  ),
-                                  percent: percent,
-                                  backgroundColor: Colors.greenAccent,
-                                  progressColor: Colors.redAccent,
+                                var percent1 = 100 *
+                                    snapshot.data!.firstPeriod!.outVolume! /
+                                    (snapshot.data!.firstPeriod!.outVolume! + snapshot.data!.firstPeriod!.inVolume!);
+                                var percent2 = 100 *
+                                    snapshot.data!.secondPeriod!.outVolume! /
+                                    (snapshot.data!.secondPeriod!.outVolume! + snapshot.data!.secondPeriod!.inVolume!);
+                                var percent3 = 100 *
+                                    snapshot.data!.thirdPeriod!.outVolume! /
+                                    (snapshot.data!.thirdPeriod!.outVolume! + snapshot.data!.thirdPeriod!.inVolume!);
+                                var percent4 = 100 *
+                                    snapshot.data!.fourthPeriod!.outVolume! /
+                                    (snapshot.data!.fourthPeriod!.outVolume! + snapshot.data!.fourthPeriod!.inVolume!);
+
+                                var rate = (snapshot.data!.fourthPeriod!.outVolume! + snapshot.data!.fourthPeriod!.inVolume!) / 40;
+                                return Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                  children: [
+                                    _buildVolumeRatioCircle(percent1),
+                                    _buildVolumeRatioCircle(percent2),
+                                    Text(
+                                      '${rate.toStringAsFixed(2)}/s',
+                                      style: GoogleFonts.getFont(
+                                        'Source Code Pro',
+                                        fontStyle: FontStyle.normal,
+                                        fontSize: 25,
+                                      ),
+                                    ),
+                                    _buildVolumeRatioCircle(percent3),
+                                    _buildVolumeRatioCircle(percent4),
+                                  ],
                                 );
                               }
                               return Container();
@@ -512,27 +555,29 @@ class _FutureTradePageState extends State<FutureTradePage> {
                         Padding(
                           padding: const EdgeInsets.only(left: 20, right: 20),
                           child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             children: [
                               ElevatedButton(
                                 style: ButtonStyle(
                                   elevation: MaterialStateProperty.all(16),
-                                  backgroundColor: MaterialStateProperty.all(Colors.red),
+                                  backgroundColor: allowBuy ? MaterialStateProperty.all(Colors.red) : MaterialStateProperty.all(Colors.grey),
                                 ),
                                 onPressed: () {
-                                  _channel.sink.add(jsonEncode({
-                                    'topic': 'future_trade',
-                                    'future_order': {
-                                      'code': snapshot.data!.code,
-                                      'action': 1,
-                                      'price': snapshot.data!.close,
-                                      'qty': qty,
-                                    },
-                                  }));
+                                  if (allowBuy) {
+                                    _channel.sink.add(jsonEncode({
+                                      'topic': 'future_trade',
+                                      'future_order': {
+                                        'code': snapshot.data!.code,
+                                        'action': 1,
+                                        'price': snapshot.data!.close,
+                                        'qty': qty,
+                                      },
+                                    }));
+                                  }
                                 },
                                 child: SizedBox(
                                   width: 130,
-                                  height: 70,
+                                  height: 50,
                                   child: Center(
                                     child: Text(
                                       S.of(context).buy,
@@ -547,22 +592,24 @@ class _FutureTradePageState extends State<FutureTradePage> {
                               ElevatedButton(
                                 style: ButtonStyle(
                                   elevation: MaterialStateProperty.all(16),
-                                  backgroundColor: MaterialStateProperty.all(Colors.green),
+                                  backgroundColor: allowSell ? MaterialStateProperty.all(Colors.green) : MaterialStateProperty.all(Colors.grey),
                                 ),
                                 onPressed: () {
-                                  _channel.sink.add(jsonEncode({
-                                    'topic': 'future_trade',
-                                    'future_order': {
-                                      'code': snapshot.data!.code,
-                                      'action': 2,
-                                      'price': snapshot.data!.close,
-                                      'qty': qty,
-                                    },
-                                  }));
+                                  if (allowSell) {
+                                    _channel.sink.add(jsonEncode({
+                                      'topic': 'future_trade',
+                                      'future_order': {
+                                        'code': snapshot.data!.code,
+                                        'action': 2,
+                                        'price': snapshot.data!.close,
+                                        'qty': qty,
+                                      },
+                                    }));
+                                  }
                                 },
                                 child: SizedBox(
                                   width: 130,
-                                  height: 70,
+                                  height: 50,
                                   child: Center(
                                     child: Text(
                                       S.of(context).sell,
@@ -588,7 +635,7 @@ class _FutureTradePageState extends State<FutureTradePage> {
               ),
             ),
             Expanded(
-              flex: 5,
+              flex: 7,
               child: FutureBuilder<List<RealTimeFutureTick>>(
                 future: realTimeFutureTickArr,
                 builder: (context, snapshot) {
@@ -614,12 +661,12 @@ class _FutureTradePageState extends State<FutureTradePage> {
                         }
                         return Container(
                           margin: const EdgeInsets.symmetric(
-                            horizontal: 20,
+                            horizontal: 30,
                             vertical: 2,
                           ),
                           decoration: BoxDecoration(
                             border: Border.all(
-                              color: _generateColorByTickType(tickType!),
+                              color: tickType! == 1 ? Colors.red : Colors.green,
                               width: 1.1,
                             ),
                             borderRadius: BorderRadius.circular(6),
@@ -631,7 +678,7 @@ class _FutureTradePageState extends State<FutureTradePage> {
                               style: TextStyle(
                                 fontWeight: FontWeight.bold,
                                 fontSize: volumeFontSize.toDouble(),
-                                color: _generateColorByTickType(tickType),
+                                color: tickType == 1 ? Colors.red : Colors.green,
                               ),
                             ),
                             title: Text(
@@ -639,7 +686,7 @@ class _FutureTradePageState extends State<FutureTradePage> {
                               style: TextStyle(
                                 fontWeight: FontWeight.bold,
                                 fontSize: volumeFontSize.toDouble(),
-                                color: _generateColorByTickType(tickType),
+                                color: tickType == 1 ? Colors.red : Colors.green,
                               ),
                             ),
                             trailing:
@@ -657,135 +704,84 @@ class _FutureTradePageState extends State<FutureTradePage> {
               ),
             ),
             Expanded(
-              child: ListTile(
-                leading: const Icon(
-                  Icons.assistant,
-                  color: Colors.teal,
-                ),
-                title: const Text('Assist'),
-                trailing: SizedBox(
-                  width: 200,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: [
-                      IconButton(
-                        onPressed: () {
-                          setState(() {
-                            automationByBalance = !automationByBalance;
-                          });
-                        },
-                        icon: Icon(Icons.monetization_on, color: automationByBalance ? Colors.blueAccent : Colors.grey),
-                      ),
-                      IconButton(
-                        onPressed: () {
-                          setState(() {
-                            automationByTimer = !automationByTimer;
-                          });
-                        },
-                        icon: Icon(Icons.timer, color: automationByTimer ? Colors.blueAccent : Colors.grey),
-                      ),
-                      Checkbox(
-                        shape: const CircleBorder(),
-                        checkColor: Colors.blue,
-                        value: automationTrade,
-                        onChanged: (value) {
-                          setState(() {
-                            automationTrade = value!;
-                          });
-                        },
-                      ),
-                    ],
+              flex: 2,
+              child: Padding(
+                padding: const EdgeInsets.only(left: 10),
+                child: ListTile(
+                  leading: const Icon(
+                    Icons.numbers_outlined,
+                    color: Colors.teal,
+                  ),
+                  title: Text(S.of(context).quantity),
+                  trailing: SizedBox(
+                    width: 200,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            shape: const CircleBorder(),
+                            backgroundColor: Colors.yellow[50],
+                          ),
+                          child: const Text(
+                            '-',
+                            style: TextStyle(color: Colors.black, fontSize: 22),
+                          ),
+                          onPressed: () {
+                            setState(() {
+                              qty--;
+                              if (qty == 0) {
+                                qty = 1;
+                              }
+                            });
+                          },
+                        ),
+                        Text(
+                          qty.toString(),
+                          style: GoogleFonts.getFont('Source Code Pro',
+                              fontStyle: FontStyle.normal, fontSize: 23, color: Colors.black, fontWeight: FontWeight.bold),
+                        ),
+                        ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            shape: const CircleBorder(),
+                            backgroundColor: Colors.yellow[50],
+                          ),
+                          child: const Text(
+                            '+',
+                            style: TextStyle(color: Colors.black, fontSize: 22),
+                          ),
+                          onPressed: () async {
+                            setState(() {
+                              qty++;
+                              if (qty == 10) {
+                                qty = 9;
+                              }
+                            });
+                          },
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),
-            ),
-            Expanded(
-              child: ListTile(
-                leading: const Icon(
-                  Icons.numbers_outlined,
-                  color: Colors.teal,
-                ),
-                title: Text(S.of(context).quantity),
-                trailing: SizedBox(
-                  width: 200,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          shape: const CircleBorder(),
-                          backgroundColor: Colors.yellow[50],
-                        ),
-                        child: const Text(
-                          '-',
-                          style: TextStyle(color: Colors.black, fontSize: 22),
-                        ),
-                        onPressed: () async {
-                          await widget.db.basicDao.getBasicByKey('future_qty').then((value) async {
-                            if (value != null) {
-                              value.value = (int.parse(value.value) - 1).toString();
-                              if (value.value == '0') {
-                                value.value = '1';
-                              }
-                              await widget.db.basicDao.updateBasic(value);
-                            }
-                          });
-                          setState(() {
-                            futureQty = widget.db.basicDao.getBasicByKey('future_qty');
-                          });
-                        },
-                      ),
-                      FutureBuilder<Basic?>(
-                        future: futureQty,
-                        builder: (context, snapshot) {
-                          if (snapshot.hasData) {
-                            qty = int.parse(snapshot.data!.value);
-                            return Text(
-                              snapshot.data!.value,
-                              style: GoogleFonts.getFont('Source Code Pro',
-                                  fontStyle: FontStyle.normal, fontSize: 23, color: Colors.black, fontWeight: FontWeight.bold),
-                            );
-                          }
-                          return const Text('-');
-                        },
-                      ),
-                      ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          shape: const CircleBorder(),
-                          backgroundColor: Colors.yellow[50],
-                        ),
-                        child: const Text(
-                          '+',
-                          style: TextStyle(color: Colors.black, fontSize: 22),
-                        ),
-                        onPressed: () async {
-                          await widget.db.basicDao.getBasicByKey('future_qty').then((value) async {
-                            if (value != null) {
-                              value.value = (int.parse(value.value) + 1).toString();
-                              if (value.value == '10') {
-                                value.value = '9';
-                              }
-                              await widget.db.basicDao.updateBasic(value);
-                            }
-                          });
-                          setState(() {
-                            futureQty = widget.db.basicDao.getBasicByKey('future_qty');
-                          });
-                        },
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-            const Divider(
-              color: Colors.transparent,
             ),
           ],
         ),
       ),
     );
   }
+}
+
+Widget _buildVolumeRatioCircle(double percent) {
+  return CircularPercentIndicator(
+    animateFromLastPercent: true,
+    animation: true,
+    radius: 25,
+    lineWidth: 8,
+    percent: percent / 100,
+    center: Text('${percent.toStringAsFixed(0)}%'),
+    progressColor: generateOutInRatioColor(percent),
+  );
 }
 
 void _showDialog(BuildContext context, String message) {
@@ -824,29 +820,12 @@ void _showDialog(BuildContext context, String message) {
   }
 }
 
-Color _generateColorByTickType(num tickType) {
-  if (tickType == 2) {
-    return Colors.green;
-  } else {
-    return Colors.red;
-  }
-}
-
-Color _generateColorByPriceChange(num change) {
-  if (change < 0) {
-    return Colors.green;
-  } else if (change > 0) {
-    return Colors.red;
-  }
-  return Colors.black;
-}
-
 Future<RealTimeFutureTick> getData(Map<String, dynamic> json) async {
   return RealTimeFutureTick.fromJson(json);
 }
 
-Future<TradeRate> updateTradeRate(Map<String, dynamic> json) async {
-  return TradeRate.fromJson(json);
+Future<PeriodOutInVolume> updateTradeRate(Map<String, dynamic> json) async {
+  return PeriodOutInVolume.fromJson(json);
 }
 
 Future<TradeIndex> updateTradeIndex(Map<String, dynamic> json) async {
@@ -854,45 +833,22 @@ Future<TradeIndex> updateTradeIndex(Map<String, dynamic> json) async {
 }
 
 Future<FuturePosition> updateFuturePosition(Map<String, dynamic> json, String code) async {
-  if (json['position'] == null) {
-    return FuturePosition();
-  }
-
-  for (final element in json['position'] as List) {
-    if (element['code'] == code) {
-      return FuturePosition.fromJson(element);
+  if (json['position'] != null) {
+    for (final element in json['position'] as List) {
+      if (element['code'] == code) {
+        return FuturePosition.fromJson(element);
+      }
     }
   }
 
   return FuturePosition();
 }
 
-int _processBreakCount(num current, num previous, num breakCount) {
-  if (previous == 0) {
-    return 0;
-  }
-
-  var tmpBreakCount = breakCount.toInt();
-  if (current > previous) {
-    if (breakCount > 0) {
-      tmpBreakCount++;
-    } else {
-      tmpBreakCount = 1;
-    }
-  } else if (current < previous) {
-    if (breakCount < 0) {
-      tmpBreakCount--;
-    } else {
-      tmpBreakCount = -1;
-    }
-  }
-  return tmpBreakCount;
-}
-
 Future<List<RealTimeFutureTick>> fillArr(Map<String, dynamic> json, List<RealTimeFutureTick> originalArr) async {
   var tmp = RealTimeFutureTick.fromJson(json);
   if (originalArr.isNotEmpty && originalArr.last.close == tmp.close && originalArr.last.tickType == tmp.tickType) {
     originalArr.last.volume = originalArr.last.volume! + tmp.volume!;
+    originalArr.last.tickTime = tmp.tickTime;
     originalArr.last.combo = true;
   } else {
     if (originalArr.length > 4) {
@@ -993,16 +949,32 @@ class RealTimeFutureTick {
   }
 }
 
-class TradeRate {
-  TradeRate(this.outRate, this.inRate);
+class OutInVolume {
+  OutInVolume(this.outVolume, this.inVolume);
 
-  TradeRate.fromJson(Map<String, dynamic> json) {
-    outRate = json['out_rate'];
-    inRate = json['in_rate'];
+  OutInVolume.fromJson(Map<String, dynamic> json) {
+    outVolume = json['out_volume'];
+    inVolume = json['in_volume'];
   }
 
-  num? outRate;
-  num? inRate;
+  num? outVolume;
+  num? inVolume;
+}
+
+class PeriodOutInVolume {
+  PeriodOutInVolume(this.firstPeriod, this.secondPeriod, this.thirdPeriod, this.fourthPeriod);
+
+  PeriodOutInVolume.fromJson(Map<String, dynamic> json) {
+    firstPeriod = json['first_period'] != null ? OutInVolume.fromJson(json['first_period']) : null;
+    secondPeriod = json['second_period'] != null ? OutInVolume.fromJson(json['second_period']) : null;
+    thirdPeriod = json['third_period'] != null ? OutInVolume.fromJson(json['third_period']) : null;
+    fourthPeriod = json['fourth_period'] != null ? OutInVolume.fromJson(json['fourth_period']) : null;
+  }
+
+  OutInVolume? firstPeriod;
+  OutInVolume? secondPeriod;
+  OutInVolume? thirdPeriod;
+  OutInVolume? fourthPeriod;
 }
 
 class TradeIndex {
@@ -1022,34 +994,55 @@ class TradeIndex {
 }
 
 class YahooPrice {
-  YahooPrice(this.last, this.price);
+  YahooPrice(this.updateAt);
 
   YahooPrice.fromJson(Map<String, dynamic> json) {
     last = json['last'];
     price = json['price'];
+    updateAt = json['updated_at'];
+  }
+
+  int _processBreakCount(YahooPrice previous, num breakCount) {
+    if (previous.updateAt!.isEmpty) {
+      return 0;
+    }
+
+    if (DateTime.parse(previous.updateAt!).isAtSameMomentAs(DateTime.parse(updateAt!))) {
+      return breakCount.toInt();
+    }
+
+    var tmpBreakCount = breakCount.toInt();
+    if (price! > previous.price! + 0.3) {
+      if (breakCount >= 0) {
+        tmpBreakCount++;
+      } else {
+        tmpBreakCount = 1;
+      }
+    } else if (price! < previous.price! - 0.3) {
+      if (breakCount <= 0) {
+        tmpBreakCount--;
+      } else {
+        tmpBreakCount = -1;
+      }
+    }
+    return tmpBreakCount;
+  }
+
+  num _getChangeCompareToPrevious() {
+    if (price == 0 || last == 0) {
+      return 0;
+    }
+
+    return price! - last!;
   }
 
   num? last;
   num? price;
+  String? updateAt;
 }
 
 class Snapshot {
-  Snapshot(
-      {this.snapTime,
-      this.open,
-      this.high,
-      this.low,
-      this.close,
-      this.tickType,
-      this.priceChg,
-      this.pctChg,
-      this.chgType,
-      this.volume,
-      this.volumeSum,
-      this.amount,
-      this.amountSum,
-      this.yesterdayVolume,
-      this.volumeRatio});
+  Snapshot(this.snapTime);
 
   Snapshot.fromJson(Map<String, dynamic> json) {
     snapTime = json['snap_time'];
@@ -1067,6 +1060,32 @@ class Snapshot {
     amountSum = json['amount_sum'];
     yesterdayVolume = json['yesterday_volume'];
     volumeRatio = json['volume_ratio'];
+  }
+
+  int _processBreakCount(Snapshot previous, num breakCount) {
+    if (previous.snapTime!.isEmpty) {
+      return 0;
+    }
+
+    if (DateTime.parse(previous.snapTime!).isAtSameMomentAs(DateTime.parse(snapTime!))) {
+      return breakCount.toInt();
+    }
+
+    var tmpBreakCount = breakCount.toInt();
+    if (close! > previous.close! + 0.3) {
+      if (breakCount >= 0) {
+        tmpBreakCount++;
+      } else {
+        tmpBreakCount = 1;
+      }
+    } else if (close! < previous.close! - 0.3) {
+      if (breakCount <= 0) {
+        tmpBreakCount--;
+      } else {
+        tmpBreakCount = -1;
+      }
+    }
+    return tmpBreakCount;
   }
 
   Map<String, dynamic> toJson() {
@@ -1144,12 +1163,12 @@ class FutureOrder {
 
     var actionStr = baseOrder!.action == 1 ? 'Buy' : 'Sell';
     switch (baseOrder!.status) {
-      // case 1:
-      //   return '$actionStr ${baseOrder!.price}\nPendingSubmit';
-      // case 2:
-      //   return '$actionStr ${baseOrder!.price}\nPreSubmitted';
-      // case 3:
-      //   return '$actionStr ${baseOrder!.price}\nSubmitted';
+      case 1:
+        return '$actionStr ${baseOrder!.price}\nPendingSubmit';
+      case 2:
+        return '$actionStr ${baseOrder!.price}\nPreSubmitted';
+      case 3:
+        return '$actionStr ${baseOrder!.price}\nSubmitted';
       case 4:
         return '$actionStr ${baseOrder!.price}\nFailed';
       case 5:
@@ -1157,7 +1176,7 @@ class FutureOrder {
       case 6:
         return '$actionStr ${baseOrder!.price}\nFilled';
       case 7:
-        return '$actionStr ${baseOrder!.price}\nFilling';
+        return '$actionStr ${baseOrder!.price}\nPartFilled';
       default:
         return '';
     }
@@ -1201,4 +1220,13 @@ class BaseOrder {
   String? tradeTime;
   String? tickTime;
   String? groupID;
+}
+
+Color generateOutInRatioColor(double percent) {
+  if (percent >= 55) {
+    return Colors.red;
+  } else if (percent <= 45) {
+    return Colors.green;
+  }
+  return Colors.yellow;
 }
