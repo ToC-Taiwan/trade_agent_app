@@ -61,5 +61,14 @@
   "sell": "卖出",
   "quantity": "数量",
   "enter_quantity": "输入数量",
-  "edit": "编辑"
+  "edit": "编辑",
+  "pending_submit": "待提交",
+  "pre_submitted": "预提交",
+  "submitted": "已提交",
+  "failed": "失败",
+  "cancelled": "已取消",
+  "filled": "已成交",
+  "part_filled": "部分成交",
+  "position": "持仓",
+  "avg": "均价"
 }

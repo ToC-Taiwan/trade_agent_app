@@ -61,5 +61,14 @@
   "sell": "Sell",
   "quantity": "Quantity",
   "enter_quantity": "Enter Quantity",
-  "edit": "Edit"
+  "edit": "Edit",
+  "pending_submit": "Pending Submit",
+  "pre_submitted": "Pre Submitted",
+  "submitted": "Submitted",
+  "failed": "Failed",
+  "cancelled": "Cancelled",
+  "filled": "Filled",
+  "part_filled": "Part Filled",
+  "position": "Position",
+  "avg": "Avg"
 }

@@ -26,9 +26,11 @@ class MessageLookup extends MessageLookupByLibrary {
         "add": MessageLookupByLibrary.simpleMessage("Add"),
         "already_purchased":
             MessageLookupByLibrary.simpleMessage("Already Purchased?"),
+        "avg": MessageLookupByLibrary.simpleMessage("Avg"),
         "balance": MessageLookupByLibrary.simpleMessage("Balance"),
         "buy": MessageLookupByLibrary.simpleMessage("Buy"),
         "cancel": MessageLookupByLibrary.simpleMessage("Cancel"),
+        "cancelled": MessageLookupByLibrary.simpleMessage("Cancelled"),
         "change_type": MessageLookupByLibrary.simpleMessage("Change Type"),
         "click_plus_to_add_stock":
             MessageLookupByLibrary.simpleMessage("Click + to add stock"),
@@ -46,6 +48,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "edit": MessageLookupByLibrary.simpleMessage("Edit"),
         "enter_quantity":
             MessageLookupByLibrary.simpleMessage("Enter Quantity"),
+        "failed": MessageLookupByLibrary.simpleMessage("Failed"),
+        "filled": MessageLookupByLibrary.simpleMessage("Filled"),
         "future": MessageLookupByLibrary.simpleMessage("Future"),
         "future_trade": MessageLookupByLibrary.simpleMessage("Future Trade"),
         "group": MessageLookupByLibrary.simpleMessage("Group"),
@@ -62,9 +66,14 @@ class MessageLookup extends MessageLookupByLibrary {
         "notification": MessageLookupByLibrary.simpleMessage("Notification"),
         "ok": MessageLookupByLibrary.simpleMessage("OK"),
         "open": MessageLookupByLibrary.simpleMessage("Open"),
+        "part_filled": MessageLookupByLibrary.simpleMessage("Part Filled"),
+        "pending_submit":
+            MessageLookupByLibrary.simpleMessage("Pending Submit"),
         "percent_change":
             MessageLookupByLibrary.simpleMessage("Percent Change"),
         "pick_stock": MessageLookupByLibrary.simpleMessage("Pick Stock"),
+        "position": MessageLookupByLibrary.simpleMessage("Position"),
+        "pre_submitted": MessageLookupByLibrary.simpleMessage("Pre Submitted"),
         "price_change": MessageLookupByLibrary.simpleMessage("Price Change"),
         "product_list_abnormal":
             MessageLookupByLibrary.simpleMessage("Product List Abnormal"),
@@ -87,6 +96,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Stock dose not exist"),
         "stock_number": MessageLookupByLibrary.simpleMessage("Stock Number"),
         "strategy": MessageLookupByLibrary.simpleMessage("Strategy"),
+        "submitted": MessageLookupByLibrary.simpleMessage("Submitted"),
         "success": MessageLookupByLibrary.simpleMessage("Success"),
         "targets": MessageLookupByLibrary.simpleMessage("Targets"),
         "terms_and_conditions_of_use":

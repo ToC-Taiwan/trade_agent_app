@@ -2,6 +2,8 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:date_format/date_format.dart' as df;
+import 'package:elegant_notification/elegant_notification.dart';
+import 'package:elegant_notification/resources/arrays.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:percent_indicator/percent_indicator.dart';
@@ -9,6 +11,7 @@ import 'package:trade_agent_v2/basic/base.dart';
 import 'package:trade_agent_v2/database.dart';
 import 'package:trade_agent_v2/generated/l10n.dart';
 import 'package:trade_agent_v2/utils/app_bar.dart';
+import 'package:wakelock/wakelock.dart';
 import 'package:web_socket_channel/io.dart';
 
 class FutureTradePage extends StatefulWidget {
@@ -52,6 +55,7 @@ class _FutureTradePageState extends State<FutureTradePage> {
   @override
   void initState() {
     super.initState();
+    Wakelock.enable();
     initialWS();
     checkConnection();
   }
@@ -59,6 +63,7 @@ class _FutureTradePageState extends State<FutureTradePage> {
   @override
   void dispose() {
     _channel.sink.close();
+    Wakelock.disable();
     super.dispose();
   }
 
@@ -87,7 +92,7 @@ class _FutureTradePageState extends State<FutureTradePage> {
 
         if (msg.containsKey('base_order')) {
           if (mounted) {
-            _showDialog(context, FutureOrder.fromJson(msg).generateStatusMessage());
+            _showOrderResult(FutureOrder.fromJson(msg));
           }
           return;
         }
@@ -108,7 +113,7 @@ class _FutureTradePageState extends State<FutureTradePage> {
 
         if (msg.containsKey('err_msg')) {
           if (mounted) {
-            _showDialog(context, msg['err_msg']);
+            _showDialog(msg['err_msg']);
           }
           return;
         }
@@ -132,6 +137,145 @@ class _FutureTradePageState extends State<FutureTradePage> {
         timer.cancel();
       }
     });
+  }
+
+  void _showOrderResult(FutureOrder order) {
+    var actionStr = order.baseOrder!.action == 1 ? S.of(context).buy : S.of(context).sell;
+    switch (order.baseOrder!.status) {
+      case 1:
+        ElegantNotification(
+          width: MediaQuery.of(context).size.width,
+          notificationPosition: NotificationPosition.topCenter,
+          animation: AnimationType.fromTop,
+          toastDuration: const Duration(milliseconds: 2000),
+          title: Text(S.of(context).pending_submit),
+          description: Text('$actionStr ${order.baseOrder!.price} x ${order.baseOrder!.quantity}'),
+          icon: const Icon(
+            Icons.book,
+            color: Colors.orange,
+          ),
+          progressIndicatorColor: Colors.orange,
+          onDismiss: () {},
+        ).show(context);
+        return;
+      case 2:
+        ElegantNotification(
+          width: MediaQuery.of(context).size.width,
+          notificationPosition: NotificationPosition.topCenter,
+          animation: AnimationType.fromTop,
+          toastDuration: const Duration(milliseconds: 2000),
+          title: Text(S.of(context).pre_submitted),
+          description: Text('$actionStr ${order.baseOrder!.price} x ${order.baseOrder!.quantity}'),
+          icon: const Icon(
+            Icons.book,
+            color: Colors.orange,
+          ),
+          progressIndicatorColor: Colors.orange,
+          onDismiss: () {},
+        ).show(context);
+        return;
+      case 3:
+        ElegantNotification.info(
+          width: MediaQuery.of(context).size.width,
+          notificationPosition: NotificationPosition.topCenter,
+          animation: AnimationType.fromTop,
+          toastDuration: const Duration(milliseconds: 2000),
+          title: Text(S.of(context).submitted),
+          description: Text('$actionStr ${order.baseOrder!.price} x ${order.baseOrder!.quantity}'),
+          onDismiss: () {},
+        ).show(context);
+        return;
+      case 4:
+        ElegantNotification.error(
+          width: MediaQuery.of(context).size.width,
+          notificationPosition: NotificationPosition.topCenter,
+          animation: AnimationType.fromTop,
+          toastDuration: const Duration(milliseconds: 2000),
+          title: Text(S.of(context).failed),
+          description: Text('$actionStr ${order.baseOrder!.price}'),
+          onDismiss: () {},
+        ).show(context);
+        return;
+      case 5:
+        ElegantNotification(
+          width: MediaQuery.of(context).size.width,
+          notificationPosition: NotificationPosition.topCenter,
+          animation: AnimationType.fromTop,
+          toastDuration: const Duration(milliseconds: 2000),
+          title: Text(S.of(context).cancelled),
+          description: Text('$actionStr ${order.baseOrder!.price}'),
+          icon: const Icon(
+            Icons.cached_outlined,
+            color: Colors.orange,
+          ),
+          progressIndicatorColor: Colors.orange,
+          onDismiss: () {},
+        ).show(context);
+        return;
+      case 6:
+        ElegantNotification.success(
+          width: MediaQuery.of(context).size.width,
+          notificationPosition: NotificationPosition.topCenter,
+          animation: AnimationType.fromTop,
+          toastDuration: const Duration(milliseconds: 2000),
+          title: Text(S.of(context).filled),
+          description: Text('$actionStr ${order.baseOrder!.price} x ${order.baseOrder!.quantity}'),
+          onDismiss: () {},
+        ).show(context);
+        return;
+      case 7:
+        ElegantNotification(
+          width: MediaQuery.of(context).size.width,
+          notificationPosition: NotificationPosition.topCenter,
+          animation: AnimationType.fromTop,
+          toastDuration: const Duration(milliseconds: 2000),
+          title: Text(S.of(context).part_filled),
+          description: Text('$actionStr ${order.baseOrder!.price} x ${order.baseOrder!.quantity}'),
+          icon: const Icon(
+            Icons.access_alarm,
+            color: Colors.orange,
+          ),
+          progressIndicatorColor: Colors.orange,
+          onDismiss: () {},
+        ).show(context);
+        return;
+    }
+  }
+
+  void _showDialog(String message) {
+    if (message.isNotEmpty) {
+      showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          iconColor: Colors.teal,
+          icon: const Icon(
+            Icons.warning,
+            size: 40,
+          ),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),
+          title: Text(S.of(context).notification),
+          content: Text(
+            message,
+            textAlign: TextAlign.center,
+          ),
+          actions: [
+            Center(
+              child: ElevatedButton(
+                child: Text(
+                  S.of(context).ok,
+                  style: const TextStyle(color: Colors.black),
+                ),
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+              ),
+            ),
+          ],
+        ),
+      );
+    }
   }
 
   @override
@@ -233,20 +377,20 @@ class _FutureTradePageState extends State<FutureTradePage> {
                                                 if (snapshot.hasData) {
                                                   if (snapshot.data!.direction == 'Buy') {
                                                     return Text(
-                                                      'Buy: ${snapshot.data!.quantity}\nAvg: ${snapshot.data!.price}',
+                                                      '${S.of(context).buy}: ${snapshot.data!.quantity}\n${S.of(context).avg}: ${snapshot.data!.price}',
                                                       style:
                                                           GoogleFonts.getFont('Source Code Pro', fontStyle: FontStyle.normal, fontSize: 15, color: Colors.grey),
                                                     );
                                                   }
                                                   if (snapshot.data!.direction == 'Sell') {
                                                     return Text(
-                                                      'Sell: ${snapshot.data!.quantity}\nAvg: ${snapshot.data!.price}',
+                                                      '${S.of(context).sell}: ${snapshot.data!.quantity}\n${S.of(context).avg}: ${snapshot.data!.price}',
                                                       style:
                                                           GoogleFonts.getFont('Source Code Pro', fontStyle: FontStyle.normal, fontSize: 15, color: Colors.grey),
                                                     );
                                                   }
                                                   return Text(
-                                                    'Position: 0',
+                                                    '${S.of(context).position}: 0',
                                                     style:
                                                         GoogleFonts.getFont('Source Code Pro', fontStyle: FontStyle.normal, fontSize: 15, color: Colors.grey),
                                                   );
@@ -475,10 +619,10 @@ class _FutureTradePageState extends State<FutureTradePage> {
                                           ),
                                         );
                                       }
-                                      return const Center(
+                                      return Center(
                                         child: Text(
-                                          'Loading...',
-                                          style: TextStyle(fontSize: 20),
+                                          '${S.of(context).loading}...',
+                                          style: const TextStyle(fontSize: 20),
                                         ),
                                       );
                                     },
@@ -782,42 +926,6 @@ Widget _buildVolumeRatioCircle(double percent) {
     center: Text('${percent.toStringAsFixed(0)}%'),
     progressColor: generateOutInRatioColor(percent),
   );
-}
-
-void _showDialog(BuildContext context, String message) {
-  if (message.isNotEmpty) {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        iconColor: Colors.teal,
-        icon: const Icon(
-          Icons.warning,
-          size: 40,
-        ),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(10),
-        ),
-        title: Text(S.of(context).notification),
-        content: Text(
-          message,
-          textAlign: TextAlign.center,
-        ),
-        actions: [
-          Center(
-            child: ElevatedButton(
-              child: Text(
-                S.of(context).ok,
-                style: const TextStyle(color: Colors.black),
-              ),
-              onPressed: () {
-                Navigator.pop(context);
-              },
-            ),
-          ),
-        ],
-      ),
-    );
-  }
 }
 
 Future<RealTimeFutureTick> getData(Map<String, dynamic> json) async {
@@ -1154,32 +1262,6 @@ class FutureOrder {
   FutureOrder.fromJson(Map<String, dynamic> json) {
     code = json['code'];
     baseOrder = json['base_order'] != null ? BaseOrder.fromJson(json['base_order']) : null;
-  }
-
-  String generateStatusMessage() {
-    if (baseOrder == null) {
-      return '';
-    }
-
-    var actionStr = baseOrder!.action == 1 ? 'Buy' : 'Sell';
-    switch (baseOrder!.status) {
-      case 1:
-        return '$actionStr ${baseOrder!.price}\nPendingSubmit';
-      case 2:
-        return '$actionStr ${baseOrder!.price}\nPreSubmitted';
-      case 3:
-        return '$actionStr ${baseOrder!.price}\nSubmitted';
-      case 4:
-        return '$actionStr ${baseOrder!.price}\nFailed';
-      case 5:
-        return '$actionStr ${baseOrder!.price}\nCancelled';
-      case 6:
-        return '$actionStr ${baseOrder!.price}\nFilled';
-      case 7:
-        return '$actionStr ${baseOrder!.price}\nPartFilled';
-      default:
-        return '';
-    }
   }
 
   String? code;

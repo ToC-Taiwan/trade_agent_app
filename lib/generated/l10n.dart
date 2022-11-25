@@ -679,6 +679,96 @@ class S {
       args: [],
     );
   }
+
+  /// `Pending Submit`
+  String get pending_submit {
+    return Intl.message(
+      'Pending Submit',
+      name: 'pending_submit',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Pre Submitted`
+  String get pre_submitted {
+    return Intl.message(
+      'Pre Submitted',
+      name: 'pre_submitted',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Submitted`
+  String get submitted {
+    return Intl.message(
+      'Submitted',
+      name: 'submitted',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Failed`
+  String get failed {
+    return Intl.message(
+      'Failed',
+      name: 'failed',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Cancelled`
+  String get cancelled {
+    return Intl.message(
+      'Cancelled',
+      name: 'cancelled',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Filled`
+  String get filled {
+    return Intl.message(
+      'Filled',
+      name: 'filled',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Part Filled`
+  String get part_filled {
+    return Intl.message(
+      'Part Filled',
+      name: 'part_filled',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Position`
+  String get position {
+    return Intl.message(
+      'Position',
+      name: 'position',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Avg`
+  String get avg {
+    return Intl.message(
+      'Avg',
+      name: 'avg',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {
