@@ -130,6 +130,15 @@ class _BalancePageState extends State<BalancePage> {
     );
   }
 
+  MaterialColor _balanceColors(num value) {
+    if (value > 0) {
+      return Colors.red;
+    } else if (value < 0) {
+      return Colors.green;
+    }
+    return Colors.grey;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -156,22 +165,8 @@ class _BalancePageState extends State<BalancePage> {
             var data = snapshot.data!;
             num total = 0;
             num lastTotal = 0;
-            var latestColor = Colors.black;
-            var totalColor = Colors.black;
-
-            var reverseStock = <BalanceDetail>[];
-            var reverseFuture = <BalanceDetail>[];
-
-            if (data.stock != null) {
-              data.stock!.asMap().forEach((i, value) {
-                total += value.total!;
-                if (i == data.stock!.length - 1) {
-                  lastTotal = value.total!;
-                }
-              });
-              reverseStock = data.stock!.reversed.toList();
-            }
-
+            var stockArr = <BalanceDetail>[];
+            var futureArr = <BalanceDetail>[];
             if (data.future != null) {
               data.future!.asMap().forEach((i, value) {
                 total += value.total!;
@@ -179,19 +174,16 @@ class _BalancePageState extends State<BalancePage> {
                   lastTotal += value.total!;
                 }
               });
-              reverseFuture = data.future!.reversed.toList();
+              futureArr = data.future!.reversed.toList();
             }
-
-            if (lastTotal < 0) {
-              latestColor = Colors.green;
-            } else if (lastTotal > 0) {
-              latestColor = Colors.red;
-            }
-
-            if (total < 0) {
-              totalColor = Colors.green;
-            } else if (total > 0) {
-              totalColor = Colors.red;
+            if (data.stock != null) {
+              data.stock!.asMap().forEach((i, value) {
+                total += value.total!;
+                if (i == data.stock!.length - 1) {
+                  lastTotal += value.total!;
+                }
+              });
+              stockArr = data.stock!.reversed.toList();
             }
 
             return Column(
@@ -219,34 +211,27 @@ class _BalancePageState extends State<BalancePage> {
                               height: 0,
                               color: Colors.grey,
                             ),
-                            itemCount: reverseFuture.length,
+                            itemCount: futureArr.length,
                             itemBuilder: (context, index) {
-                              var walletColor = Colors.black;
-                              var detailBalance = reverseFuture[index].total!;
-                              if (detailBalance < 0) {
-                                walletColor = Colors.green;
-                              } else if (detailBalance > 0) {
-                                walletColor = Colors.red;
-                              }
                               return ListTile(
                                 onTap: () {
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
                                       builder: (context) => OrderPage(
-                                        date: reverseFuture[index].tradeDay!.substring(0, 10),
+                                        date: futureArr[index].tradeDay!.substring(0, 10),
                                       ),
                                     ),
                                   );
                                 },
-                                leading: Icon(Icons.account_balance_wallet, color: walletColor),
-                                title: Text(reverseFuture[index].tradeDay!.substring(0, 10)),
-                                subtitle: Text('${S.of(context).trade_count}: ${reverseFuture[index].tradeCount}'),
+                                leading: Icon(Icons.account_balance_wallet, color: _balanceColors(futureArr[index].total!)),
+                                title: Text(futureArr[index].tradeDay!.substring(0, 10)),
+                                subtitle: Text('${S.of(context).trade_count}: ${futureArr[index].tradeCount}'),
                                 trailing: Text(
-                                  commaNumber(reverseFuture[index].total.toString()),
+                                  commaNumber(futureArr[index].total.toString()),
                                   style: TextStyle(
                                     fontSize: 18,
-                                    color: walletColor,
+                                    color: _balanceColors(futureArr[index].total!),
                                   ),
                                 ),
                               );
@@ -257,25 +242,17 @@ class _BalancePageState extends State<BalancePage> {
                               height: 0,
                               color: Colors.grey,
                             ),
-                            itemCount: reverseStock.length,
+                            itemCount: stockArr.length,
                             itemBuilder: (context, index) {
-                              var walletColor = Colors.black;
-                              var detailBalance = reverseFuture[index].total!;
-                              if (detailBalance < 0) {
-                                walletColor = Colors.green;
-                              } else if (detailBalance > 0) {
-                                walletColor = Colors.red;
-                              }
                               return ListTile(
-                                // onTap: () {},
-                                leading: Icon(Icons.account_balance_wallet, color: walletColor),
-                                title: Text(reverseStock[index].tradeDay!.substring(0, 10)),
-                                subtitle: Text('${S.of(context).trade_count}: ${reverseStock[index].tradeCount}'),
+                                leading: Icon(Icons.account_balance_wallet, color: _balanceColors(stockArr[index].total!)),
+                                title: Text(stockArr[index].tradeDay!.substring(0, 10)),
+                                subtitle: Text('${S.of(context).trade_count}: ${stockArr[index].tradeCount}'),
                                 trailing: Text(
-                                  commaNumber(reverseStock[index].total.toString()),
+                                  commaNumber(stockArr[index].total.toString()),
                                   style: TextStyle(
                                     fontSize: 18,
-                                    color: walletColor,
+                                    color: _balanceColors(stockArr[index].total!),
                                   ),
                                 ),
                               );
@@ -304,7 +281,7 @@ class _BalancePageState extends State<BalancePage> {
                           subtitle: SizedBox(
                             child: Text(
                               commaNumber(lastTotal.toString()),
-                              style: TextStyle(fontSize: 22, color: latestColor),
+                              style: TextStyle(fontSize: 22, color: _balanceColors(lastTotal)),
                             ),
                           ),
                         ),
@@ -319,7 +296,7 @@ class _BalancePageState extends State<BalancePage> {
                           subtitle: SizedBox(
                             child: Text(
                               commaNumber(total.toString()),
-                              style: TextStyle(fontSize: 22, color: totalColor),
+                              style: TextStyle(fontSize: 22, color: _balanceColors(total)),
                             ),
                           ),
                         ),
