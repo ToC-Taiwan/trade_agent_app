@@ -6,10 +6,13 @@ import 'package:elegant_notification/elegant_notification.dart';
 import 'package:elegant_notification/resources/arrays.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:numberpicker/numberpicker.dart';
 import 'package:percent_indicator/percent_indicator.dart';
 import 'package:trade_agent_v2/basic/base.dart';
 import 'package:trade_agent_v2/database.dart';
 import 'package:trade_agent_v2/generated/l10n.dart';
+import 'package:trade_agent_v2/models/model.dart';
+import 'package:trade_agent_v2/pb/app.pb.dart' as pb;
 import 'package:trade_agent_v2/utils/app_bar.dart';
 import 'package:wakelock/wakelock.dart';
 import 'package:web_socket_channel/io.dart';
@@ -23,18 +26,26 @@ class FutureTradePage extends StatefulWidget {
 }
 
 class _FutureTradePageState extends State<FutureTradePage> {
-  var _channel = IOWebSocketChannel.connect(Uri.parse(tradeAgentFutureWSURLPrefix));
-
+  IOWebSocketChannel _channel = IOWebSocketChannel.connect(Uri.parse(tradeAgentFutureWSURLPrefix));
   List<RealTimeFutureTick> tickArr = [];
+
   int qty = 1;
   String mxfCode = '';
+  double tradeRate = 0;
+  num close = 0;
 
-  bool automationTrade = false;
+  bool allowTrade = true;
+  bool isAssiting = false;
+
   bool automationByTimer = false;
   bool automationByBalance = false;
 
-  bool allowBuy = true;
-  bool allowSell = true;
+  int automationType = 0;
+  num automationByBalanceHigh = 0;
+  num automationByBalanceLow = 0;
+  num automationByTimePeriod = 0;
+
+  num placeOrderTime = DateTime.now().millisecondsSinceEpoch;
 
   Future<RealTimeFutureTick?> realTimeFutureTick = Future.value();
   Future<PeriodOutInVolume?> periodVolume = Future.value();
@@ -44,8 +55,8 @@ class _FutureTradePageState extends State<FutureTradePage> {
 
   YahooPrice previousNasdaq = YahooPrice('');
   YahooPrice previousNF = YahooPrice('');
-  Snapshot previousTSE = Snapshot('');
-  Snapshot previousOTC = Snapshot('');
+  StockSnapshot previousTSE = StockSnapshot('');
+  StockSnapshot previousOTC = StockSnapshot('');
 
   int nsadaqBreakCount = 0;
   int nfBreakCount = 0;
@@ -55,6 +66,15 @@ class _FutureTradePageState extends State<FutureTradePage> {
   @override
   void initState() {
     super.initState();
+    widget.db.basicDao.getBasicByKey('balance_high').then((value) {
+      automationByBalanceHigh = int.parse(value!.value);
+    });
+    widget.db.basicDao.getBasicByKey('balance_low').then((value) {
+      automationByBalanceLow = int.parse(value!.value);
+    });
+    widget.db.basicDao.getBasicByKey('time_period').then((value) {
+      automationByTimePeriod = int.parse(value!.value);
+    });
     Wakelock.enable();
     initialWS();
     checkConnection();
@@ -73,49 +93,59 @@ class _FutureTradePageState extends State<FutureTradePage> {
         if (message == 'pong') {
           return;
         }
-        Map<String, dynamic> msg = jsonDecode(message);
 
-        if (msg.containsKey('underlying_price')) {
-          setState(() {
-            realTimeFutureTick = getData(msg);
-            realTimeFutureTickArr = fillArr(msg, tickArr);
-          });
-          return;
-        }
+        var msg = pb.WSMessage.fromBuffer(message);
+        switch (msg.type) {
+          case pb.WSType.TYPE_FUTURE_TICK:
+            if (mounted) {
+              setState(() {
+                realTimeFutureTick = getData(msg.futureTick);
+                realTimeFutureTickArr = fillArr(msg.futureTick, tickArr);
+              });
+            }
+            return;
 
-        if (msg.containsKey('first_period')) {
-          setState(() {
-            periodVolume = updateTradeRate(msg);
-          });
-          return;
-        }
+          case pb.WSType.TYPE_PERIOD_TRADE_VOLUME:
+            if (mounted) {
+              setState(() {
+                periodVolume = updateTradeRate(msg.periodTradeVolume);
+              });
+            }
+            return;
 
-        if (msg.containsKey('base_order')) {
-          if (mounted) {
-            _showOrderResult(FutureOrder.fromJson(msg));
-          }
-          return;
-        }
+          case pb.WSType.TYPE_FUTURE_ORDER:
+            if (mounted) {
+              _showOrderResult(FutureOrder.fromProto(msg.futureOrder));
+            }
+            return;
 
-        if (msg.containsKey('tse')) {
-          setState(() {
-            tradeIndex = updateTradeIndex(msg);
-          });
-          return;
-        }
+          case pb.WSType.TYPE_TRADE_INDEX:
+            if (mounted) {
+              setState(() {
+                tradeIndex = updateTradeIndex(msg.tradeIndex);
+              });
+            }
+            return;
 
-        if (msg.containsKey('position')) {
-          if (mxfCode.isNotEmpty) {
-            futurePosition = updateFuturePosition(msg, mxfCode);
-          }
-          return;
-        }
+          case pb.WSType.TYPE_FUTURE_POSITION:
+            if (mxfCode.isNotEmpty) {
+              futurePosition = updateFuturePosition(msg.futurePosition, mxfCode);
+            }
+            return;
 
-        if (msg.containsKey('err_msg')) {
-          if (mounted) {
-            _showDialog(msg['err_msg']);
-          }
-          return;
+          case pb.WSType.TYPE_ASSIST_STATUS:
+            if (mounted) {
+              setState(() {
+                isAssiting = AssistStatus.fromProto(msg.assitStatus).running!;
+              });
+            }
+            return;
+
+          case pb.WSType.TYPE_ERR_MESSAGE:
+            if (mounted) {
+              _showErrorDialog(ErrMessage.fromProto(msg.errMessage));
+            }
+            return;
         }
       },
       onDone: () {
@@ -242,22 +272,46 @@ class _FutureTradePageState extends State<FutureTradePage> {
     }
   }
 
-  void _showDialog(String message) {
-    if (message.isNotEmpty) {
+  String msgFromErrCode(num code) {
+    switch (code) {
+      case -1:
+        return S.of(context).err_not_trade_time;
+      case -2:
+        return S.of(context).err_not_filled;
+      case -3:
+        return S.of(context).err_assist_not_support;
+      case -4:
+        return S.of(context).err_unmarshal;
+      case -5:
+        return S.of(context).err_get_snapshot;
+      case -6:
+        return S.of(context).err_get_position;
+      case -7:
+        return S.of(context).err_place_order;
+      case -8:
+        return S.of(context).err_cancel_order_failed;
+      case -9:
+        return S.of(context).err_assiting_is_full;
+    }
+    return 'unknown error';
+  }
+
+  void _showErrorDialog(ErrMessage message) {
+    if (message.errCode! != 0) {
       showDialog(
         context: context,
         builder: (context) => AlertDialog(
-          iconColor: Colors.teal,
+          iconColor: Colors.red,
           icon: const Icon(
-            Icons.warning,
+            Icons.error,
             size: 40,
           ),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(10),
           ),
-          title: Text(S.of(context).notification),
+          title: Text(S.of(context).error),
           content: Text(
-            message,
+            msgFromErrCode(message.errCode!),
             textAlign: TextAlign.center,
           ),
           actions: [
@@ -278,6 +332,226 @@ class _FutureTradePageState extends State<FutureTradePage> {
     }
   }
 
+  void _showByBalanceSetting() async {
+    Basic? balanceHigh;
+    Basic? balanceLow;
+    await widget.db.basicDao.getBasicByKey('balance_high').then((value) {
+      balanceHigh = value;
+      automationByBalanceHigh = int.parse(value!.value);
+    });
+    await widget.db.basicDao.getBasicByKey('balance_low').then((value) {
+      balanceLow = value;
+      automationByBalanceLow = int.parse(value!.value);
+    });
+
+    await showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        iconColor: Colors.teal,
+        icon: const Icon(
+          Icons.settings,
+          size: 40,
+        ),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10),
+        ),
+        title: Text('${S.of(context).balance} ${S.of(context).settings}'),
+        content: StatefulBuilder(
+          builder: (context, setState) {
+            return SizedBox(
+              height: 300,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Text(S.of(context).earn),
+                  NumberPicker(
+                    decoration: BoxDecoration(
+                      border: Border.all(color: Colors.teal),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    selectedTextStyle: const TextStyle(color: Colors.teal, fontSize: 40),
+                    value: automationByBalanceHigh.toInt(),
+                    minValue: 1,
+                    maxValue: 50,
+                    itemWidth: 75,
+                    axis: Axis.horizontal,
+                    haptics: true,
+                    onChanged: (value) {
+                      setState(() {
+                        automationByBalanceHigh = value;
+                        balanceHigh!.value = value.toString();
+                      });
+                    },
+                  ),
+                  Text(S.of(context).loss),
+                  NumberPicker(
+                    decoration: BoxDecoration(
+                      border: Border.all(color: Colors.teal),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    selectedTextStyle: const TextStyle(color: Colors.teal, fontSize: 40),
+                    value: automationByBalanceLow.toInt(),
+                    minValue: -50,
+                    maxValue: -1,
+                    itemWidth: 75,
+                    axis: Axis.horizontal,
+                    haptics: true,
+                    onChanged: (value) {
+                      setState(() {
+                        automationByBalanceLow = value;
+                        balanceLow!.value = value.toString();
+                      });
+                    },
+                  ),
+                ],
+              ),
+            );
+          },
+        ),
+        actions: [
+          Center(
+            child: ElevatedButton(
+              child: Text(
+                S.of(context).ok,
+                style: const TextStyle(color: Colors.black),
+              ),
+              onPressed: () {
+                widget.db.basicDao.updateBasic(balanceHigh!);
+                widget.db.basicDao.updateBasic(balanceLow!);
+                setState(() {
+                  automationByBalance = true;
+                });
+                Navigator.pop(context);
+              },
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showByTimePeriodSetting() async {
+    Basic? timePeriod;
+    await widget.db.basicDao.getBasicByKey('time_period').then((value) {
+      timePeriod = value;
+      automationByTimePeriod = int.parse(value!.value);
+    });
+
+    await showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        iconColor: Colors.teal,
+        icon: const Icon(
+          Icons.settings,
+          size: 40,
+        ),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10),
+        ),
+        title: Text('${S.of(context).time_period} ${S.of(context).settings}'),
+        content: StatefulBuilder(
+          builder: (context, setState) {
+            return NumberPicker(
+              decoration: BoxDecoration(
+                border: Border.all(color: Colors.teal),
+                borderRadius: BorderRadius.circular(10),
+              ),
+              selectedTextStyle: const TextStyle(color: Colors.teal, fontSize: 40),
+              value: automationByTimePeriod.toInt(),
+              minValue: 5,
+              maxValue: 500,
+              step: 5,
+              itemWidth: 75,
+              axis: Axis.horizontal,
+              haptics: true,
+              onChanged: (value) {
+                setState(() {
+                  automationByTimePeriod = value;
+                  timePeriod!.value = value.toString();
+                });
+              },
+            );
+          },
+        ),
+        actions: [
+          Center(
+            child: ElevatedButton(
+              child: Text(
+                S.of(context).ok,
+                style: const TextStyle(color: Colors.black),
+              ),
+              onPressed: () {
+                widget.db.basicDao.updateBasic(timePeriod!);
+                setState(() {
+                  automationByTimer = true;
+                });
+                Navigator.pop(context);
+              },
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _buyFuture(String code, num close) {
+    if (close == 0) {
+      return;
+    }
+
+    num automationType = 0;
+    if (automationByBalance && automationByTimer) {
+      automationType = 3;
+    } else if (automationByBalance) {
+      automationType = 1;
+    } else if (automationByTimer) {
+      automationType = 2;
+    }
+    _channel.sink.add(jsonEncode(
+      {
+        'code': code,
+        'action': 1,
+        'price': close,
+        'qty': qty,
+        'option': {
+          'automation_type': automationType,
+          'by_balance_high': automationByBalanceHigh,
+          'by_balance_low': automationByBalanceLow,
+          'by_time_period': automationByTimePeriod,
+        },
+      },
+    ));
+  }
+
+  void _sellFuture(String code, num close) {
+    if (close == 0) {
+      return;
+    }
+
+    num automationType = 0;
+    if (automationByBalance && automationByTimer) {
+      automationType = 3;
+    } else if (automationByBalance) {
+      automationType = 1;
+    } else if (automationByTimer) {
+      automationType = 2;
+    }
+    _channel.sink.add(jsonEncode(
+      {
+        'code': code,
+        'action': 2,
+        'price': close,
+        'qty': qty,
+        'option': {
+          'automation_type': automationType,
+          'by_balance_high': automationByBalanceHigh,
+          'by_balance_low': automationByBalanceLow,
+          'by_time_period': automationByTimePeriod,
+        },
+      },
+    ));
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -287,38 +561,65 @@ class _FutureTradePageState extends State<FutureTradePage> {
         S.of(context).future_trade,
         widget.db,
         actions: [
-          IconButton(
-            onPressed: () {
-              setState(() {
-                automationByBalance = !automationByBalance;
-              });
-            },
-            icon: Icon(Icons.monetization_on, color: automationByBalance ? Colors.blueAccent : Colors.grey),
-          ),
-          IconButton(
-            onPressed: () {
-              setState(() {
-                automationByTimer = !automationByTimer;
-              });
-            },
-            icon: Icon(Icons.timer, color: automationByTimer ? Colors.blueAccent : Colors.grey),
-          ),
           Padding(
-            padding: const EdgeInsets.only(right: 10),
-            child: IconButton(
-              onPressed: () {
-                setState(() {
-                  automationTrade = !automationTrade;
-                  if (automationTrade) {
-                    allowBuy = false;
-                    allowSell = false;
-                  } else {
-                    allowBuy = true;
-                    allowSell = true;
-                  }
-                });
-              },
-              icon: Icon(Icons.power_settings_new_rounded, color: automationTrade ? Colors.greenAccent : Colors.grey),
+            padding: const EdgeInsets.only(right: 20),
+            child: SizedBox(
+              width: 130,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  InkWell(
+                    splashColor: Colors.transparent,
+                    highlightColor: Colors.transparent,
+                    onLongPress: () {
+                      _showByBalanceSetting();
+                    },
+                    onTap: () {
+                      setState(() {
+                        automationByBalance = !automationByBalance;
+                      });
+                    },
+                    child: SizedBox(
+                      width: 40,
+                      height: 40,
+                      child: Icon(Icons.monetization_on, color: automationByBalance ? Colors.blueAccent : Colors.grey),
+                    ),
+                  ),
+                  InkWell(
+                    splashColor: Colors.transparent,
+                    highlightColor: Colors.transparent,
+                    onLongPress: () {
+                      _showByTimePeriodSetting();
+                    },
+                    onTap: () {
+                      setState(() {
+                        automationByTimer = !automationByTimer;
+                      });
+                    },
+                    child: SizedBox(
+                      width: 40,
+                      height: 40,
+                      child: Icon(Icons.timer, color: automationByTimer ? Colors.blueAccent : Colors.grey),
+                    ),
+                  ),
+                  InkWell(
+                    splashColor: Colors.transparent,
+                    highlightColor: Colors.transparent,
+                    onTap: !isAssiting
+                        ? () {
+                            setState(() {
+                              allowTrade = !allowTrade;
+                            });
+                          }
+                        : null,
+                    child: SizedBox(
+                      width: 40,
+                      height: 40,
+                      child: Icon(Icons.power_settings_new_sharp, color: allowTrade ? Colors.lightGreen : Colors.red[300]),
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
         ],
@@ -343,8 +644,13 @@ class _FutureTradePageState extends State<FutureTradePage> {
                         ),
                       );
                     }
+                    close = snapshot.data!.close!;
                     var priceChg = snapshot.data!.priceChg!;
-                    var type = (priceChg > 0) ? '↗️' : '↘️';
+                    var type = (priceChg == 0)
+                        ? ''
+                        : (priceChg > 0)
+                            ? '↗️'
+                            : '↘️';
 
                     return Column(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -389,13 +695,11 @@ class _FutureTradePageState extends State<FutureTradePage> {
                                                           GoogleFonts.getFont('Source Code Pro', fontStyle: FontStyle.normal, fontSize: 15, color: Colors.grey),
                                                     );
                                                   }
-                                                  return Text(
-                                                    '${S.of(context).position}: 0',
-                                                    style:
-                                                        GoogleFonts.getFont('Source Code Pro', fontStyle: FontStyle.normal, fontSize: 15, color: Colors.grey),
-                                                  );
                                                 }
-                                                return Container();
+                                                return Text(
+                                                  '${S.of(context).position}: 0',
+                                                  style: GoogleFonts.getFont('Source Code Pro', fontStyle: FontStyle.normal, fontSize: 15, color: Colors.grey),
+                                                );
                                               },
                                             ),
                                           ),
@@ -496,7 +800,11 @@ class _FutureTradePageState extends State<FutureTradePage> {
                                                                 style: GoogleFonts.getFont('Source Code Pro',
                                                                     fontStyle: FontStyle.normal,
                                                                     fontSize: 15,
-                                                                    color: nasdaqChg < 0 ? Colors.green : Colors.red),
+                                                                    color: nasdaqChg == 0
+                                                                        ? Colors.blueGrey
+                                                                        : nasdaqChg > 0
+                                                                            ? Colors.red
+                                                                            : Colors.green),
                                                               ),
                                                             ),
                                                           ),
@@ -509,7 +817,11 @@ class _FutureTradePageState extends State<FutureTradePage> {
                                                                   'Source Code Pro',
                                                                   fontStyle: FontStyle.normal,
                                                                   fontSize: 15,
-                                                                  color: nsadaqBreakCount < 0 ? Colors.green : Colors.red,
+                                                                  color: nsadaqBreakCount == 0
+                                                                      ? Colors.blueGrey
+                                                                      : nsadaqBreakCount > 0
+                                                                          ? Colors.red
+                                                                          : Colors.green,
                                                                 ),
                                                               ),
                                                             ),
@@ -530,7 +842,11 @@ class _FutureTradePageState extends State<FutureTradePage> {
                                                                   'Source Code Pro',
                                                                   fontStyle: FontStyle.normal,
                                                                   fontSize: 15,
-                                                                  color: nfChg < 0 ? Colors.green : Colors.red,
+                                                                  color: nfChg == 0
+                                                                      ? Colors.blueGrey
+                                                                      : nfChg > 0
+                                                                          ? Colors.red
+                                                                          : Colors.green,
                                                                 ),
                                                               ),
                                                             ),
@@ -543,7 +859,11 @@ class _FutureTradePageState extends State<FutureTradePage> {
                                                                 style: GoogleFonts.getFont('Source Code Pro',
                                                                     fontStyle: FontStyle.normal,
                                                                     fontSize: 15,
-                                                                    color: nfBreakCount < 0 ? Colors.green : Colors.red),
+                                                                    color: nfBreakCount == 0
+                                                                        ? Colors.blueGrey
+                                                                        : nfBreakCount > 0
+                                                                            ? Colors.red
+                                                                            : Colors.green),
                                                               ),
                                                             ),
                                                           ),
@@ -562,7 +882,11 @@ class _FutureTradePageState extends State<FutureTradePage> {
                                                                 style: GoogleFonts.getFont('Source Code Pro',
                                                                     fontStyle: FontStyle.normal,
                                                                     fontSize: 15,
-                                                                    color: snapshot.data!.tse!.priceChg! < 0 ? Colors.green : Colors.red),
+                                                                    color: snapshot.data!.tse!.priceChg! == 0
+                                                                        ? Colors.blueGrey
+                                                                        : snapshot.data!.tse!.priceChg! > 0
+                                                                            ? Colors.red
+                                                                            : Colors.green),
                                                               ),
                                                             ),
                                                           ),
@@ -574,7 +898,11 @@ class _FutureTradePageState extends State<FutureTradePage> {
                                                                 style: GoogleFonts.getFont('Source Code Pro',
                                                                     fontStyle: FontStyle.normal,
                                                                     fontSize: 15,
-                                                                    color: tseBreakCount < 0 ? Colors.green : Colors.red),
+                                                                    color: tseBreakCount == 0
+                                                                        ? Colors.blueGrey
+                                                                        : tseBreakCount > 0
+                                                                            ? Colors.red
+                                                                            : Colors.green),
                                                               ),
                                                             ),
                                                           ),
@@ -593,7 +921,11 @@ class _FutureTradePageState extends State<FutureTradePage> {
                                                                 style: GoogleFonts.getFont('Source Code Pro',
                                                                     fontStyle: FontStyle.normal,
                                                                     fontSize: 15,
-                                                                    color: snapshot.data!.otc!.priceChg! < 0 ? Colors.green : Colors.red),
+                                                                    color: snapshot.data!.otc!.priceChg! == 0
+                                                                        ? Colors.blueGrey
+                                                                        : snapshot.data!.otc!.priceChg! > 0
+                                                                            ? Colors.red
+                                                                            : Colors.green),
                                                               ),
                                                             ),
                                                           ),
@@ -605,7 +937,11 @@ class _FutureTradePageState extends State<FutureTradePage> {
                                                                 style: GoogleFonts.getFont('Source Code Pro',
                                                                     fontStyle: FontStyle.normal,
                                                                     fontSize: 15,
-                                                                    color: otcBreakCount < 0 ? Colors.green : Colors.red),
+                                                                    color: otcBreakCount == 0
+                                                                        ? Colors.blueGrey
+                                                                        : otcBreakCount > 0
+                                                                            ? Colors.red
+                                                                            : Colors.green),
                                                               ),
                                                             ),
                                                           ),
@@ -638,17 +974,21 @@ class _FutureTradePageState extends State<FutureTradePage> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Text(
-                                snapshot.data!.close.toString(),
+                                snapshot.data!.close!.toStringAsFixed(0),
                                 style: const TextStyle(
                                   fontSize: 50,
                                   fontWeight: FontWeight.bold,
                                 ),
                               ),
                               Text(
-                                '$type ${snapshot.data!.priceChg.toString()}',
+                                '$type ${snapshot.data!.priceChg!.toStringAsFixed(0)}',
                                 style: TextStyle(
                                   fontSize: 50,
-                                  color: priceChg > 0 ? Colors.red : Colors.green,
+                                  color: priceChg == 0
+                                      ? Colors.blueGrey
+                                      : priceChg > 0
+                                          ? Colors.red
+                                          : Colors.green,
                                 ),
                               ),
                             ],
@@ -659,40 +999,71 @@ class _FutureTradePageState extends State<FutureTradePage> {
                           child: FutureBuilder<PeriodOutInVolume?>(
                             future: periodVolume,
                             builder: (context, snapshot) {
+                              var percent1 = 0.0;
+                              var percent2 = 0.0;
+                              var percent3 = 0.0;
+                              var percent4 = 0.0;
+                              var rate = 0.0;
+                              var rateDifference = 0.0;
                               if (snapshot.hasData) {
-                                var percent1 = 100 *
+                                percent1 = 100 *
                                     snapshot.data!.firstPeriod!.outVolume! /
                                     (snapshot.data!.firstPeriod!.outVolume! + snapshot.data!.firstPeriod!.inVolume!);
-                                var percent2 = 100 *
+                                percent2 = 100 *
                                     snapshot.data!.secondPeriod!.outVolume! /
                                     (snapshot.data!.secondPeriod!.outVolume! + snapshot.data!.secondPeriod!.inVolume!);
-                                var percent3 = 100 *
+                                percent3 = 100 *
                                     snapshot.data!.thirdPeriod!.outVolume! /
                                     (snapshot.data!.thirdPeriod!.outVolume! + snapshot.data!.thirdPeriod!.inVolume!);
-                                var percent4 = 100 *
+                                percent4 = 100 *
                                     snapshot.data!.fourthPeriod!.outVolume! /
                                     (snapshot.data!.fourthPeriod!.outVolume! + snapshot.data!.fourthPeriod!.inVolume!);
 
-                                var rate = (snapshot.data!.fourthPeriod!.outVolume! + snapshot.data!.fourthPeriod!.inVolume!) / 40;
-                                return Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                  children: [
-                                    _buildVolumeRatioCircle(percent1),
-                                    _buildVolumeRatioCircle(percent2),
-                                    Text(
-                                      '${rate.toStringAsFixed(2)}/s',
-                                      style: GoogleFonts.getFont(
-                                        'Source Code Pro',
-                                        fontStyle: FontStyle.normal,
-                                        fontSize: 25,
-                                      ),
-                                    ),
-                                    _buildVolumeRatioCircle(percent3),
-                                    _buildVolumeRatioCircle(percent4),
-                                  ],
-                                );
+                                rate = ((snapshot.data!.firstPeriod!.outVolume! + snapshot.data!.firstPeriod!.inVolume!) / 10 +
+                                        (snapshot.data!.thirdPeriod!.outVolume! + snapshot.data!.thirdPeriod!.inVolume!) / 30) /
+                                    2;
+
+                                rateDifference = 100 * (rate - tradeRate) / tradeRate;
+                                var lastRate = tradeRate;
+                                tradeRate = rate;
+
+                                if (!isAssiting &&
+                                    !allowTrade &&
+                                    (automationByBalance || automationByTimer) &&
+                                    DateTime.now().millisecondsSinceEpoch - placeOrderTime > 15000) {
+                                  if (rate > 10 && lastRate < 5) {
+                                    if (percent1 > 85) {
+                                      _buyFuture(mxfCode, close);
+                                      placeOrderTime = DateTime.now().millisecondsSinceEpoch;
+                                    } else if (percent1 < 15) {
+                                      _sellFuture(mxfCode, close);
+                                      placeOrderTime = DateTime.now().millisecondsSinceEpoch;
+                                    }
+                                  }
+                                }
                               }
-                              return Container();
+                              return Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                children: [
+                                  _buildVolumeRatioCircle(percent1, rate),
+                                  _buildVolumeRatioCircle(percent2, rate),
+                                  Text(
+                                    '${rate.toStringAsFixed(2)}/s',
+                                    style: GoogleFonts.getFont(
+                                      'Source Code Pro',
+                                      fontStyle: FontStyle.normal,
+                                      fontSize: 25,
+                                      color: rate > 7
+                                          ? Colors.red
+                                          : rateDifference > 25
+                                              ? Colors.red
+                                              : Colors.grey,
+                                    ),
+                                  ),
+                                  _buildVolumeRatioCircle(percent3, rate),
+                                  _buildVolumeRatioCircle(percent4, rate),
+                                ],
+                              );
                             },
                           ),
                         ),
@@ -703,28 +1074,25 @@ class _FutureTradePageState extends State<FutureTradePage> {
                             children: [
                               ElevatedButton(
                                 style: ButtonStyle(
-                                  elevation: MaterialStateProperty.all(16),
-                                  backgroundColor: allowBuy ? MaterialStateProperty.all(Colors.red) : MaterialStateProperty.all(Colors.grey),
+                                  shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                                    RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(14),
+                                    ),
+                                  ),
+                                  elevation: (allowTrade && !isAssiting) ? MaterialStateProperty.all(10) : MaterialStateProperty.all(0),
+                                  backgroundColor: isAssiting
+                                      ? MaterialStateProperty.all(Colors.orange[100])
+                                      : allowTrade
+                                          ? MaterialStateProperty.all(Colors.red)
+                                          : MaterialStateProperty.all(Colors.grey[300]),
                                 ),
-                                onPressed: () {
-                                  if (allowBuy) {
-                                    _channel.sink.add(jsonEncode({
-                                      'topic': 'future_trade',
-                                      'future_order': {
-                                        'code': snapshot.data!.code,
-                                        'action': 1,
-                                        'price': snapshot.data!.close,
-                                        'qty': qty,
-                                      },
-                                    }));
-                                  }
-                                },
+                                onPressed: (allowTrade && !isAssiting) ? () => _buyFuture(snapshot.data!.code!, snapshot.data!.close!) : null,
                                 child: SizedBox(
                                   width: 130,
                                   height: 50,
                                   child: Center(
                                     child: Text(
-                                      S.of(context).buy,
+                                      !isAssiting ? S.of(context).buy : S.of(context).assisting,
                                       style: const TextStyle(
                                         fontSize: 30,
                                         color: Colors.white,
@@ -735,28 +1103,25 @@ class _FutureTradePageState extends State<FutureTradePage> {
                               ),
                               ElevatedButton(
                                 style: ButtonStyle(
-                                  elevation: MaterialStateProperty.all(16),
-                                  backgroundColor: allowSell ? MaterialStateProperty.all(Colors.green) : MaterialStateProperty.all(Colors.grey),
+                                  shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                                    RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(14),
+                                    ),
+                                  ),
+                                  elevation: (allowTrade && !isAssiting) ? MaterialStateProperty.all(10) : MaterialStateProperty.all(0),
+                                  backgroundColor: isAssiting
+                                      ? MaterialStateProperty.all(Colors.orange[100])
+                                      : allowTrade
+                                          ? MaterialStateProperty.all(Colors.green)
+                                          : MaterialStateProperty.all(Colors.grey[300]),
                                 ),
-                                onPressed: () {
-                                  if (allowSell) {
-                                    _channel.sink.add(jsonEncode({
-                                      'topic': 'future_trade',
-                                      'future_order': {
-                                        'code': snapshot.data!.code,
-                                        'action': 2,
-                                        'price': snapshot.data!.close,
-                                        'qty': qty,
-                                      },
-                                    }));
-                                  }
-                                },
+                                onPressed: (allowTrade && !isAssiting) ? () => _sellFuture(snapshot.data!.code!, snapshot.data!.close!) : null,
                                 child: SizedBox(
                                   width: 130,
                                   height: 50,
                                   child: Center(
                                     child: Text(
-                                      S.of(context).sell,
+                                      !isAssiting ? S.of(context).sell : S.of(context).assisting,
                                       style: const TextStyle(
                                         fontSize: 30,
                                         color: Colors.white,
@@ -771,10 +1136,9 @@ class _FutureTradePageState extends State<FutureTradePage> {
                       ],
                     );
                   }
-                  return const Center(
-                      child: CircularProgressIndicator(
-                    color: Colors.black,
-                  ));
+                  return Center(
+                    child: Container(),
+                  );
                 },
               ),
             ),
@@ -826,7 +1190,7 @@ class _FutureTradePageState extends State<FutureTradePage> {
                               ),
                             ),
                             title: Text(
-                              '${value[index].close}',
+                              value[index].close!.toStringAsFixed(0),
                               style: TextStyle(
                                 fontWeight: FontWeight.bold,
                                 fontSize: volumeFontSize.toDouble(),
@@ -840,10 +1204,9 @@ class _FutureTradePageState extends State<FutureTradePage> {
                       },
                     );
                   }
-                  return const Center(
-                      child: CircularProgressIndicator(
-                    color: Colors.black,
-                  ));
+                  return Center(
+                    child: Container(),
+                  );
                 },
               ),
             ),
@@ -853,10 +1216,13 @@ class _FutureTradePageState extends State<FutureTradePage> {
                 padding: const EdgeInsets.only(left: 10),
                 child: ListTile(
                   leading: const Icon(
-                    Icons.numbers_outlined,
+                    Icons.control_point_duplicate_outlined,
                     color: Colors.teal,
                   ),
-                  title: Text(S.of(context).quantity),
+                  title: Text(
+                    S.of(context).quantity,
+                    style: const TextStyle(fontWeight: FontWeight.bold),
+                  ),
                   trailing: SizedBox(
                     width: 200,
                     child: Row(
@@ -916,7 +1282,7 @@ class _FutureTradePageState extends State<FutureTradePage> {
   }
 }
 
-Widget _buildVolumeRatioCircle(double percent) {
+Widget _buildVolumeRatioCircle(double percent, double rate) {
   return CircularPercentIndicator(
     animateFromLastPercent: true,
     animation: true,
@@ -924,36 +1290,32 @@ Widget _buildVolumeRatioCircle(double percent) {
     lineWidth: 8,
     percent: percent / 100,
     center: Text('${percent.toStringAsFixed(0)}%'),
-    progressColor: generateOutInRatioColor(percent),
+    progressColor: percent >= 55
+        ? Colors.red
+        : percent <= 45
+            ? Colors.green
+            : Colors.yellow,
   );
 }
 
-Future<RealTimeFutureTick> getData(Map<String, dynamic> json) async {
-  return RealTimeFutureTick.fromJson(json);
+Future<RealTimeFutureTick> getData(pb.WSFutureTick ws) async {
+  return RealTimeFutureTick.fromProto(ws);
 }
 
-Future<PeriodOutInVolume> updateTradeRate(Map<String, dynamic> json) async {
-  return PeriodOutInVolume.fromJson(json);
+Future<PeriodOutInVolume> updateTradeRate(pb.WSPeriodTradeVolume ws) async {
+  return PeriodOutInVolume.fromProto(ws);
 }
 
-Future<TradeIndex> updateTradeIndex(Map<String, dynamic> json) async {
-  return TradeIndex.fromJson(json);
+Future<TradeIndex> updateTradeIndex(pb.WSTradeIndex ws) async {
+  return TradeIndex.fromProto(ws);
 }
 
-Future<FuturePosition> updateFuturePosition(Map<String, dynamic> json, String code) async {
-  if (json['position'] != null) {
-    for (final element in json['position'] as List) {
-      if (element['code'] == code) {
-        return FuturePosition.fromJson(element);
-      }
-    }
-  }
-
-  return FuturePosition();
+Future<FuturePosition> updateFuturePosition(pb.WSFuturePosition ws, String code) async {
+  return FuturePosition.fromProto(ws, code);
 }
 
-Future<List<RealTimeFutureTick>> fillArr(Map<String, dynamic> json, List<RealTimeFutureTick> originalArr) async {
-  var tmp = RealTimeFutureTick.fromJson(json);
+Future<List<RealTimeFutureTick>> fillArr(pb.WSFutureTick wsTick, List<RealTimeFutureTick> originalArr) async {
+  var tmp = RealTimeFutureTick.fromProto(wsTick);
   if (originalArr.isNotEmpty && originalArr.last.close == tmp.close && originalArr.last.tickType == tmp.tickType) {
     originalArr.last.volume = originalArr.last.volume! + tmp.volume!;
     originalArr.last.tickTime = tmp.tickTime;
@@ -989,81 +1351,71 @@ class RealTimeFutureTick {
       this.pctChg,
       this.simtrade);
 
-  RealTimeFutureTick.fromJson(Map<String, dynamic> json) {
-    code = json['code'];
-    tickTime = json['tick_time'];
-    open = json['open'];
-    underlyingPrice = json['underlying_price'];
-    bidSideTotalVol = json['bid_side_total_vol'];
-    askSideTotalVol = json['ask_side_total_vol'];
-    avgPrice = json['avg_price'];
-    close = json['close'];
-    high = json['high'];
-    low = json['low'];
-    amount = json['amount'];
-    totalAmount = json['total_amount'];
-    volume = json['volume'];
-    totalVolume = json['total_volume'];
-    tickType = json['tick_type'];
-    chgType = json['chg_type'];
-    priceChg = json['price_chg'];
-    pctChg = json['pct_chg'];
-    simtrade = json['simtrade'];
+  RealTimeFutureTick.fromProto(pb.WSFutureTick tick) {
+    code = tick.code;
+    tickTime = tick.tickTime;
+    open = tick.open;
+    underlyingPrice = tick.underlyingPrice;
+    bidSideTotalVol = tick.bidSideTotalVol.toInt();
+    askSideTotalVol = tick.askSideTotalVol.toInt();
+    avgPrice = tick.avgPrice;
+    close = tick.close;
+    high = tick.high;
+    low = tick.low;
+    amount = tick.amount;
+    totalAmount = tick.totalAmount;
+    volume = tick.volume.toInt();
+    totalVolume = tick.totalVolume.toInt();
+    tickType = tick.tickType.toInt();
+    chgType = tick.chgType.toInt();
+    priceChg = tick.priceChg;
+    pctChg = tick.pctChg;
   }
 
-  String? code = '';
-  String? tickTime = '';
-  num? open = 0;
-  num? underlyingPrice = 0;
-  num? bidSideTotalVol = 0;
-  num? askSideTotalVol = 0;
-  num? avgPrice = 0;
-  num? close = 0;
-  num? high = 0;
-  num? low = 0;
-  num? amount = 0;
-  num? totalAmount = 0;
-  num? volume = 0;
-  num? totalVolume = 0;
-  num? tickType = 0;
-  num? chgType = 0;
-  num? priceChg = 0;
-  num? pctChg = 0;
-  num? simtrade = 0;
+  String? code;
+  String? tickTime;
+  num? open;
+  num? underlyingPrice;
+  num? bidSideTotalVol;
+  num? askSideTotalVol;
+  num? avgPrice;
+  num? close;
+  num? high;
+  num? low;
+  num? amount;
+  num? totalAmount;
+  num? volume;
+  num? totalVolume;
+  num? tickType;
+  num? chgType;
+  num? priceChg;
+  num? pctChg;
+  num? simtrade;
   bool? combo = false;
+}
 
-  Map<String, dynamic> toJson() {
-    final data = <String, dynamic>{};
-    data['code'] = code;
-    data['tick_time'] = tickTime;
-    data['open'] = open;
-    data['underlying_price'] = underlyingPrice;
-    data['bid_side_total_vol'] = bidSideTotalVol;
-    data['ask_side_total_vol'] = askSideTotalVol;
-    data['avg_price'] = avgPrice;
-    data['close'] = close;
-    data['high'] = high;
-    data['low'] = low;
-    data['amount'] = amount;
-    data['total_amount'] = totalAmount;
-    data['volume'] = volume;
-    data['total_volume'] = totalVolume;
-    data['tick_type'] = tickType;
-    data['chg_type'] = chgType;
-    data['price_chg'] = priceChg;
-    data['pct_chg'] = pctChg;
-    data['simtrade'] = simtrade;
-    return data;
+class AssistStatus {
+  AssistStatus.fromProto(pb.WSAssitStatus status) {
+    running = status.running;
   }
+
+  bool? running;
+}
+
+class ErrMessage {
+  ErrMessage(this.errCode, this.response);
+
+  ErrMessage.fromProto(pb.WSErrMessage err) {
+    errCode = err.errCode.toInt();
+    response = err.response;
+  }
+
+  num? errCode;
+  String? response;
 }
 
 class OutInVolume {
   OutInVolume(this.outVolume, this.inVolume);
-
-  OutInVolume.fromJson(Map<String, dynamic> json) {
-    outVolume = json['out_volume'];
-    inVolume = json['in_volume'];
-  }
 
   num? outVolume;
   num? inVolume;
@@ -1072,11 +1424,11 @@ class OutInVolume {
 class PeriodOutInVolume {
   PeriodOutInVolume(this.firstPeriod, this.secondPeriod, this.thirdPeriod, this.fourthPeriod);
 
-  PeriodOutInVolume.fromJson(Map<String, dynamic> json) {
-    firstPeriod = json['first_period'] != null ? OutInVolume.fromJson(json['first_period']) : null;
-    secondPeriod = json['second_period'] != null ? OutInVolume.fromJson(json['second_period']) : null;
-    thirdPeriod = json['third_period'] != null ? OutInVolume.fromJson(json['third_period']) : null;
-    fourthPeriod = json['fourth_period'] != null ? OutInVolume.fromJson(json['fourth_period']) : null;
+  PeriodOutInVolume.fromProto(pb.WSPeriodTradeVolume volume) {
+    firstPeriod = OutInVolume(volume.firstPeriod.outVolume.toInt(), volume.firstPeriod.inVolume.toInt());
+    secondPeriod = OutInVolume(volume.secondPeriod.outVolume.toInt(), volume.secondPeriod.inVolume.toInt());
+    thirdPeriod = OutInVolume(volume.thirdPeriod.outVolume.toInt(), volume.thirdPeriod.inVolume.toInt());
+    fourthPeriod = OutInVolume(volume.fourthPeriod.outVolume.toInt(), volume.fourthPeriod.inVolume.toInt());
   }
 
   OutInVolume? firstPeriod;
@@ -1088,15 +1440,15 @@ class PeriodOutInVolume {
 class TradeIndex {
   TradeIndex(this.tse, this.otc, this.nasdaq, this.nf);
 
-  TradeIndex.fromJson(Map<String, dynamic> json) {
-    tse = json['tse'] != null ? Snapshot.fromJson(json['tse']) : null;
-    otc = json['otc'] != null ? Snapshot.fromJson(json['otc']) : null;
-    nasdaq = json['nasdaq'] != null ? YahooPrice.fromJson(json['nasdaq']) : null;
-    nf = json['nf'] != null ? YahooPrice.fromJson(json['nf']) : null;
+  TradeIndex.fromProto(pb.WSTradeIndex index) {
+    tse = StockSnapshot.fromProto(index.tse);
+    otc = StockSnapshot.fromProto(index.otc);
+    nasdaq = YahooPrice.fromProto(index.nasdaq);
+    nf = YahooPrice.fromProto(index.nf);
   }
 
-  Snapshot? tse;
-  Snapshot? otc;
+  StockSnapshot? tse;
+  StockSnapshot? otc;
   YahooPrice? nasdaq;
   YahooPrice? nf;
 }
@@ -1104,10 +1456,10 @@ class TradeIndex {
 class YahooPrice {
   YahooPrice(this.updateAt);
 
-  YahooPrice.fromJson(Map<String, dynamic> json) {
-    last = json['last'];
-    price = json['price'];
-    updateAt = json['updated_at'];
+  YahooPrice.fromProto(pb.WSYahooPrice ws) {
+    last = ws.last;
+    price = ws.price;
+    updateAt = ws.updatedAt;
   }
 
   int _processBreakCount(YahooPrice previous, num breakCount) {
@@ -1149,28 +1501,28 @@ class YahooPrice {
   String? updateAt;
 }
 
-class Snapshot {
-  Snapshot(this.snapTime);
+class StockSnapshot {
+  StockSnapshot(this.snapTime);
 
-  Snapshot.fromJson(Map<String, dynamic> json) {
-    snapTime = json['snap_time'];
-    open = json['open'];
-    high = json['high'];
-    low = json['low'];
-    close = json['close'];
-    tickType = json['tick_type'];
-    priceChg = json['price_chg'];
-    pctChg = json['pct_chg'];
-    chgType = json['chg_type'];
-    volume = json['volume'];
-    volumeSum = json['volume_sum'];
-    amount = json['amount'];
-    amountSum = json['amount_sum'];
-    yesterdayVolume = json['yesterday_volume'];
-    volumeRatio = json['volume_ratio'];
+  StockSnapshot.fromProto(pb.WSStockSnapShot ws) {
+    snapTime = ws.snapTime;
+    open = ws.open;
+    high = ws.high;
+    low = ws.low;
+    close = ws.close;
+    tickType = ws.tickType;
+    priceChg = ws.priceChg;
+    pctChg = ws.pctChg;
+    chgType = ws.chgType;
+    volume = ws.volume.toInt();
+    volumeSum = ws.volumeSum.toInt();
+    amount = ws.amount.toInt();
+    amountSum = ws.amountSum.toInt();
+    yesterdayVolume = ws.yesterdayVolume;
+    volumeRatio = ws.volumeRatio;
   }
 
-  int _processBreakCount(Snapshot previous, num breakCount) {
+  int _processBreakCount(StockSnapshot previous, num breakCount) {
     if (previous.snapTime!.isEmpty) {
       return 0;
     }
@@ -1196,26 +1548,6 @@ class Snapshot {
     return tmpBreakCount;
   }
 
-  Map<String, dynamic> toJson() {
-    var data = <String, dynamic>{};
-    data['snap_time'] = snapTime;
-    data['open'] = open;
-    data['high'] = high;
-    data['low'] = low;
-    data['close'] = close;
-    data['tick_type'] = tickType;
-    data['price_chg'] = priceChg;
-    data['pct_chg'] = pctChg;
-    data['chg_type'] = chgType;
-    data['volume'] = volume;
-    data['volume_sum'] = volumeSum;
-    data['amount'] = amount;
-    data['amount_sum'] = amountSum;
-    data['yesterday_volume'] = yesterdayVolume;
-    data['volume_ratio'] = volumeRatio;
-    return data;
-  }
-
   String? snapTime;
   num? open;
   num? high;
@@ -1236,13 +1568,18 @@ class Snapshot {
 class FuturePosition {
   FuturePosition();
 
-  FuturePosition.fromJson(Map<String, dynamic> json) {
-    code = json['code'];
-    direction = json['direction'];
-    quantity = json['quantity'];
-    price = json['price'];
-    lastPrice = json['last_price'];
-    pnl = json['pnl'];
+  FuturePosition.fromProto(pb.WSFuturePosition ws, String code) {
+    for (final element in ws.position) {
+      if (element.code == code) {
+        code = element.code;
+        direction = element.direction;
+        quantity = element.quantity.toInt();
+        price = element.price;
+        lastPrice = element.lastPrice;
+        pnl = element.pnl;
+        break;
+      }
+    }
   }
 
   String? code;
@@ -1259,9 +1596,9 @@ class FutureOrder {
     this.baseOrder,
   );
 
-  FutureOrder.fromJson(Map<String, dynamic> json) {
-    code = json['code'];
-    baseOrder = json['base_order'] != null ? BaseOrder.fromJson(json['base_order']) : null;
+  FutureOrder.fromProto(pb.WSFutureOrder ws) {
+    code = ws.code;
+    baseOrder = BaseOrder.fromProto(ws.baseOrder);
   }
 
   String? code;
@@ -1281,16 +1618,16 @@ class BaseOrder {
     this.groupID,
   );
 
-  BaseOrder.fromJson(Map<String, dynamic> json) {
-    orderID = json['order_id'];
-    status = json['status'];
-    orderTime = json['order_time'];
-    action = json['action'];
-    price = json['price'];
-    quantity = json['quantity'];
-    tradeTime = json['trade_time'];
-    tickTime = json['tick_time'];
-    groupID = json['group_id'];
+  BaseOrder.fromProto(pb.WSOrder ws) {
+    orderID = ws.orderId;
+    status = ws.status.toInt();
+    orderTime = ws.orderTime;
+    action = ws.action.toInt();
+    price = ws.price;
+    quantity = ws.quantity.toInt();
+    tradeTime = ws.tradeTime;
+    tickTime = ws.tickTime;
+    groupID = ws.groupId;
   }
 
   String? orderID;
@@ -1302,13 +1639,4 @@ class BaseOrder {
   String? tradeTime;
   String? tickTime;
   String? groupID;
-}
-
-Color generateOutInRatioColor(double percent) {
-  if (percent >= 55) {
-    return Colors.red;
-  } else if (percent <= 45) {
-    return Colors.green;
-  }
-  return Colors.yellow;
 }

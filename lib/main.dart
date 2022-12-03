@@ -47,6 +47,21 @@ void main() async {
     await db.basicDao.updateBasic(version);
   }
 
+  var balanceHigh = await db.basicDao.getBasicByKey('balance_high');
+  if (balanceHigh == null) {
+    await db.basicDao.insertBasic(Basic('balance_high', '1'));
+  }
+
+  var balanceLow = await db.basicDao.getBasicByKey('balance_low');
+  if (balanceLow == null) {
+    await db.basicDao.insertBasic(Basic('balance_low', '-1'));
+  }
+
+  var timePeriod = await db.basicDao.getBasicByKey('time_period');
+  if (timePeriod == null) {
+    await db.basicDao.insertBasic(Basic('time_period', '5'));
+  }
+
   var dbLanguageSetup = await db.basicDao.getBasicByKey('language_setup');
   if (dbLanguageSetup == null) {
     final defaultLocale = Platform.localeName;

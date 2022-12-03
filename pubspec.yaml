@@ -2,7 +2,7 @@ name: trade_agent_v2
 description: Status of trade agent, let user query analyzed stocks.
 
 publish_to: "none"
-version: 3.8.0+38031
+version: 4.0.0+38033
 
 environment:
   sdk: ">=2.18.4 <3.0.0"
@@ -37,6 +37,8 @@ dependencies:
   google_fonts: ^3.0.1
   elegant_notification: ^1.6.4
   wakelock: ^0.6.2
+  numberpicker: ^2.1.1
+  protobuf: ^2.1.0
 
 dev_dependencies:
   flutter_test:

@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
 import 'package:trade_agent_v2/basic/base.dart';
+import 'package:trade_agent_v2/generated/l10n.dart';
 
 class OrderPage extends StatefulWidget {
   const OrderPage({super.key, required this.date});
@@ -24,6 +25,119 @@ class _OrderPage extends State<OrderPage> {
     futureOrder = fetchOrders(widget.date);
   }
 
+  void recalculateBalance() async {
+    try {
+      final response = await http.put(Uri.parse('$tradeAgentURLPrefix/order/date/${widget.date}'));
+      if (response.statusCode == 200) {
+        _showDialog('Recalculate Success');
+      } else {
+        _showDialog('Recalculate Failed');
+      }
+    } catch (e) {
+      _showDialog('Network Error');
+    }
+  }
+
+  Future<String> moveOrderToLatestTradeday(String orderID) async {
+    try {
+      final response = await http.patch(Uri.parse('$tradeAgentURLPrefix/order/future/$orderID'));
+      if (response.statusCode == 200) {
+        return 'Move Success';
+      } else {
+        return 'Move Failed';
+      }
+    } catch (e) {
+      return 'Network Error';
+    }
+  }
+
+  void _showDialog(String message) {
+    if (message.isNotEmpty) {
+      showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          iconColor: Colors.teal,
+          icon: const Icon(
+            Icons.notification_important_outlined,
+            size: 40,
+          ),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),
+          title: Text(S.of(context).notification),
+          content: Text(
+            message,
+            textAlign: TextAlign.center,
+          ),
+          actions: [
+            Center(
+              child: ElevatedButton(
+                child: Text(
+                  S.of(context).ok,
+                  style: const TextStyle(color: Colors.black),
+                ),
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+              ),
+            ),
+          ],
+        ),
+      );
+    }
+  }
+
+  void _showConfirmDialog(String orderID) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        iconColor: Colors.teal,
+        icon: const Icon(
+          Icons.notification_important_outlined,
+          size: 40,
+        ),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10),
+        ),
+        title: Text(S.of(context).notification),
+        content: const Text(
+          'Are you sure to move order to latest trade day?',
+          textAlign: TextAlign.center,
+        ),
+        actions: [
+          Center(
+            child: ElevatedButton(
+              child: Text(
+                S.of(context).cancel,
+                style: const TextStyle(color: Colors.red),
+              ),
+              onPressed: () {
+                Navigator.pop(context);
+              },
+            ),
+          ),
+          Center(
+            child: ElevatedButton(
+              child: Text(
+                S.of(context).ok,
+                style: const TextStyle(color: Colors.black),
+              ),
+              onPressed: () {
+                Navigator.pop(context);
+                moveOrderToLatestTradeday(orderID).then((value) {
+                  _showDialog(value);
+                });
+                setState(() {
+                  futureOrder = fetchOrders(widget.date);
+                });
+              },
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -34,6 +148,12 @@ class _OrderPage extends State<OrderPage> {
         centerTitle: false,
         title: Text(widget.date),
         actions: [
+          IconButton(
+            onPressed: () {
+              recalculateBalance();
+            },
+            icon: const Icon(Icons.refresh),
+          ),
           IconButton(
             onPressed: () {
               Navigator.pop(context);
@@ -60,6 +180,9 @@ class _OrderPage extends State<OrderPage> {
                     var order = orderList[index].baseOrder!;
                     var code = orderList[index].code;
                     return ListTile(
+                      onLongPress: () {
+                        _showConfirmDialog(order.orderId!);
+                      },
                       leading: Icon(Icons.book_outlined, color: (order.action == 1 || order.action == 4) ? Colors.red : Colors.green),
                       title: Text(code!),
                       subtitle: Text(df.formatDate(DateTime.parse(order.orderTime!).add(const Duration(hours: 8)),

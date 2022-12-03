@@ -152,7 +152,6 @@ class _PickStockPageState extends State<PickStockPage> {
                     widget.db.pickStockDao.deleteAllPickStock();
                     stockList = [];
                     _channel.sink.add(jsonEncode({
-                      'topic': 'pick_stock',
                       'pick_stock_list': [],
                     }));
                     setState(() {
@@ -263,7 +262,6 @@ class _PickStockPageState extends State<PickStockPage> {
           if (snapshot.hasData) {
             if (snapshot.data!.isEmpty) {
               _channel.sink.add(jsonEncode({
-                'topic': 'pick_stock',
                 'pick_stock_list': [],
               }));
               return Center(
@@ -292,7 +290,6 @@ class _PickStockPageState extends State<PickStockPage> {
                 numList.add(s.stockNum);
               }
               _channel.sink.add(jsonEncode({
-                'topic': 'pick_stock',
                 'pick_stock_list': numList,
               }));
             }
