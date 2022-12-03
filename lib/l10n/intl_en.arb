@@ -70,5 +70,20 @@
   "filled": "Filled",
   "part_filled": "Part Filled",
   "position": "Position",
-  "avg": "Avg"
+  "avg": "Avg",
+  "error": "Error",
+  "time_period": "Time Period",
+  "err_not_trade_time": "Now is not trade time",
+  "err_not_filled": "Please wait for previous order to be filled",
+  "err_assist_not_support": "Assist only support qty = 1",
+  "err_unmarshal": "Unmarshal error",
+  "err_get_snapshot": "Get snapshot error",
+  "err_get_position": "Get position error",
+  "err_place_order": "Place order error",
+  "err_cancel_order_failed": "Cancel order failed",
+  "err_assiting_is_full": "Assisting is full",
+  "assist_is_done": "Assist is done",
+  "earn": "Earn",
+  "loss": "Loss",
+  "assisting": "Assisting"
 }

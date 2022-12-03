@@ -769,6 +769,156 @@ class S {
       args: [],
     );
   }
+
+  /// `Error`
+  String get error {
+    return Intl.message(
+      'Error',
+      name: 'error',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Time Period`
+  String get time_period {
+    return Intl.message(
+      'Time Period',
+      name: 'time_period',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Now is not trade time`
+  String get err_not_trade_time {
+    return Intl.message(
+      'Now is not trade time',
+      name: 'err_not_trade_time',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Please wait for previous order to be filled`
+  String get err_not_filled {
+    return Intl.message(
+      'Please wait for previous order to be filled',
+      name: 'err_not_filled',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Assist only support qty = 1`
+  String get err_assist_not_support {
+    return Intl.message(
+      'Assist only support qty = 1',
+      name: 'err_assist_not_support',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Unmarshal error`
+  String get err_unmarshal {
+    return Intl.message(
+      'Unmarshal error',
+      name: 'err_unmarshal',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Get snapshot error`
+  String get err_get_snapshot {
+    return Intl.message(
+      'Get snapshot error',
+      name: 'err_get_snapshot',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Get position error`
+  String get err_get_position {
+    return Intl.message(
+      'Get position error',
+      name: 'err_get_position',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Place order error`
+  String get err_place_order {
+    return Intl.message(
+      'Place order error',
+      name: 'err_place_order',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Cancel order failed`
+  String get err_cancel_order_failed {
+    return Intl.message(
+      'Cancel order failed',
+      name: 'err_cancel_order_failed',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Assisting is full`
+  String get err_assiting_is_full {
+    return Intl.message(
+      'Assisting is full',
+      name: 'err_assiting_is_full',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Assist is done`
+  String get assist_is_done {
+    return Intl.message(
+      'Assist is done',
+      name: 'assist_is_done',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Earn`
+  String get earn {
+    return Intl.message(
+      'Earn',
+      name: 'earn',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Loss`
+  String get loss {
+    return Intl.message(
+      'Loss',
+      name: 'loss',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Assisting`
+  String get assisting {
+    return Intl.message(
+      'Assisting',
+      name: 'assisting',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

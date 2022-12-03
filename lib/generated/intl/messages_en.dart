@@ -26,6 +26,9 @@ class MessageLookup extends MessageLookupByLibrary {
         "add": MessageLookupByLibrary.simpleMessage("Add"),
         "already_purchased":
             MessageLookupByLibrary.simpleMessage("Already Purchased?"),
+        "assist_is_done":
+            MessageLookupByLibrary.simpleMessage("Assist is done"),
+        "assisting": MessageLookupByLibrary.simpleMessage("Assisting"),
         "avg": MessageLookupByLibrary.simpleMessage("Avg"),
         "balance": MessageLookupByLibrary.simpleMessage("Balance"),
         "buy": MessageLookupByLibrary.simpleMessage("Buy"),
@@ -45,9 +48,29 @@ class MessageLookup extends MessageLookupByLibrary {
             "Are you sure you want to delete this stock"),
         "developing": MessageLookupByLibrary.simpleMessage("Developing"),
         "display": MessageLookupByLibrary.simpleMessage("Display"),
+        "earn": MessageLookupByLibrary.simpleMessage("Earn"),
         "edit": MessageLookupByLibrary.simpleMessage("Edit"),
         "enter_quantity":
             MessageLookupByLibrary.simpleMessage("Enter Quantity"),
+        "err_assist_not_support":
+            MessageLookupByLibrary.simpleMessage("Assist only support qty = 1"),
+        "err_assiting_is_full":
+            MessageLookupByLibrary.simpleMessage("Assisting is full"),
+        "err_cancel_order_failed":
+            MessageLookupByLibrary.simpleMessage("Cancel order failed"),
+        "err_get_position":
+            MessageLookupByLibrary.simpleMessage("Get position error"),
+        "err_get_snapshot":
+            MessageLookupByLibrary.simpleMessage("Get snapshot error"),
+        "err_not_filled": MessageLookupByLibrary.simpleMessage(
+            "Please wait for previous order to be filled"),
+        "err_not_trade_time":
+            MessageLookupByLibrary.simpleMessage("Now is not trade time"),
+        "err_place_order":
+            MessageLookupByLibrary.simpleMessage("Place order error"),
+        "err_unmarshal":
+            MessageLookupByLibrary.simpleMessage("Unmarshal error"),
+        "error": MessageLookupByLibrary.simpleMessage("Error"),
         "failed": MessageLookupByLibrary.simpleMessage("Failed"),
         "filled": MessageLookupByLibrary.simpleMessage("Filled"),
         "future": MessageLookupByLibrary.simpleMessage("Future"),
@@ -59,6 +82,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "language": MessageLookupByLibrary.simpleMessage("Language"),
         "latest": MessageLookupByLibrary.simpleMessage("Latest"),
         "loading": MessageLookupByLibrary.simpleMessage("Loading"),
+        "loss": MessageLookupByLibrary.simpleMessage("Loss"),
         "low": MessageLookupByLibrary.simpleMessage("Low"),
         "my_web_site": MessageLookupByLibrary.simpleMessage("My Web Site"),
         "no_data": MessageLookupByLibrary.simpleMessage("No Data"),
@@ -101,6 +125,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "targets": MessageLookupByLibrary.simpleMessage("Targets"),
         "terms_and_conditions_of_use":
             MessageLookupByLibrary.simpleMessage("Terms and Conditions of Use"),
+        "time_period": MessageLookupByLibrary.simpleMessage("Time Period"),
         "total": MessageLookupByLibrary.simpleMessage("Total"),
         "trade_configuration":
             MessageLookupByLibrary.simpleMessage("Trade Configuration"),
