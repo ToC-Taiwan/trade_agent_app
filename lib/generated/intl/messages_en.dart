@@ -28,7 +28,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Already Purchased?"),
         "assist_is_done":
             MessageLookupByLibrary.simpleMessage("Assist is done"),
-        "assisting": MessageLookupByLibrary.simpleMessage("Assisting"),
+        "assisting": MessageLookupByLibrary.simpleMessage("Assist"),
         "avg": MessageLookupByLibrary.simpleMessage("Avg"),
         "balance": MessageLookupByLibrary.simpleMessage("Balance"),
         "buy": MessageLookupByLibrary.simpleMessage("Buy"),
