@@ -179,7 +179,7 @@ class _FutureTradePageState extends State<FutureTradePage> {
           animation: AnimationType.fromTop,
           toastDuration: const Duration(milliseconds: 2000),
           title: Text(S.of(context).pending_submit),
-          description: Text('$actionStr ${order.baseOrder!.price} x ${order.baseOrder!.quantity}'),
+          description: Text('$actionStr ${order.baseOrder!.price!.toStringAsFixed(0)} x ${order.baseOrder!.quantity}'),
           icon: const Icon(
             Icons.book,
             color: Colors.orange,
@@ -195,7 +195,7 @@ class _FutureTradePageState extends State<FutureTradePage> {
           animation: AnimationType.fromTop,
           toastDuration: const Duration(milliseconds: 2000),
           title: Text(S.of(context).pre_submitted),
-          description: Text('$actionStr ${order.baseOrder!.price} x ${order.baseOrder!.quantity}'),
+          description: Text('$actionStr ${order.baseOrder!.price!.toStringAsFixed(0)} x ${order.baseOrder!.quantity}'),
           icon: const Icon(
             Icons.book,
             color: Colors.orange,
@@ -211,7 +211,7 @@ class _FutureTradePageState extends State<FutureTradePage> {
           animation: AnimationType.fromTop,
           toastDuration: const Duration(milliseconds: 2000),
           title: Text(S.of(context).submitted),
-          description: Text('$actionStr ${order.baseOrder!.price} x ${order.baseOrder!.quantity}'),
+          description: Text('$actionStr ${order.baseOrder!.price!.toStringAsFixed(0)} x ${order.baseOrder!.quantity}'),
           onDismiss: () {},
         ).show(context);
         return;
@@ -222,7 +222,7 @@ class _FutureTradePageState extends State<FutureTradePage> {
           animation: AnimationType.fromTop,
           toastDuration: const Duration(milliseconds: 2000),
           title: Text(S.of(context).failed),
-          description: Text('$actionStr ${order.baseOrder!.price}'),
+          description: Text('$actionStr ${order.baseOrder!.price!.toStringAsFixed(0)}'),
           onDismiss: () {},
         ).show(context);
         return;
@@ -233,7 +233,7 @@ class _FutureTradePageState extends State<FutureTradePage> {
           animation: AnimationType.fromTop,
           toastDuration: const Duration(milliseconds: 2000),
           title: Text(S.of(context).cancelled),
-          description: Text('$actionStr ${order.baseOrder!.price}'),
+          description: Text('$actionStr ${order.baseOrder!.price!.toStringAsFixed(0)}'),
           icon: const Icon(
             Icons.cached_outlined,
             color: Colors.orange,
@@ -249,7 +249,7 @@ class _FutureTradePageState extends State<FutureTradePage> {
           animation: AnimationType.fromTop,
           toastDuration: const Duration(milliseconds: 2000),
           title: Text(S.of(context).filled),
-          description: Text('$actionStr ${order.baseOrder!.price} x ${order.baseOrder!.quantity}'),
+          description: Text('$actionStr ${order.baseOrder!.price!.toStringAsFixed(0)} x ${order.baseOrder!.quantity}'),
           onDismiss: () {},
         ).show(context);
         return;
@@ -260,7 +260,7 @@ class _FutureTradePageState extends State<FutureTradePage> {
           animation: AnimationType.fromTop,
           toastDuration: const Duration(milliseconds: 2000),
           title: Text(S.of(context).part_filled),
-          description: Text('$actionStr ${order.baseOrder!.price} x ${order.baseOrder!.quantity}'),
+          description: Text('$actionStr ${order.baseOrder!.price!.toStringAsFixed(0)} x ${order.baseOrder!.quantity}'),
           icon: const Icon(
             Icons.access_alarm,
             color: Colors.orange,
@@ -1094,7 +1094,7 @@ class _FutureTradePageState extends State<FutureTradePage> {
                                     child: Text(
                                       !isAssiting ? S.of(context).buy : S.of(context).assisting,
                                       style: const TextStyle(
-                                        fontSize: 30,
+                                        fontSize: 26,
                                         color: Colors.white,
                                       ),
                                     ),
@@ -1123,7 +1123,7 @@ class _FutureTradePageState extends State<FutureTradePage> {
                                     child: Text(
                                       !isAssiting ? S.of(context).sell : S.of(context).assisting,
                                       style: const TextStyle(
-                                        fontSize: 30,
+                                        fontSize: 26,
                                         color: Colors.white,
                                       ),
                                     ),
