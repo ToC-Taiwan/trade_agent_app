@@ -910,10 +910,10 @@ class S {
     );
   }
 
-  /// `Assisting`
+  /// `Assist`
   String get assisting {
     return Intl.message(
-      'Assisting',
+      'Assist',
       name: 'assisting',
       desc: '',
       args: [],

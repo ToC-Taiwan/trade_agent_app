@@ -26,7 +26,7 @@ class FutureTradePage extends StatefulWidget {
 }
 
 class _FutureTradePageState extends State<FutureTradePage> {
-  IOWebSocketChannel _channel = IOWebSocketChannel.connect(Uri.parse(tradeAgentFutureWSURLPrefix));
+  late IOWebSocketChannel? _channel;
   List<RealTimeFutureTick> tickArr = [];
 
   int qty = 1;
@@ -75,20 +75,20 @@ class _FutureTradePageState extends State<FutureTradePage> {
     widget.db.basicDao.getBasicByKey('time_period').then((value) {
       automationByTimePeriod = int.parse(value!.value);
     });
-    Wakelock.enable();
     initialWS();
-    checkConnection();
+    Wakelock.enable();
   }
 
   @override
   void dispose() {
-    _channel.sink.close();
+    _channel!.sink.close();
     Wakelock.disable();
     super.dispose();
   }
 
   void initialWS() {
-    _channel.stream.listen(
+    _channel = IOWebSocketChannel.connect(Uri.parse(tradeAgentFutureWSURLPrefix));
+    _channel!.stream.listen(
       (message) {
         if (message == 'pong') {
           return;
@@ -150,19 +150,18 @@ class _FutureTradePageState extends State<FutureTradePage> {
       },
       onDone: () {
         if (mounted) {
-          _channel.sink.close();
-          _channel = IOWebSocketChannel.connect(Uri.parse(tradeAgentFutureWSURLPrefix));
           initialWS();
         }
       },
     );
+    checkConnection(_channel!);
   }
 
-  void checkConnection() {
+  void checkConnection(IOWebSocketChannel channel) {
     var period = const Duration(seconds: 1);
     Timer.periodic(period, (timer) {
       try {
-        _channel.sink.add('ping');
+        channel.sink.add('ping');
       } catch (e) {
         timer.cancel();
       }
@@ -507,7 +506,7 @@ class _FutureTradePageState extends State<FutureTradePage> {
     } else if (automationByTimer) {
       automationType = 2;
     }
-    _channel.sink.add(jsonEncode(
+    _channel!.sink.add(jsonEncode(
       {
         'code': code,
         'action': 1,
@@ -536,7 +535,7 @@ class _FutureTradePageState extends State<FutureTradePage> {
     } else if (automationByTimer) {
       automationType = 2;
     }
-    _channel.sink.add(jsonEncode(
+    _channel!.sink.add(jsonEncode(
       {
         'code': code,
         'action': 2,
@@ -615,7 +614,7 @@ class _FutureTradePageState extends State<FutureTradePage> {
                     child: SizedBox(
                       width: 40,
                       height: 40,
-                      child: Icon(Icons.power_settings_new_sharp, color: allowTrade ? Colors.lightGreen : Colors.red[300]),
+                      child: Icon(!allowTrade ? Icons.autofps_select : Icons.back_hand_sharp, color: allowTrade ? Colors.lightGreen : Colors.red[300]),
                     ),
                   ),
                 ],
@@ -637,7 +636,7 @@ class _FutureTradePageState extends State<FutureTradePage> {
                     if (snapshot.data!.close == 0) {
                       return Center(
                         child: Text(
-                          S.of(context).no_data,
+                          S.of(context).loading,
                           style: const TextStyle(
                             fontSize: 30,
                           ),
@@ -1149,14 +1148,7 @@ class _FutureTradePageState extends State<FutureTradePage> {
                 builder: (context, snapshot) {
                   if (snapshot.hasData) {
                     if (snapshot.data!.isEmpty) {
-                      return Center(
-                        child: Text(
-                          S.of(context).no_data,
-                          style: const TextStyle(
-                            fontSize: 30,
-                          ),
-                        ),
-                      );
+                      return Container();
                     }
                     var value = snapshot.data!;
                     return ListView.builder(

@@ -19,30 +19,29 @@ class PickStockPage extends StatefulWidget {
 }
 
 class _PickStockPageState extends State<PickStockPage> {
-  var _channel = IOWebSocketChannel.connect(Uri.parse(tradeAgentWSURLPrefix));
+  late IOWebSocketChannel? _channel;
+  late Future<List<PickStock>> stockArray;
 
   TextEditingController textFieldController = TextEditingController();
-
   List<PickStock> stockList = [];
-  late Future<List<PickStock>> stockArray;
 
   @override
   void initState() {
     super.initState();
     stockArray = widget.db.pickStockDao.getAllPickStock();
     initialWS();
-    checkConnection();
   }
 
   @override
   void dispose() {
     textFieldController.dispose();
-    _channel.sink.close();
+    _channel!.sink.close();
     super.dispose();
   }
 
   void initialWS() {
-    _channel.stream.listen(
+    _channel = IOWebSocketChannel.connect(Uri.parse(tradeAgentWSURLPrefix));
+    _channel!.stream.listen(
       (message) {
         if (message == 'pong') {
           return;
@@ -105,19 +104,18 @@ class _PickStockPageState extends State<PickStockPage> {
       },
       onDone: () {
         if (mounted) {
-          _channel.sink.close();
-          _channel = IOWebSocketChannel.connect(Uri.parse(tradeAgentFutureWSURLPrefix));
           initialWS();
         }
       },
     );
+    checkConnection(_channel!);
   }
 
-  void checkConnection() {
+  void checkConnection(IOWebSocketChannel channel) {
     var period = const Duration(seconds: 1);
     Timer.periodic(period, (timer) {
       try {
-        _channel.sink.add('ping');
+        channel.sink.add('ping');
       } catch (e) {
         timer.cancel();
       }
@@ -151,7 +149,7 @@ class _PickStockPageState extends State<PickStockPage> {
                   onPressed: () {
                     widget.db.pickStockDao.deleteAllPickStock();
                     stockList = [];
-                    _channel.sink.add(jsonEncode({
+                    _channel!.sink.add(jsonEncode({
                       'pick_stock_list': [],
                     }));
                     setState(() {
@@ -261,7 +259,7 @@ class _PickStockPageState extends State<PickStockPage> {
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             if (snapshot.data!.isEmpty) {
-              _channel.sink.add(jsonEncode({
+              _channel!.sink.add(jsonEncode({
                 'pick_stock_list': [],
               }));
               return Center(
@@ -289,7 +287,7 @@ class _PickStockPageState extends State<PickStockPage> {
                 stockList.add(s);
                 numList.add(s.stockNum);
               }
-              _channel.sink.add(jsonEncode({
+              _channel!.sink.add(jsonEncode({
                 'pick_stock_list': numList,
               }));
             }
