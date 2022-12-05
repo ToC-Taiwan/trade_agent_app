@@ -1197,8 +1197,7 @@ class _FutureTradePageState extends State<FutureTradePage> {
                                 color: tickType == 1 ? Colors.red : Colors.green,
                               ),
                             ),
-                            trailing:
-                                Text(df.formatDate(DateTime.parse(value[index].tickTime!).add(const Duration(hours: 8)), [df.HH, ':', df.nn, ':', df.ss])),
+                            trailing: Text(df.formatDate(DateTime.parse(value[index].tickTime!), [df.HH, ':', df.nn, ':', df.ss])),
                           ),
                         );
                       },
