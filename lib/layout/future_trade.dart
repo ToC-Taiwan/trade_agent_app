@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:numberpicker/numberpicker.dart';
 import 'package:percent_indicator/percent_indicator.dart';
+import 'package:syncfusion_flutter_charts/charts.dart';
 import 'package:trade_agent_v2/basic/base.dart';
 import 'package:trade_agent_v2/database.dart';
 import 'package:trade_agent_v2/generated/l10n.dart';
@@ -27,31 +28,36 @@ class FutureTradePage extends StatefulWidget {
 
 class _FutureTradePageState extends State<FutureTradePage> {
   late IOWebSocketChannel? _channel;
-  List<RealTimeFutureTick> tickArr = [];
+
+  String code = '';
+  String delieveryDate = '';
 
   int qty = 1;
-  String mxfCode = '';
   double tradeRate = 0;
-  num close = 0;
 
   bool allowTrade = true;
   bool isAssiting = false;
 
+  int automationType = 0;
   bool automationByTimer = false;
   bool automationByBalance = false;
 
-  int automationType = 0;
-  num automationByBalanceHigh = 0;
-  num automationByBalanceLow = 0;
-  num automationByTimePeriod = 0;
+  late num? automationByBalanceHigh;
+  late num? automationByBalanceLow;
+  late num? automationByTimePeriod;
 
   num placeOrderTime = DateTime.now().millisecondsSinceEpoch;
+
+  List<RealTimeFutureTick> tickArr = [];
+  RealTimeFutureTick? lastTick;
+  RealTimeFutureTick? beforeLastTick;
 
   Future<RealTimeFutureTick?> realTimeFutureTick = Future.value();
   Future<PeriodOutInVolume?> periodVolume = Future.value();
   Future<FuturePosition?> futurePosition = Future.value();
   Future<TradeIndex?> tradeIndex = Future.value();
   Future<List<RealTimeFutureTick>> realTimeFutureTickArr = Future.value([]);
+  Future<List<KbarData>> kbarArr = Future.value([]);
 
   YahooPrice previousNasdaq = YahooPrice('');
   YahooPrice previousNF = YahooPrice('');
@@ -128,8 +134,8 @@ class _FutureTradePageState extends State<FutureTradePage> {
             return;
 
           case pb.WSType.TYPE_FUTURE_POSITION:
-            if (mxfCode.isNotEmpty) {
-              futurePosition = updateFuturePosition(msg.futurePosition, mxfCode);
+            if (code.isNotEmpty) {
+              futurePosition = updateFuturePosition(msg.futurePosition, code);
             }
             return;
 
@@ -141,10 +147,23 @@ class _FutureTradePageState extends State<FutureTradePage> {
             }
             return;
 
+          case pb.WSType.TYPE_KBAR_ARR:
+            setState(() {
+              kbarArr = getKbarArr(msg.historyKbar);
+            });
+            return;
+
           case pb.WSType.TYPE_ERR_MESSAGE:
             if (mounted) {
               _showErrorDialog(ErrMessage.fromProto(msg.errMessage));
             }
+            return;
+
+          case pb.WSType.TYPE_FUTURE_DETAIL:
+            code = msg.futureDetail.code;
+            setState(() {
+              delieveryDate = msg.futureDetail.deliveryDate;
+            });
             return;
         }
       },
@@ -369,7 +388,7 @@ class _FutureTradePageState extends State<FutureTradePage> {
                       borderRadius: BorderRadius.circular(10),
                     ),
                     selectedTextStyle: const TextStyle(color: Colors.teal, fontSize: 40),
-                    value: automationByBalanceHigh.toInt(),
+                    value: automationByBalanceHigh!.toInt(),
                     minValue: 1,
                     maxValue: 50,
                     itemWidth: 75,
@@ -389,7 +408,7 @@ class _FutureTradePageState extends State<FutureTradePage> {
                       borderRadius: BorderRadius.circular(10),
                     ),
                     selectedTextStyle: const TextStyle(color: Colors.teal, fontSize: 40),
-                    value: automationByBalanceLow.toInt(),
+                    value: automationByBalanceLow!.toInt(),
                     minValue: -50,
                     maxValue: -1,
                     itemWidth: 75,
@@ -456,7 +475,7 @@ class _FutureTradePageState extends State<FutureTradePage> {
                 borderRadius: BorderRadius.circular(10),
               ),
               selectedTextStyle: const TextStyle(color: Colors.teal, fontSize: 40),
-              value: automationByTimePeriod.toInt(),
+              value: automationByTimePeriod!.toInt(),
               minValue: 5,
               maxValue: 500,
               step: 5,
@@ -614,7 +633,7 @@ class _FutureTradePageState extends State<FutureTradePage> {
                     child: SizedBox(
                       width: 40,
                       height: 40,
-                      child: Icon(!allowTrade ? Icons.autofps_select : Icons.back_hand_sharp, color: allowTrade ? Colors.lightGreen : Colors.red[300]),
+                      child: Icon(!allowTrade ? Icons.autofps_select : Icons.back_hand_sharp, color: allowTrade ? Colors.redAccent : Colors.red[300]),
                     ),
                   ),
                 ],
@@ -632,7 +651,6 @@ class _FutureTradePageState extends State<FutureTradePage> {
                 future: realTimeFutureTick,
                 builder: (context, snapshot) {
                   if (snapshot.hasData) {
-                    mxfCode = snapshot.data!.code!;
                     if (snapshot.data!.close == 0) {
                       return Center(
                         child: Text(
@@ -643,7 +661,8 @@ class _FutureTradePageState extends State<FutureTradePage> {
                         ),
                       );
                     }
-                    close = snapshot.data!.close!;
+                    beforeLastTick = lastTick;
+                    lastTick = snapshot.data;
                     var priceChg = snapshot.data!.priceChg!;
                     var type = (priceChg == 0)
                         ? ''
@@ -696,7 +715,7 @@ class _FutureTradePageState extends State<FutureTradePage> {
                                                   }
                                                 }
                                                 return Text(
-                                                  '${S.of(context).position}: 0',
+                                                  delieveryDate,
                                                   style: GoogleFonts.getFont('Source Code Pro', fontStyle: FontStyle.normal, fontSize: 15, color: Colors.grey),
                                                 );
                                               },
@@ -1032,10 +1051,10 @@ class _FutureTradePageState extends State<FutureTradePage> {
                                     DateTime.now().millisecondsSinceEpoch - placeOrderTime > 15000) {
                                   if (rate > 10 && lastRate < 5) {
                                     if (percent1 > 85) {
-                                      _buyFuture(mxfCode, close);
+                                      _buyFuture(code, lastTick!.close!);
                                       placeOrderTime = DateTime.now().millisecondsSinceEpoch;
                                     } else if (percent1 < 15) {
-                                      _sellFuture(mxfCode, close);
+                                      _sellFuture(code, lastTick!.close!);
                                       placeOrderTime = DateTime.now().millisecondsSinceEpoch;
                                     }
                                   }
@@ -1142,7 +1161,7 @@ class _FutureTradePageState extends State<FutureTradePage> {
               ),
             ),
             Expanded(
-              flex: 7,
+              flex: 3,
               child: FutureBuilder<List<RealTimeFutureTick>>(
                 future: realTimeFutureTickArr,
                 builder: (context, snapshot) {
@@ -1199,6 +1218,44 @@ class _FutureTradePageState extends State<FutureTradePage> {
                     child: Container(),
                   );
                 },
+              ),
+            ),
+            Expanded(
+              flex: 5,
+              child: Padding(
+                padding: const EdgeInsets.only(left: 20, right: 20),
+                child: FutureBuilder<List<KbarData>>(
+                  future: kbarArr,
+                  builder: (context, snapshot) {
+                    if (snapshot.hasData) {
+                      return SfCartesianChart(
+                        plotAreaBorderWidth: 2,
+                        primaryYAxis: NumericAxis(
+                          isVisible: false,
+                        ),
+                        primaryXAxis: DateTimeAxis(),
+                        series: <ChartSeries>[
+                          CandleSeries(
+                            showIndicationForSameValues: true,
+                            enableSolidCandles: true,
+                            bearColor: Colors.green,
+                            bullColor: Colors.red,
+                            dataSource: snapshot.data!,
+                            xValueMapper: (datum, index) => datum.kbarTime,
+                            lowValueMapper: (datum, index) => datum.low,
+                            highValueMapper: (datum, index) => datum.high,
+                            openValueMapper: (datum, index) => datum.open,
+                            closeValueMapper: (datum, index) => datum.close,
+                          )
+                        ],
+                      );
+                    }
+                    return Text(
+                      'Kbar close is loading',
+                      style: GoogleFonts.getFont('Source Code Pro', fontStyle: FontStyle.normal, fontSize: 15, color: Colors.grey),
+                    );
+                  },
+                ),
               ),
             ),
             Expanded(
@@ -1305,6 +1362,36 @@ Future<FuturePosition> updateFuturePosition(pb.WSFuturePosition ws, String code)
   return FuturePosition.fromProto(ws, code);
 }
 
+Future<List<KbarData>> getKbarArr(pb.WSHistoryKbarMessage ws) async {
+  var tmp = <KbarData>[];
+  for (final element in ws.arr) {
+    if (tmp.isNotEmpty) {
+      var gap = DateTime.parse(element.kbarTime).difference(tmp.last.kbarTime!);
+      if (gap.inMinutes > 1) {
+        for (var i = 1; i < gap.inMinutes; i++) {
+          var empty = KbarData(
+            kbarTime: tmp.last.kbarTime!.add(const Duration(minutes: 1)),
+            close: tmp.last.close,
+          );
+          tmp.add(empty);
+        }
+      }
+    }
+
+    tmp.add(
+      KbarData(
+        kbarTime: DateTime.parse(element.kbarTime),
+        high: element.high,
+        low: element.low,
+        open: element.open,
+        close: element.close,
+        volume: element.volume.toInt(),
+      ),
+    );
+  }
+  return tmp;
+}
+
 Future<List<RealTimeFutureTick>> fillArr(pb.WSFutureTick wsTick, List<RealTimeFutureTick> originalArr) async {
   var tmp = RealTimeFutureTick.fromProto(wsTick);
   if (originalArr.isNotEmpty && originalArr.last.close == tmp.close && originalArr.last.tickType == tmp.tickType) {
@@ -1312,10 +1399,10 @@ Future<List<RealTimeFutureTick>> fillArr(pb.WSFutureTick wsTick, List<RealTimeFu
     originalArr.last.tickTime = tmp.tickTime;
     originalArr.last.combo = true;
   } else {
-    if (originalArr.length > 4) {
+    originalArr.add(tmp);
+    if (originalArr.length > 2) {
       originalArr.removeAt(0);
     }
-    originalArr.add(tmp);
   }
   return originalArr.reversed.toList();
 }
@@ -1630,4 +1717,15 @@ class BaseOrder {
   String? tradeTime;
   String? tickTime;
   String? groupID;
+}
+
+class KbarData {
+  KbarData({this.kbarTime, this.close, this.open, this.high, this.low, this.volume});
+
+  DateTime? kbarTime;
+  num? close;
+  num? open;
+  num? high;
+  num? low;
+  int? volume;
 }

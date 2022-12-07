@@ -1,5 +1,6 @@
 #!/bin/bash
 
+flutter pub cache clean
 flutter clean
 flutter pub get
 

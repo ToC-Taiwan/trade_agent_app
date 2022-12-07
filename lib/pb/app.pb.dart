@@ -22,6 +22,8 @@ enum WSMessage_Data {
   futurePosition,
   assitStatus,
   errMessage,
+  historyKbar,
+  futureDetail,
   notSet
 }
 
@@ -34,10 +36,12 @@ class WSMessage extends $pb.GeneratedMessage {
     6 : WSMessage_Data.futurePosition,
     7 : WSMessage_Data.assitStatus,
     8 : WSMessage_Data.errMessage,
+    9 : WSMessage_Data.historyKbar,
+    10 : WSMessage_Data.futureDetail,
     0 : WSMessage_Data.notSet
   };
   static final $pb.BuilderInfo _i = $pb.BuilderInfo(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'WSMessage', package: const $pb.PackageName(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'sinopac_forwarder'), createEmptyInstance: create)
-    ..oo(0, [2, 3, 4, 5, 6, 7, 8])
+    ..oo(0, [2, 3, 4, 5, 6, 7, 8, 9, 10])
     ..e<WSType>(1, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'type', $pb.PbFieldType.OE, defaultOrMaker: WSType.TYPE_FUTURE_TICK, valueOf: WSType.valueOf, enumValues: WSType.values)
     ..aOM<WSFutureTick>(2, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'futureTick', subBuilder: WSFutureTick.create)
     ..aOM<WSFutureOrder>(3, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'futureOrder', subBuilder: WSFutureOrder.create)
@@ -46,6 +50,8 @@ class WSMessage extends $pb.GeneratedMessage {
     ..aOM<WSFuturePosition>(6, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'futurePosition', subBuilder: WSFuturePosition.create)
     ..aOM<WSAssitStatus>(7, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'assitStatus', subBuilder: WSAssitStatus.create)
     ..aOM<WSErrMessage>(8, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'errMessage', subBuilder: WSErrMessage.create)
+    ..aOM<WSHistoryKbarMessage>(9, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'historyKbar', subBuilder: WSHistoryKbarMessage.create)
+    ..aOM<WSFutureDetail>(10, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'futureDetail', subBuilder: WSFutureDetail.create)
     ..hasRequiredFields = false
   ;
 
@@ -59,6 +65,8 @@ class WSMessage extends $pb.GeneratedMessage {
     WSFuturePosition? futurePosition,
     WSAssitStatus? assitStatus,
     WSErrMessage? errMessage,
+    WSHistoryKbarMessage? historyKbar,
+    WSFutureDetail? futureDetail,
   }) {
     final _result = create();
     if (type != null) {
@@ -84,6 +92,12 @@ class WSMessage extends $pb.GeneratedMessage {
     }
     if (errMessage != null) {
       _result.errMessage = errMessage;
+    }
+    if (historyKbar != null) {
+      _result.historyKbar = historyKbar;
+    }
+    if (futureDetail != null) {
+      _result.futureDetail = futureDetail;
     }
     return _result;
   }
@@ -196,6 +210,229 @@ class WSMessage extends $pb.GeneratedMessage {
   void clearErrMessage() => clearField(8);
   @$pb.TagNumber(8)
   WSErrMessage ensureErrMessage() => $_ensure(7);
+
+  @$pb.TagNumber(9)
+  WSHistoryKbarMessage get historyKbar => $_getN(8);
+  @$pb.TagNumber(9)
+  set historyKbar(WSHistoryKbarMessage v) { setField(9, v); }
+  @$pb.TagNumber(9)
+  $core.bool hasHistoryKbar() => $_has(8);
+  @$pb.TagNumber(9)
+  void clearHistoryKbar() => clearField(9);
+  @$pb.TagNumber(9)
+  WSHistoryKbarMessage ensureHistoryKbar() => $_ensure(8);
+
+  @$pb.TagNumber(10)
+  WSFutureDetail get futureDetail => $_getN(9);
+  @$pb.TagNumber(10)
+  set futureDetail(WSFutureDetail v) { setField(10, v); }
+  @$pb.TagNumber(10)
+  $core.bool hasFutureDetail() => $_has(9);
+  @$pb.TagNumber(10)
+  void clearFutureDetail() => clearField(10);
+  @$pb.TagNumber(10)
+  WSFutureDetail ensureFutureDetail() => $_ensure(9);
+}
+
+class WSFutureDetail extends $pb.GeneratedMessage {
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'WSFutureDetail', package: const $pb.PackageName(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'sinopac_forwarder'), createEmptyInstance: create)
+    ..aOS(1, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'code')
+    ..aOS(2, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'symbol')
+    ..aOS(3, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'name')
+    ..aOS(4, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'category')
+    ..aOS(5, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'deliveryMonth')
+    ..aOS(6, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'deliveryDate')
+    ..aOS(7, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'underlyingKind')
+    ..aInt64(8, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'unit')
+    ..a<$core.double>(9, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'limitUp', $pb.PbFieldType.OD)
+    ..a<$core.double>(10, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'limitDown', $pb.PbFieldType.OD)
+    ..a<$core.double>(11, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'reference', $pb.PbFieldType.OD)
+    ..aOS(12, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'updateDate')
+    ..hasRequiredFields = false
+  ;
+
+  WSFutureDetail._() : super();
+  factory WSFutureDetail({
+    $core.String? code,
+    $core.String? symbol,
+    $core.String? name,
+    $core.String? category,
+    $core.String? deliveryMonth,
+    $core.String? deliveryDate,
+    $core.String? underlyingKind,
+    $fixnum.Int64? unit,
+    $core.double? limitUp,
+    $core.double? limitDown,
+    $core.double? reference,
+    $core.String? updateDate,
+  }) {
+    final _result = create();
+    if (code != null) {
+      _result.code = code;
+    }
+    if (symbol != null) {
+      _result.symbol = symbol;
+    }
+    if (name != null) {
+      _result.name = name;
+    }
+    if (category != null) {
+      _result.category = category;
+    }
+    if (deliveryMonth != null) {
+      _result.deliveryMonth = deliveryMonth;
+    }
+    if (deliveryDate != null) {
+      _result.deliveryDate = deliveryDate;
+    }
+    if (underlyingKind != null) {
+      _result.underlyingKind = underlyingKind;
+    }
+    if (unit != null) {
+      _result.unit = unit;
+    }
+    if (limitUp != null) {
+      _result.limitUp = limitUp;
+    }
+    if (limitDown != null) {
+      _result.limitDown = limitDown;
+    }
+    if (reference != null) {
+      _result.reference = reference;
+    }
+    if (updateDate != null) {
+      _result.updateDate = updateDate;
+    }
+    return _result;
+  }
+  factory WSFutureDetail.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
+  factory WSFutureDetail.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.deepCopy] instead. '
+  'Will be removed in next major version')
+  WSFutureDetail clone() => WSFutureDetail()..mergeFromMessage(this);
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
+  'Will be removed in next major version')
+  WSFutureDetail copyWith(void Function(WSFutureDetail) updates) => super.copyWith((message) => updates(message as WSFutureDetail)) as WSFutureDetail; // ignore: deprecated_member_use
+  $pb.BuilderInfo get info_ => _i;
+  @$core.pragma('dart2js:noInline')
+  static WSFutureDetail create() => WSFutureDetail._();
+  WSFutureDetail createEmptyInstance() => create();
+  static $pb.PbList<WSFutureDetail> createRepeated() => $pb.PbList<WSFutureDetail>();
+  @$core.pragma('dart2js:noInline')
+  static WSFutureDetail getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<WSFutureDetail>(create);
+  static WSFutureDetail? _defaultInstance;
+
+  @$pb.TagNumber(1)
+  $core.String get code => $_getSZ(0);
+  @$pb.TagNumber(1)
+  set code($core.String v) { $_setString(0, v); }
+  @$pb.TagNumber(1)
+  $core.bool hasCode() => $_has(0);
+  @$pb.TagNumber(1)
+  void clearCode() => clearField(1);
+
+  @$pb.TagNumber(2)
+  $core.String get symbol => $_getSZ(1);
+  @$pb.TagNumber(2)
+  set symbol($core.String v) { $_setString(1, v); }
+  @$pb.TagNumber(2)
+  $core.bool hasSymbol() => $_has(1);
+  @$pb.TagNumber(2)
+  void clearSymbol() => clearField(2);
+
+  @$pb.TagNumber(3)
+  $core.String get name => $_getSZ(2);
+  @$pb.TagNumber(3)
+  set name($core.String v) { $_setString(2, v); }
+  @$pb.TagNumber(3)
+  $core.bool hasName() => $_has(2);
+  @$pb.TagNumber(3)
+  void clearName() => clearField(3);
+
+  @$pb.TagNumber(4)
+  $core.String get category => $_getSZ(3);
+  @$pb.TagNumber(4)
+  set category($core.String v) { $_setString(3, v); }
+  @$pb.TagNumber(4)
+  $core.bool hasCategory() => $_has(3);
+  @$pb.TagNumber(4)
+  void clearCategory() => clearField(4);
+
+  @$pb.TagNumber(5)
+  $core.String get deliveryMonth => $_getSZ(4);
+  @$pb.TagNumber(5)
+  set deliveryMonth($core.String v) { $_setString(4, v); }
+  @$pb.TagNumber(5)
+  $core.bool hasDeliveryMonth() => $_has(4);
+  @$pb.TagNumber(5)
+  void clearDeliveryMonth() => clearField(5);
+
+  @$pb.TagNumber(6)
+  $core.String get deliveryDate => $_getSZ(5);
+  @$pb.TagNumber(6)
+  set deliveryDate($core.String v) { $_setString(5, v); }
+  @$pb.TagNumber(6)
+  $core.bool hasDeliveryDate() => $_has(5);
+  @$pb.TagNumber(6)
+  void clearDeliveryDate() => clearField(6);
+
+  @$pb.TagNumber(7)
+  $core.String get underlyingKind => $_getSZ(6);
+  @$pb.TagNumber(7)
+  set underlyingKind($core.String v) { $_setString(6, v); }
+  @$pb.TagNumber(7)
+  $core.bool hasUnderlyingKind() => $_has(6);
+  @$pb.TagNumber(7)
+  void clearUnderlyingKind() => clearField(7);
+
+  @$pb.TagNumber(8)
+  $fixnum.Int64 get unit => $_getI64(7);
+  @$pb.TagNumber(8)
+  set unit($fixnum.Int64 v) { $_setInt64(7, v); }
+  @$pb.TagNumber(8)
+  $core.bool hasUnit() => $_has(7);
+  @$pb.TagNumber(8)
+  void clearUnit() => clearField(8);
+
+  @$pb.TagNumber(9)
+  $core.double get limitUp => $_getN(8);
+  @$pb.TagNumber(9)
+  set limitUp($core.double v) { $_setDouble(8, v); }
+  @$pb.TagNumber(9)
+  $core.bool hasLimitUp() => $_has(8);
+  @$pb.TagNumber(9)
+  void clearLimitUp() => clearField(9);
+
+  @$pb.TagNumber(10)
+  $core.double get limitDown => $_getN(9);
+  @$pb.TagNumber(10)
+  set limitDown($core.double v) { $_setDouble(9, v); }
+  @$pb.TagNumber(10)
+  $core.bool hasLimitDown() => $_has(9);
+  @$pb.TagNumber(10)
+  void clearLimitDown() => clearField(10);
+
+  @$pb.TagNumber(11)
+  $core.double get reference => $_getN(10);
+  @$pb.TagNumber(11)
+  set reference($core.double v) { $_setDouble(10, v); }
+  @$pb.TagNumber(11)
+  $core.bool hasReference() => $_has(10);
+  @$pb.TagNumber(11)
+  void clearReference() => clearField(11);
+
+  @$pb.TagNumber(12)
+  $core.String get updateDate => $_getSZ(11);
+  @$pb.TagNumber(12)
+  set updateDate($core.String v) { $_setString(11, v); }
+  @$pb.TagNumber(12)
+  $core.bool hasUpdateDate() => $_has(11);
+  @$pb.TagNumber(12)
+  void clearUpdateDate() => clearField(12);
 }
 
 class WSErrMessage extends $pb.GeneratedMessage {
@@ -1570,4 +1807,162 @@ class WSAssitStatus extends $pb.GeneratedMessage {
   $core.bool hasRunning() => $_has(0);
   @$pb.TagNumber(1)
   void clearRunning() => clearField(1);
+}
+
+class WSHistoryKbarMessage extends $pb.GeneratedMessage {
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'WSHistoryKbarMessage', package: const $pb.PackageName(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'sinopac_forwarder'), createEmptyInstance: create)
+    ..pc<Kbar>(1, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'arr', $pb.PbFieldType.PM, subBuilder: Kbar.create)
+    ..hasRequiredFields = false
+  ;
+
+  WSHistoryKbarMessage._() : super();
+  factory WSHistoryKbarMessage({
+    $core.Iterable<Kbar>? arr,
+  }) {
+    final _result = create();
+    if (arr != null) {
+      _result.arr.addAll(arr);
+    }
+    return _result;
+  }
+  factory WSHistoryKbarMessage.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
+  factory WSHistoryKbarMessage.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.deepCopy] instead. '
+  'Will be removed in next major version')
+  WSHistoryKbarMessage clone() => WSHistoryKbarMessage()..mergeFromMessage(this);
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
+  'Will be removed in next major version')
+  WSHistoryKbarMessage copyWith(void Function(WSHistoryKbarMessage) updates) => super.copyWith((message) => updates(message as WSHistoryKbarMessage)) as WSHistoryKbarMessage; // ignore: deprecated_member_use
+  $pb.BuilderInfo get info_ => _i;
+  @$core.pragma('dart2js:noInline')
+  static WSHistoryKbarMessage create() => WSHistoryKbarMessage._();
+  WSHistoryKbarMessage createEmptyInstance() => create();
+  static $pb.PbList<WSHistoryKbarMessage> createRepeated() => $pb.PbList<WSHistoryKbarMessage>();
+  @$core.pragma('dart2js:noInline')
+  static WSHistoryKbarMessage getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<WSHistoryKbarMessage>(create);
+  static WSHistoryKbarMessage? _defaultInstance;
+
+  @$pb.TagNumber(1)
+  $core.List<Kbar> get arr => $_getList(0);
+}
+
+class Kbar extends $pb.GeneratedMessage {
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'Kbar', package: const $pb.PackageName(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'sinopac_forwarder'), createEmptyInstance: create)
+    ..aOS(1, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'kbarTime')
+    ..a<$core.double>(2, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'open', $pb.PbFieldType.OD)
+    ..a<$core.double>(3, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'high', $pb.PbFieldType.OD)
+    ..a<$core.double>(4, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'close', $pb.PbFieldType.OD)
+    ..a<$core.double>(5, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'low', $pb.PbFieldType.OD)
+    ..aInt64(6, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'volume')
+    ..hasRequiredFields = false
+  ;
+
+  Kbar._() : super();
+  factory Kbar({
+    $core.String? kbarTime,
+    $core.double? open,
+    $core.double? high,
+    $core.double? close,
+    $core.double? low,
+    $fixnum.Int64? volume,
+  }) {
+    final _result = create();
+    if (kbarTime != null) {
+      _result.kbarTime = kbarTime;
+    }
+    if (open != null) {
+      _result.open = open;
+    }
+    if (high != null) {
+      _result.high = high;
+    }
+    if (close != null) {
+      _result.close = close;
+    }
+    if (low != null) {
+      _result.low = low;
+    }
+    if (volume != null) {
+      _result.volume = volume;
+    }
+    return _result;
+  }
+  factory Kbar.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
+  factory Kbar.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.deepCopy] instead. '
+  'Will be removed in next major version')
+  Kbar clone() => Kbar()..mergeFromMessage(this);
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
+  'Will be removed in next major version')
+  Kbar copyWith(void Function(Kbar) updates) => super.copyWith((message) => updates(message as Kbar)) as Kbar; // ignore: deprecated_member_use
+  $pb.BuilderInfo get info_ => _i;
+  @$core.pragma('dart2js:noInline')
+  static Kbar create() => Kbar._();
+  Kbar createEmptyInstance() => create();
+  static $pb.PbList<Kbar> createRepeated() => $pb.PbList<Kbar>();
+  @$core.pragma('dart2js:noInline')
+  static Kbar getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<Kbar>(create);
+  static Kbar? _defaultInstance;
+
+  @$pb.TagNumber(1)
+  $core.String get kbarTime => $_getSZ(0);
+  @$pb.TagNumber(1)
+  set kbarTime($core.String v) { $_setString(0, v); }
+  @$pb.TagNumber(1)
+  $core.bool hasKbarTime() => $_has(0);
+  @$pb.TagNumber(1)
+  void clearKbarTime() => clearField(1);
+
+  @$pb.TagNumber(2)
+  $core.double get open => $_getN(1);
+  @$pb.TagNumber(2)
+  set open($core.double v) { $_setDouble(1, v); }
+  @$pb.TagNumber(2)
+  $core.bool hasOpen() => $_has(1);
+  @$pb.TagNumber(2)
+  void clearOpen() => clearField(2);
+
+  @$pb.TagNumber(3)
+  $core.double get high => $_getN(2);
+  @$pb.TagNumber(3)
+  set high($core.double v) { $_setDouble(2, v); }
+  @$pb.TagNumber(3)
+  $core.bool hasHigh() => $_has(2);
+  @$pb.TagNumber(3)
+  void clearHigh() => clearField(3);
+
+  @$pb.TagNumber(4)
+  $core.double get close => $_getN(3);
+  @$pb.TagNumber(4)
+  set close($core.double v) { $_setDouble(3, v); }
+  @$pb.TagNumber(4)
+  $core.bool hasClose() => $_has(3);
+  @$pb.TagNumber(4)
+  void clearClose() => clearField(4);
+
+  @$pb.TagNumber(5)
+  $core.double get low => $_getN(4);
+  @$pb.TagNumber(5)
+  set low($core.double v) { $_setDouble(4, v); }
+  @$pb.TagNumber(5)
+  $core.bool hasLow() => $_has(4);
+  @$pb.TagNumber(5)
+  void clearLow() => clearField(5);
+
+  @$pb.TagNumber(6)
+  $fixnum.Int64 get volume => $_getI64(5);
+  @$pb.TagNumber(6)
+  set volume($fixnum.Int64 v) { $_setInt64(5, v); }
+  @$pb.TagNumber(6)
+  $core.bool hasVolume() => $_has(5);
+  @$pb.TagNumber(6)
+  void clearVolume() => clearField(6);
 }
