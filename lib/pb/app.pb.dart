@@ -17,7 +17,6 @@ export 'app.pbenum.dart';
 enum WSMessage_Data {
   futureTick,
   futureOrder,
-  periodTradeVolume,
   tradeIndex,
   futurePosition,
   assitStatus,
@@ -31,7 +30,6 @@ class WSMessage extends $pb.GeneratedMessage {
   static const $core.Map<$core.int, WSMessage_Data> _WSMessage_DataByTag = {
     2 : WSMessage_Data.futureTick,
     3 : WSMessage_Data.futureOrder,
-    4 : WSMessage_Data.periodTradeVolume,
     5 : WSMessage_Data.tradeIndex,
     6 : WSMessage_Data.futurePosition,
     7 : WSMessage_Data.assitStatus,
@@ -41,11 +39,10 @@ class WSMessage extends $pb.GeneratedMessage {
     0 : WSMessage_Data.notSet
   };
   static final $pb.BuilderInfo _i = $pb.BuilderInfo(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'WSMessage', package: const $pb.PackageName(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'sinopac_forwarder'), createEmptyInstance: create)
-    ..oo(0, [2, 3, 4, 5, 6, 7, 8, 9, 10])
+    ..oo(0, [2, 3, 5, 6, 7, 8, 9, 10])
     ..e<WSType>(1, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'type', $pb.PbFieldType.OE, defaultOrMaker: WSType.TYPE_FUTURE_TICK, valueOf: WSType.valueOf, enumValues: WSType.values)
     ..aOM<WSFutureTick>(2, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'futureTick', subBuilder: WSFutureTick.create)
     ..aOM<WSFutureOrder>(3, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'futureOrder', subBuilder: WSFutureOrder.create)
-    ..aOM<WSPeriodTradeVolume>(4, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'periodTradeVolume', subBuilder: WSPeriodTradeVolume.create)
     ..aOM<WSTradeIndex>(5, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'tradeIndex', subBuilder: WSTradeIndex.create)
     ..aOM<WSFuturePosition>(6, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'futurePosition', subBuilder: WSFuturePosition.create)
     ..aOM<WSAssitStatus>(7, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'assitStatus', subBuilder: WSAssitStatus.create)
@@ -60,7 +57,6 @@ class WSMessage extends $pb.GeneratedMessage {
     WSType? type,
     WSFutureTick? futureTick,
     WSFutureOrder? futureOrder,
-    WSPeriodTradeVolume? periodTradeVolume,
     WSTradeIndex? tradeIndex,
     WSFuturePosition? futurePosition,
     WSAssitStatus? assitStatus,
@@ -77,9 +73,6 @@ class WSMessage extends $pb.GeneratedMessage {
     }
     if (futureOrder != null) {
       _result.futureOrder = futureOrder;
-    }
-    if (periodTradeVolume != null) {
-      _result.periodTradeVolume = periodTradeVolume;
     }
     if (tradeIndex != null) {
       _result.tradeIndex = tradeIndex;
@@ -156,82 +149,71 @@ class WSMessage extends $pb.GeneratedMessage {
   @$pb.TagNumber(3)
   WSFutureOrder ensureFutureOrder() => $_ensure(2);
 
-  @$pb.TagNumber(4)
-  WSPeriodTradeVolume get periodTradeVolume => $_getN(3);
-  @$pb.TagNumber(4)
-  set periodTradeVolume(WSPeriodTradeVolume v) { setField(4, v); }
-  @$pb.TagNumber(4)
-  $core.bool hasPeriodTradeVolume() => $_has(3);
-  @$pb.TagNumber(4)
-  void clearPeriodTradeVolume() => clearField(4);
-  @$pb.TagNumber(4)
-  WSPeriodTradeVolume ensurePeriodTradeVolume() => $_ensure(3);
-
   @$pb.TagNumber(5)
-  WSTradeIndex get tradeIndex => $_getN(4);
+  WSTradeIndex get tradeIndex => $_getN(3);
   @$pb.TagNumber(5)
   set tradeIndex(WSTradeIndex v) { setField(5, v); }
   @$pb.TagNumber(5)
-  $core.bool hasTradeIndex() => $_has(4);
+  $core.bool hasTradeIndex() => $_has(3);
   @$pb.TagNumber(5)
   void clearTradeIndex() => clearField(5);
   @$pb.TagNumber(5)
-  WSTradeIndex ensureTradeIndex() => $_ensure(4);
+  WSTradeIndex ensureTradeIndex() => $_ensure(3);
 
   @$pb.TagNumber(6)
-  WSFuturePosition get futurePosition => $_getN(5);
+  WSFuturePosition get futurePosition => $_getN(4);
   @$pb.TagNumber(6)
   set futurePosition(WSFuturePosition v) { setField(6, v); }
   @$pb.TagNumber(6)
-  $core.bool hasFuturePosition() => $_has(5);
+  $core.bool hasFuturePosition() => $_has(4);
   @$pb.TagNumber(6)
   void clearFuturePosition() => clearField(6);
   @$pb.TagNumber(6)
-  WSFuturePosition ensureFuturePosition() => $_ensure(5);
+  WSFuturePosition ensureFuturePosition() => $_ensure(4);
 
   @$pb.TagNumber(7)
-  WSAssitStatus get assitStatus => $_getN(6);
+  WSAssitStatus get assitStatus => $_getN(5);
   @$pb.TagNumber(7)
   set assitStatus(WSAssitStatus v) { setField(7, v); }
   @$pb.TagNumber(7)
-  $core.bool hasAssitStatus() => $_has(6);
+  $core.bool hasAssitStatus() => $_has(5);
   @$pb.TagNumber(7)
   void clearAssitStatus() => clearField(7);
   @$pb.TagNumber(7)
-  WSAssitStatus ensureAssitStatus() => $_ensure(6);
+  WSAssitStatus ensureAssitStatus() => $_ensure(5);
 
   @$pb.TagNumber(8)
-  WSErrMessage get errMessage => $_getN(7);
+  WSErrMessage get errMessage => $_getN(6);
   @$pb.TagNumber(8)
   set errMessage(WSErrMessage v) { setField(8, v); }
   @$pb.TagNumber(8)
-  $core.bool hasErrMessage() => $_has(7);
+  $core.bool hasErrMessage() => $_has(6);
   @$pb.TagNumber(8)
   void clearErrMessage() => clearField(8);
   @$pb.TagNumber(8)
-  WSErrMessage ensureErrMessage() => $_ensure(7);
+  WSErrMessage ensureErrMessage() => $_ensure(6);
 
   @$pb.TagNumber(9)
-  WSHistoryKbarMessage get historyKbar => $_getN(8);
+  WSHistoryKbarMessage get historyKbar => $_getN(7);
   @$pb.TagNumber(9)
   set historyKbar(WSHistoryKbarMessage v) { setField(9, v); }
   @$pb.TagNumber(9)
-  $core.bool hasHistoryKbar() => $_has(8);
+  $core.bool hasHistoryKbar() => $_has(7);
   @$pb.TagNumber(9)
   void clearHistoryKbar() => clearField(9);
   @$pb.TagNumber(9)
-  WSHistoryKbarMessage ensureHistoryKbar() => $_ensure(8);
+  WSHistoryKbarMessage ensureHistoryKbar() => $_ensure(7);
 
   @$pb.TagNumber(10)
-  WSFutureDetail get futureDetail => $_getN(9);
+  WSFutureDetail get futureDetail => $_getN(8);
   @$pb.TagNumber(10)
   set futureDetail(WSFutureDetail v) { setField(10, v); }
   @$pb.TagNumber(10)
-  $core.bool hasFutureDetail() => $_has(9);
+  $core.bool hasFutureDetail() => $_has(8);
   @$pb.TagNumber(10)
   void clearFutureDetail() => clearField(10);
   @$pb.TagNumber(10)
-  WSFutureDetail ensureFutureDetail() => $_ensure(9);
+  WSFutureDetail ensureFutureDetail() => $_ensure(8);
 }
 
 class WSFutureDetail extends $pb.GeneratedMessage {
@@ -1001,164 +983,6 @@ class WSFutureTick extends $pb.GeneratedMessage {
   $core.bool hasPctChg() => $_has(17);
   @$pb.TagNumber(18)
   void clearPctChg() => clearField(18);
-}
-
-class OutInVolume extends $pb.GeneratedMessage {
-  static final $pb.BuilderInfo _i = $pb.BuilderInfo(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'OutInVolume', package: const $pb.PackageName(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'sinopac_forwarder'), createEmptyInstance: create)
-    ..aInt64(1, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'outVolume')
-    ..aInt64(2, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'inVolume')
-    ..hasRequiredFields = false
-  ;
-
-  OutInVolume._() : super();
-  factory OutInVolume({
-    $fixnum.Int64? outVolume,
-    $fixnum.Int64? inVolume,
-  }) {
-    final _result = create();
-    if (outVolume != null) {
-      _result.outVolume = outVolume;
-    }
-    if (inVolume != null) {
-      _result.inVolume = inVolume;
-    }
-    return _result;
-  }
-  factory OutInVolume.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
-  factory OutInVolume.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
-  @$core.Deprecated(
-  'Using this can add significant overhead to your binary. '
-  'Use [GeneratedMessageGenericExtensions.deepCopy] instead. '
-  'Will be removed in next major version')
-  OutInVolume clone() => OutInVolume()..mergeFromMessage(this);
-  @$core.Deprecated(
-  'Using this can add significant overhead to your binary. '
-  'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
-  'Will be removed in next major version')
-  OutInVolume copyWith(void Function(OutInVolume) updates) => super.copyWith((message) => updates(message as OutInVolume)) as OutInVolume; // ignore: deprecated_member_use
-  $pb.BuilderInfo get info_ => _i;
-  @$core.pragma('dart2js:noInline')
-  static OutInVolume create() => OutInVolume._();
-  OutInVolume createEmptyInstance() => create();
-  static $pb.PbList<OutInVolume> createRepeated() => $pb.PbList<OutInVolume>();
-  @$core.pragma('dart2js:noInline')
-  static OutInVolume getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<OutInVolume>(create);
-  static OutInVolume? _defaultInstance;
-
-  @$pb.TagNumber(1)
-  $fixnum.Int64 get outVolume => $_getI64(0);
-  @$pb.TagNumber(1)
-  set outVolume($fixnum.Int64 v) { $_setInt64(0, v); }
-  @$pb.TagNumber(1)
-  $core.bool hasOutVolume() => $_has(0);
-  @$pb.TagNumber(1)
-  void clearOutVolume() => clearField(1);
-
-  @$pb.TagNumber(2)
-  $fixnum.Int64 get inVolume => $_getI64(1);
-  @$pb.TagNumber(2)
-  set inVolume($fixnum.Int64 v) { $_setInt64(1, v); }
-  @$pb.TagNumber(2)
-  $core.bool hasInVolume() => $_has(1);
-  @$pb.TagNumber(2)
-  void clearInVolume() => clearField(2);
-}
-
-class WSPeriodTradeVolume extends $pb.GeneratedMessage {
-  static final $pb.BuilderInfo _i = $pb.BuilderInfo(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'WSPeriodTradeVolume', package: const $pb.PackageName(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'sinopac_forwarder'), createEmptyInstance: create)
-    ..aOM<OutInVolume>(1, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'firstPeriod', subBuilder: OutInVolume.create)
-    ..aOM<OutInVolume>(2, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'secondPeriod', subBuilder: OutInVolume.create)
-    ..aOM<OutInVolume>(3, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'thirdPeriod', subBuilder: OutInVolume.create)
-    ..aOM<OutInVolume>(4, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'fourthPeriod', subBuilder: OutInVolume.create)
-    ..hasRequiredFields = false
-  ;
-
-  WSPeriodTradeVolume._() : super();
-  factory WSPeriodTradeVolume({
-    OutInVolume? firstPeriod,
-    OutInVolume? secondPeriod,
-    OutInVolume? thirdPeriod,
-    OutInVolume? fourthPeriod,
-  }) {
-    final _result = create();
-    if (firstPeriod != null) {
-      _result.firstPeriod = firstPeriod;
-    }
-    if (secondPeriod != null) {
-      _result.secondPeriod = secondPeriod;
-    }
-    if (thirdPeriod != null) {
-      _result.thirdPeriod = thirdPeriod;
-    }
-    if (fourthPeriod != null) {
-      _result.fourthPeriod = fourthPeriod;
-    }
-    return _result;
-  }
-  factory WSPeriodTradeVolume.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
-  factory WSPeriodTradeVolume.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
-  @$core.Deprecated(
-  'Using this can add significant overhead to your binary. '
-  'Use [GeneratedMessageGenericExtensions.deepCopy] instead. '
-  'Will be removed in next major version')
-  WSPeriodTradeVolume clone() => WSPeriodTradeVolume()..mergeFromMessage(this);
-  @$core.Deprecated(
-  'Using this can add significant overhead to your binary. '
-  'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
-  'Will be removed in next major version')
-  WSPeriodTradeVolume copyWith(void Function(WSPeriodTradeVolume) updates) => super.copyWith((message) => updates(message as WSPeriodTradeVolume)) as WSPeriodTradeVolume; // ignore: deprecated_member_use
-  $pb.BuilderInfo get info_ => _i;
-  @$core.pragma('dart2js:noInline')
-  static WSPeriodTradeVolume create() => WSPeriodTradeVolume._();
-  WSPeriodTradeVolume createEmptyInstance() => create();
-  static $pb.PbList<WSPeriodTradeVolume> createRepeated() => $pb.PbList<WSPeriodTradeVolume>();
-  @$core.pragma('dart2js:noInline')
-  static WSPeriodTradeVolume getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<WSPeriodTradeVolume>(create);
-  static WSPeriodTradeVolume? _defaultInstance;
-
-  @$pb.TagNumber(1)
-  OutInVolume get firstPeriod => $_getN(0);
-  @$pb.TagNumber(1)
-  set firstPeriod(OutInVolume v) { setField(1, v); }
-  @$pb.TagNumber(1)
-  $core.bool hasFirstPeriod() => $_has(0);
-  @$pb.TagNumber(1)
-  void clearFirstPeriod() => clearField(1);
-  @$pb.TagNumber(1)
-  OutInVolume ensureFirstPeriod() => $_ensure(0);
-
-  @$pb.TagNumber(2)
-  OutInVolume get secondPeriod => $_getN(1);
-  @$pb.TagNumber(2)
-  set secondPeriod(OutInVolume v) { setField(2, v); }
-  @$pb.TagNumber(2)
-  $core.bool hasSecondPeriod() => $_has(1);
-  @$pb.TagNumber(2)
-  void clearSecondPeriod() => clearField(2);
-  @$pb.TagNumber(2)
-  OutInVolume ensureSecondPeriod() => $_ensure(1);
-
-  @$pb.TagNumber(3)
-  OutInVolume get thirdPeriod => $_getN(2);
-  @$pb.TagNumber(3)
-  set thirdPeriod(OutInVolume v) { setField(3, v); }
-  @$pb.TagNumber(3)
-  $core.bool hasThirdPeriod() => $_has(2);
-  @$pb.TagNumber(3)
-  void clearThirdPeriod() => clearField(3);
-  @$pb.TagNumber(3)
-  OutInVolume ensureThirdPeriod() => $_ensure(2);
-
-  @$pb.TagNumber(4)
-  OutInVolume get fourthPeriod => $_getN(3);
-  @$pb.TagNumber(4)
-  set fourthPeriod(OutInVolume v) { setField(4, v); }
-  @$pb.TagNumber(4)
-  $core.bool hasFourthPeriod() => $_has(3);
-  @$pb.TagNumber(4)
-  void clearFourthPeriod() => clearField(4);
-  @$pb.TagNumber(4)
-  OutInVolume ensureFourthPeriod() => $_ensure(3);
 }
 
 class WSTradeIndex extends $pb.GeneratedMessage {

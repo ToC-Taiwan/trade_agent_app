@@ -12,18 +12,16 @@ import 'package:protobuf/protobuf.dart' as $pb;
 class WSType extends $pb.ProtobufEnum {
   static const WSType TYPE_FUTURE_TICK = WSType._(0, const $core.bool.fromEnvironment('protobuf.omit_enum_names') ? '' : 'TYPE_FUTURE_TICK');
   static const WSType TYPE_FUTURE_ORDER = WSType._(1, const $core.bool.fromEnvironment('protobuf.omit_enum_names') ? '' : 'TYPE_FUTURE_ORDER');
-  static const WSType TYPE_PERIOD_TRADE_VOLUME = WSType._(2, const $core.bool.fromEnvironment('protobuf.omit_enum_names') ? '' : 'TYPE_PERIOD_TRADE_VOLUME');
-  static const WSType TYPE_TRADE_INDEX = WSType._(3, const $core.bool.fromEnvironment('protobuf.omit_enum_names') ? '' : 'TYPE_TRADE_INDEX');
-  static const WSType TYPE_FUTURE_POSITION = WSType._(4, const $core.bool.fromEnvironment('protobuf.omit_enum_names') ? '' : 'TYPE_FUTURE_POSITION');
-  static const WSType TYPE_ASSIST_STATUS = WSType._(5, const $core.bool.fromEnvironment('protobuf.omit_enum_names') ? '' : 'TYPE_ASSIST_STATUS');
-  static const WSType TYPE_ERR_MESSAGE = WSType._(6, const $core.bool.fromEnvironment('protobuf.omit_enum_names') ? '' : 'TYPE_ERR_MESSAGE');
-  static const WSType TYPE_KBAR_ARR = WSType._(7, const $core.bool.fromEnvironment('protobuf.omit_enum_names') ? '' : 'TYPE_KBAR_ARR');
-  static const WSType TYPE_FUTURE_DETAIL = WSType._(8, const $core.bool.fromEnvironment('protobuf.omit_enum_names') ? '' : 'TYPE_FUTURE_DETAIL');
+  static const WSType TYPE_TRADE_INDEX = WSType._(2, const $core.bool.fromEnvironment('protobuf.omit_enum_names') ? '' : 'TYPE_TRADE_INDEX');
+  static const WSType TYPE_FUTURE_POSITION = WSType._(3, const $core.bool.fromEnvironment('protobuf.omit_enum_names') ? '' : 'TYPE_FUTURE_POSITION');
+  static const WSType TYPE_ASSIST_STATUS = WSType._(4, const $core.bool.fromEnvironment('protobuf.omit_enum_names') ? '' : 'TYPE_ASSIST_STATUS');
+  static const WSType TYPE_ERR_MESSAGE = WSType._(5, const $core.bool.fromEnvironment('protobuf.omit_enum_names') ? '' : 'TYPE_ERR_MESSAGE');
+  static const WSType TYPE_KBAR_ARR = WSType._(6, const $core.bool.fromEnvironment('protobuf.omit_enum_names') ? '' : 'TYPE_KBAR_ARR');
+  static const WSType TYPE_FUTURE_DETAIL = WSType._(7, const $core.bool.fromEnvironment('protobuf.omit_enum_names') ? '' : 'TYPE_FUTURE_DETAIL');
 
   static const $core.List<WSType> values = <WSType> [
     TYPE_FUTURE_TICK,
     TYPE_FUTURE_ORDER,
-    TYPE_PERIOD_TRADE_VOLUME,
     TYPE_TRADE_INDEX,
     TYPE_FUTURE_POSITION,
     TYPE_ASSIST_STATUS,

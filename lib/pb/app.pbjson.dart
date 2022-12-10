@@ -14,18 +14,17 @@ const WSType$json = const {
   '2': const [
     const {'1': 'TYPE_FUTURE_TICK', '2': 0},
     const {'1': 'TYPE_FUTURE_ORDER', '2': 1},
-    const {'1': 'TYPE_PERIOD_TRADE_VOLUME', '2': 2},
-    const {'1': 'TYPE_TRADE_INDEX', '2': 3},
-    const {'1': 'TYPE_FUTURE_POSITION', '2': 4},
-    const {'1': 'TYPE_ASSIST_STATUS', '2': 5},
-    const {'1': 'TYPE_ERR_MESSAGE', '2': 6},
-    const {'1': 'TYPE_KBAR_ARR', '2': 7},
-    const {'1': 'TYPE_FUTURE_DETAIL', '2': 8},
+    const {'1': 'TYPE_TRADE_INDEX', '2': 2},
+    const {'1': 'TYPE_FUTURE_POSITION', '2': 3},
+    const {'1': 'TYPE_ASSIST_STATUS', '2': 4},
+    const {'1': 'TYPE_ERR_MESSAGE', '2': 5},
+    const {'1': 'TYPE_KBAR_ARR', '2': 6},
+    const {'1': 'TYPE_FUTURE_DETAIL', '2': 7},
   ],
 };
 
 /// Descriptor for `WSType`. Decode as a `google.protobuf.EnumDescriptorProto`.
-final $typed_data.Uint8List wSTypeDescriptor = $convert.base64Decode('CgZXU1R5cGUSFAoQVFlQRV9GVVRVUkVfVElDSxAAEhUKEVRZUEVfRlVUVVJFX09SREVSEAESHAoYVFlQRV9QRVJJT0RfVFJBREVfVk9MVU1FEAISFAoQVFlQRV9UUkFERV9JTkRFWBADEhgKFFRZUEVfRlVUVVJFX1BPU0lUSU9OEAQSFgoSVFlQRV9BU1NJU1RfU1RBVFVTEAUSFAoQVFlQRV9FUlJfTUVTU0FHRRAGEhEKDVRZUEVfS0JBUl9BUlIQBxIWChJUWVBFX0ZVVFVSRV9ERVRBSUwQCA==');
+final $typed_data.Uint8List wSTypeDescriptor = $convert.base64Decode('CgZXU1R5cGUSFAoQVFlQRV9GVVRVUkVfVElDSxAAEhUKEVRZUEVfRlVUVVJFX09SREVSEAESFAoQVFlQRV9UUkFERV9JTkRFWBACEhgKFFRZUEVfRlVUVVJFX1BPU0lUSU9OEAMSFgoSVFlQRV9BU1NJU1RfU1RBVFVTEAQSFAoQVFlQRV9FUlJfTUVTU0FHRRAFEhEKDVRZUEVfS0JBUl9BUlIQBhIWChJUWVBFX0ZVVFVSRV9ERVRBSUwQBw==');
 @$core.Deprecated('Use wSMessageDescriptor instead')
 const WSMessage$json = const {
   '1': 'WSMessage',
@@ -33,7 +32,6 @@ const WSMessage$json = const {
     const {'1': 'type', '3': 1, '4': 1, '5': 14, '6': '.sinopac_forwarder.WSType', '10': 'type'},
     const {'1': 'future_tick', '3': 2, '4': 1, '5': 11, '6': '.sinopac_forwarder.WSFutureTick', '9': 0, '10': 'futureTick'},
     const {'1': 'future_order', '3': 3, '4': 1, '5': 11, '6': '.sinopac_forwarder.WSFutureOrder', '9': 0, '10': 'futureOrder'},
-    const {'1': 'period_trade_volume', '3': 4, '4': 1, '5': 11, '6': '.sinopac_forwarder.WSPeriodTradeVolume', '9': 0, '10': 'periodTradeVolume'},
     const {'1': 'trade_index', '3': 5, '4': 1, '5': 11, '6': '.sinopac_forwarder.WSTradeIndex', '9': 0, '10': 'tradeIndex'},
     const {'1': 'future_position', '3': 6, '4': 1, '5': 11, '6': '.sinopac_forwarder.WSFuturePosition', '9': 0, '10': 'futurePosition'},
     const {'1': 'assit_status', '3': 7, '4': 1, '5': 11, '6': '.sinopac_forwarder.WSAssitStatus', '9': 0, '10': 'assitStatus'},
@@ -47,7 +45,7 @@ const WSMessage$json = const {
 };
 
 /// Descriptor for `WSMessage`. Decode as a `google.protobuf.DescriptorProto`.
-final $typed_data.Uint8List wSMessageDescriptor = $convert.base64Decode('CglXU01lc3NhZ2USLQoEdHlwZRgBIAEoDjIZLnNpbm9wYWNfZm9yd2FyZGVyLldTVHlwZVIEdHlwZRJCCgtmdXR1cmVfdGljaxgCIAEoCzIfLnNpbm9wYWNfZm9yd2FyZGVyLldTRnV0dXJlVGlja0gAUgpmdXR1cmVUaWNrEkUKDGZ1dHVyZV9vcmRlchgDIAEoCzIgLnNpbm9wYWNfZm9yd2FyZGVyLldTRnV0dXJlT3JkZXJIAFILZnV0dXJlT3JkZXISWAoTcGVyaW9kX3RyYWRlX3ZvbHVtZRgEIAEoCzImLnNpbm9wYWNfZm9yd2FyZGVyLldTUGVyaW9kVHJhZGVWb2x1bWVIAFIRcGVyaW9kVHJhZGVWb2x1bWUSQgoLdHJhZGVfaW5kZXgYBSABKAsyHy5zaW5vcGFjX2ZvcndhcmRlci5XU1RyYWRlSW5kZXhIAFIKdHJhZGVJbmRleBJOCg9mdXR1cmVfcG9zaXRpb24YBiABKAsyIy5zaW5vcGFjX2ZvcndhcmRlci5XU0Z1dHVyZVBvc2l0aW9uSABSDmZ1dHVyZVBvc2l0aW9uEkUKDGFzc2l0X3N0YXR1cxgHIAEoCzIgLnNpbm9wYWNfZm9yd2FyZGVyLldTQXNzaXRTdGF0dXNIAFILYXNzaXRTdGF0dXMSQgoLZXJyX21lc3NhZ2UYCCABKAsyHy5zaW5vcGFjX2ZvcndhcmRlci5XU0Vyck1lc3NhZ2VIAFIKZXJyTWVzc2FnZRJMCgxoaXN0b3J5X2tiYXIYCSABKAsyJy5zaW5vcGFjX2ZvcndhcmRlci5XU0hpc3RvcnlLYmFyTWVzc2FnZUgAUgtoaXN0b3J5S2JhchJICg1mdXR1cmVfZGV0YWlsGAogASgLMiEuc2lub3BhY19mb3J3YXJkZXIuV1NGdXR1cmVEZXRhaWxIAFIMZnV0dXJlRGV0YWlsQgYKBGRhdGE=');
+final $typed_data.Uint8List wSMessageDescriptor = $convert.base64Decode('CglXU01lc3NhZ2USLQoEdHlwZRgBIAEoDjIZLnNpbm9wYWNfZm9yd2FyZGVyLldTVHlwZVIEdHlwZRJCCgtmdXR1cmVfdGljaxgCIAEoCzIfLnNpbm9wYWNfZm9yd2FyZGVyLldTRnV0dXJlVGlja0gAUgpmdXR1cmVUaWNrEkUKDGZ1dHVyZV9vcmRlchgDIAEoCzIgLnNpbm9wYWNfZm9yd2FyZGVyLldTRnV0dXJlT3JkZXJIAFILZnV0dXJlT3JkZXISQgoLdHJhZGVfaW5kZXgYBSABKAsyHy5zaW5vcGFjX2ZvcndhcmRlci5XU1RyYWRlSW5kZXhIAFIKdHJhZGVJbmRleBJOCg9mdXR1cmVfcG9zaXRpb24YBiABKAsyIy5zaW5vcGFjX2ZvcndhcmRlci5XU0Z1dHVyZVBvc2l0aW9uSABSDmZ1dHVyZVBvc2l0aW9uEkUKDGFzc2l0X3N0YXR1cxgHIAEoCzIgLnNpbm9wYWNfZm9yd2FyZGVyLldTQXNzaXRTdGF0dXNIAFILYXNzaXRTdGF0dXMSQgoLZXJyX21lc3NhZ2UYCCABKAsyHy5zaW5vcGFjX2ZvcndhcmRlci5XU0Vyck1lc3NhZ2VIAFIKZXJyTWVzc2FnZRJMCgxoaXN0b3J5X2tiYXIYCSABKAsyJy5zaW5vcGFjX2ZvcndhcmRlci5XU0hpc3RvcnlLYmFyTWVzc2FnZUgAUgtoaXN0b3J5S2JhchJICg1mdXR1cmVfZGV0YWlsGAogASgLMiEuc2lub3BhY19mb3J3YXJkZXIuV1NGdXR1cmVEZXRhaWxIAFIMZnV0dXJlRGV0YWlsQgYKBGRhdGE=');
 @$core.Deprecated('Use wSFutureDetailDescriptor instead')
 const WSFutureDetail$json = const {
   '1': 'WSFutureDetail',
@@ -136,30 +134,6 @@ const WSFutureTick$json = const {
 
 /// Descriptor for `WSFutureTick`. Decode as a `google.protobuf.DescriptorProto`.
 final $typed_data.Uint8List wSFutureTickDescriptor = $convert.base64Decode('CgxXU0Z1dHVyZVRpY2sSEgoEY29kZRgBIAEoCVIEY29kZRIbCgl0aWNrX3RpbWUYAiABKAlSCHRpY2tUaW1lEhIKBG9wZW4YAyABKAFSBG9wZW4SKQoQdW5kZXJseWluZ19wcmljZRgEIAEoAVIPdW5kZXJseWluZ1ByaWNlEisKEmJpZF9zaWRlX3RvdGFsX3ZvbBgFIAEoA1IPYmlkU2lkZVRvdGFsVm9sEisKEmFza19zaWRlX3RvdGFsX3ZvbBgGIAEoA1IPYXNrU2lkZVRvdGFsVm9sEhsKCWF2Z19wcmljZRgHIAEoAVIIYXZnUHJpY2USFAoFY2xvc2UYCCABKAFSBWNsb3NlEhIKBGhpZ2gYCSABKAFSBGhpZ2gSEAoDbG93GAogASgBUgNsb3cSFgoGYW1vdW50GAsgASgBUgZhbW91bnQSIQoMdG90YWxfYW1vdW50GAwgASgBUgt0b3RhbEFtb3VudBIWCgZ2b2x1bWUYDSABKANSBnZvbHVtZRIhCgx0b3RhbF92b2x1bWUYDiABKANSC3RvdGFsVm9sdW1lEhsKCXRpY2tfdHlwZRgPIAEoA1IIdGlja1R5cGUSGQoIY2hnX3R5cGUYECABKANSB2NoZ1R5cGUSGwoJcHJpY2VfY2hnGBEgASgBUghwcmljZUNoZxIXCgdwY3RfY2hnGBIgASgBUgZwY3RDaGc=');
-@$core.Deprecated('Use outInVolumeDescriptor instead')
-const OutInVolume$json = const {
-  '1': 'OutInVolume',
-  '2': const [
-    const {'1': 'out_volume', '3': 1, '4': 1, '5': 3, '10': 'outVolume'},
-    const {'1': 'in_volume', '3': 2, '4': 1, '5': 3, '10': 'inVolume'},
-  ],
-};
-
-/// Descriptor for `OutInVolume`. Decode as a `google.protobuf.DescriptorProto`.
-final $typed_data.Uint8List outInVolumeDescriptor = $convert.base64Decode('CgtPdXRJblZvbHVtZRIdCgpvdXRfdm9sdW1lGAEgASgDUglvdXRWb2x1bWUSGwoJaW5fdm9sdW1lGAIgASgDUghpblZvbHVtZQ==');
-@$core.Deprecated('Use wSPeriodTradeVolumeDescriptor instead')
-const WSPeriodTradeVolume$json = const {
-  '1': 'WSPeriodTradeVolume',
-  '2': const [
-    const {'1': 'first_period', '3': 1, '4': 1, '5': 11, '6': '.sinopac_forwarder.OutInVolume', '10': 'firstPeriod'},
-    const {'1': 'second_period', '3': 2, '4': 1, '5': 11, '6': '.sinopac_forwarder.OutInVolume', '10': 'secondPeriod'},
-    const {'1': 'third_period', '3': 3, '4': 1, '5': 11, '6': '.sinopac_forwarder.OutInVolume', '10': 'thirdPeriod'},
-    const {'1': 'fourth_period', '3': 4, '4': 1, '5': 11, '6': '.sinopac_forwarder.OutInVolume', '10': 'fourthPeriod'},
-  ],
-};
-
-/// Descriptor for `WSPeriodTradeVolume`. Decode as a `google.protobuf.DescriptorProto`.
-final $typed_data.Uint8List wSPeriodTradeVolumeDescriptor = $convert.base64Decode('ChNXU1BlcmlvZFRyYWRlVm9sdW1lEkEKDGZpcnN0X3BlcmlvZBgBIAEoCzIeLnNpbm9wYWNfZm9yd2FyZGVyLk91dEluVm9sdW1lUgtmaXJzdFBlcmlvZBJDCg1zZWNvbmRfcGVyaW9kGAIgASgLMh4uc2lub3BhY19mb3J3YXJkZXIuT3V0SW5Wb2x1bWVSDHNlY29uZFBlcmlvZBJBCgx0aGlyZF9wZXJpb2QYAyABKAsyHi5zaW5vcGFjX2ZvcndhcmRlci5PdXRJblZvbHVtZVILdGhpcmRQZXJpb2QSQwoNZm91cnRoX3BlcmlvZBgEIAEoCzIeLnNpbm9wYWNfZm9yd2FyZGVyLk91dEluVm9sdW1lUgxmb3VydGhQZXJpb2Q=');
 @$core.Deprecated('Use wSTradeIndexDescriptor instead')
 const WSTradeIndex$json = const {
   '1': 'WSTradeIndex',

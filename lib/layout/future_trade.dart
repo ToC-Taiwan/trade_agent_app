@@ -29,11 +29,9 @@ class FutureTradePage extends StatefulWidget {
 class _FutureTradePageState extends State<FutureTradePage> {
   late IOWebSocketChannel? _channel;
 
+  int qty = 1;
   String code = '';
   String delieveryDate = '';
-
-  int qty = 1;
-  double tradeRate = 0;
 
   bool allowTrade = true;
   bool isAssiting = false;
@@ -48,12 +46,15 @@ class _FutureTradePageState extends State<FutureTradePage> {
 
   num placeOrderTime = DateTime.now().millisecondsSinceEpoch;
 
+  double lastRate = 0;
+  TradeRate tradeRate = TradeRate(0, 0, 0, 0, 0);
+  List<RealTimeFutureTick> totalTickArr = [];
+
   List<RealTimeFutureTick> tickArr = [];
   RealTimeFutureTick? lastTick;
   RealTimeFutureTick? beforeLastTick;
 
   Future<RealTimeFutureTick?> realTimeFutureTick = Future.value();
-  Future<PeriodOutInVolume?> periodVolume = Future.value();
   Future<FuturePosition?> futurePosition = Future.value();
   Future<TradeIndex?> tradeIndex = Future.value();
   Future<List<RealTimeFutureTick>> realTimeFutureTickArr = Future.value([]);
@@ -104,17 +105,10 @@ class _FutureTradePageState extends State<FutureTradePage> {
         switch (msg.type) {
           case pb.WSType.TYPE_FUTURE_TICK:
             if (mounted) {
+              updateTradeRate(msg.futureTick, totalTickArr);
               setState(() {
                 realTimeFutureTick = getData(msg.futureTick);
                 realTimeFutureTickArr = fillArr(msg.futureTick, tickArr);
-              });
-            }
-            return;
-
-          case pb.WSType.TYPE_PERIOD_TRADE_VOLUME:
-            if (mounted) {
-              setState(() {
-                periodVolume = updateTradeRate(msg.periodTradeVolume);
               });
             }
             return;
@@ -541,6 +535,71 @@ class _FutureTradePageState extends State<FutureTradePage> {
     ));
   }
 
+  void updateTradeRate(pb.WSFutureTick ws, List<RealTimeFutureTick> totalArr) {
+    totalTickArr.add(RealTimeFutureTick.fromProto(ws));
+
+    var baseDuration = const Duration(seconds: 10);
+    var firstPeriod = RealTimeFutureTickArr();
+    var secondPeriod = RealTimeFutureTickArr();
+    var thirdPeriod = RealTimeFutureTickArr();
+    var fourthPeriod = RealTimeFutureTickArr();
+
+    for (var i = 0; i < totalTickArr.length; i++) {
+      if (totalTickArr[i].tickTime!.isBefore(DateTime.now().subtract(baseDuration * 4))) {
+        totalTickArr.removeAt(i);
+        continue;
+      }
+
+      if (totalTickArr[i].tickTime!.isBefore(DateTime.now().subtract(baseDuration * 3))) {
+        fourthPeriod.arr.add(totalTickArr[i]);
+        continue;
+      }
+
+      if (totalTickArr[i].tickTime!.isBefore(DateTime.now().subtract(baseDuration * 2))) {
+        thirdPeriod.arr.add(totalTickArr[i]);
+        fourthPeriod.arr.add(totalTickArr[i]);
+        continue;
+      }
+
+      if (totalTickArr[i].tickTime!.isBefore(DateTime.now().subtract(baseDuration * 1))) {
+        secondPeriod.arr.add(totalTickArr[i]);
+        thirdPeriod.arr.add(totalTickArr[i]);
+        fourthPeriod.arr.add(totalTickArr[i]);
+        continue;
+      }
+
+      firstPeriod.arr.add(totalTickArr[i]);
+      secondPeriod.arr.add(totalTickArr[i]);
+      thirdPeriod.arr.add(totalTickArr[i]);
+      fourthPeriod.arr.add(totalTickArr[i]);
+    }
+
+    setState(() {
+      if (mounted) {
+        tradeRate = TradeRate(
+          firstPeriod.getOutInVolume()._getOutInRatio(),
+          secondPeriod.getOutInVolume()._getOutInRatio(),
+          thirdPeriod.getOutInVolume()._getOutInRatio(),
+          fourthPeriod.getOutInVolume()._getOutInRatio(),
+          firstPeriod.getOutInVolume()._getRate(),
+        );
+      }
+    });
+
+    if (!isAssiting && !allowTrade && (automationByBalance || automationByTimer) && DateTime.now().millisecondsSinceEpoch - placeOrderTime > 30000) {
+      if (tradeRate.rate > 25 && lastRate < 10) {
+        if (tradeRate.percent1 > 85) {
+          _buyFuture(code, lastTick!.close!);
+          placeOrderTime = DateTime.now().millisecondsSinceEpoch;
+        } else if (tradeRate.percent1 < 15) {
+          _sellFuture(code, lastTick!.close!);
+          placeOrderTime = DateTime.now().millisecondsSinceEpoch;
+        }
+      }
+    }
+    lastRate = tradeRate.rate;
+  }
+
   void _sellFuture(String code, num close) {
     if (close == 0) {
       return;
@@ -633,7 +692,8 @@ class _FutureTradePageState extends State<FutureTradePage> {
                     child: SizedBox(
                       width: 40,
                       height: 40,
-                      child: Icon(!allowTrade ? Icons.autofps_select : Icons.back_hand_sharp, color: allowTrade ? Colors.redAccent : Colors.red[300]),
+                      child: Icon(!allowTrade ? Icons.pause_circle_outline_outlined : Icons.play_circle_outline,
+                          color: allowTrade ? Colors.teal : Colors.red[300]),
                     ),
                   ),
                 ],
@@ -993,96 +1053,43 @@ class _FutureTradePageState extends State<FutureTradePage> {
                             children: [
                               Text(
                                 snapshot.data!.close!.toStringAsFixed(0),
-                                style: const TextStyle(
-                                  fontSize: 50,
-                                  fontWeight: FontWeight.bold,
-                                ),
+                                style: GoogleFonts.getFont('Source Code Pro',
+                                    fontStyle: FontStyle.normal, fontSize: 50, color: Colors.black, fontWeight: FontWeight.bold),
                               ),
                               Text(
                                 '$type ${snapshot.data!.priceChg!.toStringAsFixed(0)}',
-                                style: TextStyle(
-                                  fontSize: 50,
-                                  color: priceChg == 0
-                                      ? Colors.blueGrey
-                                      : priceChg > 0
-                                          ? Colors.red
-                                          : Colors.green,
-                                ),
+                                style: GoogleFonts.getFont('Source Code Pro',
+                                    fontStyle: FontStyle.normal,
+                                    fontSize: 50,
+                                    color: priceChg == 0
+                                        ? Colors.blueGrey
+                                        : priceChg > 0
+                                            ? Colors.red
+                                            : Colors.green,
+                                    fontWeight: FontWeight.bold),
                               ),
                             ],
                           ),
                         ),
                         Padding(
                           padding: const EdgeInsets.only(left: 20, right: 20),
-                          child: FutureBuilder<PeriodOutInVolume?>(
-                            future: periodVolume,
-                            builder: (context, snapshot) {
-                              var percent1 = 0.0;
-                              var percent2 = 0.0;
-                              var percent3 = 0.0;
-                              var percent4 = 0.0;
-                              var rate = 0.0;
-                              var rateDifference = 0.0;
-                              if (snapshot.hasData) {
-                                percent1 = 100 *
-                                    snapshot.data!.firstPeriod!.outVolume! /
-                                    (snapshot.data!.firstPeriod!.outVolume! + snapshot.data!.firstPeriod!.inVolume!);
-                                percent2 = 100 *
-                                    snapshot.data!.secondPeriod!.outVolume! /
-                                    (snapshot.data!.secondPeriod!.outVolume! + snapshot.data!.secondPeriod!.inVolume!);
-                                percent3 = 100 *
-                                    snapshot.data!.thirdPeriod!.outVolume! /
-                                    (snapshot.data!.thirdPeriod!.outVolume! + snapshot.data!.thirdPeriod!.inVolume!);
-                                percent4 = 100 *
-                                    snapshot.data!.fourthPeriod!.outVolume! /
-                                    (snapshot.data!.fourthPeriod!.outVolume! + snapshot.data!.fourthPeriod!.inVolume!);
-
-                                rate = ((snapshot.data!.firstPeriod!.outVolume! + snapshot.data!.firstPeriod!.inVolume!) / 10 +
-                                        (snapshot.data!.thirdPeriod!.outVolume! + snapshot.data!.thirdPeriod!.inVolume!) / 30) /
-                                    2;
-
-                                rateDifference = 100 * (rate - tradeRate) / tradeRate;
-                                var lastRate = tradeRate;
-                                tradeRate = rate;
-
-                                if (!isAssiting &&
-                                    !allowTrade &&
-                                    (automationByBalance || automationByTimer) &&
-                                    DateTime.now().millisecondsSinceEpoch - placeOrderTime > 15000) {
-                                  if (rate > 10 && lastRate < 5) {
-                                    if (percent1 > 85) {
-                                      _buyFuture(code, lastTick!.close!);
-                                      placeOrderTime = DateTime.now().millisecondsSinceEpoch;
-                                    } else if (percent1 < 15) {
-                                      _sellFuture(code, lastTick!.close!);
-                                      placeOrderTime = DateTime.now().millisecondsSinceEpoch;
-                                    }
-                                  }
-                                }
-                              }
-                              return Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                children: [
-                                  _buildVolumeRatioCircle(percent1, rate),
-                                  _buildVolumeRatioCircle(percent2, rate),
-                                  Text(
-                                    '${rate.toStringAsFixed(2)}/s',
-                                    style: GoogleFonts.getFont(
-                                      'Source Code Pro',
-                                      fontStyle: FontStyle.normal,
-                                      fontSize: 25,
-                                      color: rate > 7
-                                          ? Colors.red
-                                          : rateDifference > 25
-                                              ? Colors.red
-                                              : Colors.grey,
-                                    ),
-                                  ),
-                                  _buildVolumeRatioCircle(percent3, rate),
-                                  _buildVolumeRatioCircle(percent4, rate),
-                                ],
-                              );
-                            },
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                              _buildVolumeRatioCircle(tradeRate.percent1, tradeRate.rate),
+                              _buildVolumeRatioCircle(tradeRate.percent2, tradeRate.rate),
+                              Text(
+                                '${tradeRate.rate.toStringAsFixed(2)}/s',
+                                style: GoogleFonts.getFont(
+                                  'Source Code Pro',
+                                  fontStyle: FontStyle.normal,
+                                  fontSize: 25,
+                                  color: tradeRate.rate >= 10 ? Colors.red : Colors.grey,
+                                ),
+                              ),
+                              _buildVolumeRatioCircle(tradeRate.percent3, tradeRate.rate),
+                              _buildVolumeRatioCircle(tradeRate.percent4, tradeRate.rate),
+                            ],
                           ),
                         ),
                         Padding(
@@ -1208,7 +1215,7 @@ class _FutureTradePageState extends State<FutureTradePage> {
                                 color: tickType == 1 ? Colors.red : Colors.green,
                               ),
                             ),
-                            trailing: Text(df.formatDate(DateTime.parse(value[index].tickTime!), [df.HH, ':', df.nn, ':', df.ss])),
+                            trailing: Text(df.formatDate(value[index].tickTime!, [df.HH, ':', df.nn, ':', df.ss])),
                           ),
                         );
                       },
@@ -1350,10 +1357,6 @@ Future<RealTimeFutureTick> getData(pb.WSFutureTick ws) async {
   return RealTimeFutureTick.fromProto(ws);
 }
 
-Future<PeriodOutInVolume> updateTradeRate(pb.WSPeriodTradeVolume ws) async {
-  return PeriodOutInVolume.fromProto(ws);
-}
-
 Future<TradeIndex> updateTradeIndex(pb.WSTradeIndex ws) async {
   return TradeIndex.fromProto(ws);
 }
@@ -1365,19 +1368,6 @@ Future<FuturePosition> updateFuturePosition(pb.WSFuturePosition ws, String code)
 Future<List<KbarData>> getKbarArr(pb.WSHistoryKbarMessage ws) async {
   var tmp = <KbarData>[];
   for (final element in ws.arr) {
-    if (tmp.isNotEmpty) {
-      var gap = DateTime.parse(element.kbarTime).difference(tmp.last.kbarTime!);
-      if (gap.inMinutes > 1) {
-        for (var i = 1; i < gap.inMinutes; i++) {
-          var empty = KbarData(
-            kbarTime: tmp.last.kbarTime!.add(const Duration(minutes: 1)),
-            close: tmp.last.close,
-          );
-          tmp.add(empty);
-        }
-      }
-    }
-
     tmp.add(
       KbarData(
         kbarTime: DateTime.parse(element.kbarTime),
@@ -1431,7 +1421,7 @@ class RealTimeFutureTick {
 
   RealTimeFutureTick.fromProto(pb.WSFutureTick tick) {
     code = tick.code;
-    tickTime = tick.tickTime;
+    tickTime = DateTime.parse(tick.tickTime);
     open = tick.open;
     underlyingPrice = tick.underlyingPrice;
     bidSideTotalVol = tick.bidSideTotalVol.toInt();
@@ -1451,7 +1441,7 @@ class RealTimeFutureTick {
   }
 
   String? code;
-  String? tickTime;
+  DateTime? tickTime;
   num? open;
   num? underlyingPrice;
   num? bidSideTotalVol;
@@ -1470,6 +1460,26 @@ class RealTimeFutureTick {
   num? pctChg;
   num? simtrade;
   bool? combo = false;
+}
+
+class RealTimeFutureTickArr {
+  OutInVolume getOutInVolume() {
+    var outVolume = 0;
+    var inVolume = 0;
+    for (var i = 0; i < arr.length; i++) {
+      switch (arr[i].tickType) {
+        case 1:
+          outVolume += arr[i].volume!.toInt();
+          continue;
+        case 2:
+          inVolume += arr[i].volume!.toInt();
+          continue;
+      }
+    }
+    return OutInVolume(outVolume, inVolume);
+  }
+
+  List<RealTimeFutureTick> arr = [];
 }
 
 class AssistStatus {
@@ -1495,24 +1505,35 @@ class ErrMessage {
 class OutInVolume {
   OutInVolume(this.outVolume, this.inVolume);
 
+  double _getOutInRatio() {
+    if (outVolume == 0 && inVolume == 0) {
+      return 0;
+    }
+    return 100 * (outVolume! / (outVolume! + inVolume!));
+  }
+
+  double _getRate() {
+    return (outVolume! + inVolume!) / 10;
+  }
+
   num? outVolume;
   num? inVolume;
 }
 
-class PeriodOutInVolume {
-  PeriodOutInVolume(this.firstPeriod, this.secondPeriod, this.thirdPeriod, this.fourthPeriod);
+class TradeRate {
+  TradeRate(
+    this.percent1,
+    this.percent2,
+    this.percent3,
+    this.percent4,
+    this.rate,
+  );
 
-  PeriodOutInVolume.fromProto(pb.WSPeriodTradeVolume volume) {
-    firstPeriod = OutInVolume(volume.firstPeriod.outVolume.toInt(), volume.firstPeriod.inVolume.toInt());
-    secondPeriod = OutInVolume(volume.secondPeriod.outVolume.toInt(), volume.secondPeriod.inVolume.toInt());
-    thirdPeriod = OutInVolume(volume.thirdPeriod.outVolume.toInt(), volume.thirdPeriod.inVolume.toInt());
-    fourthPeriod = OutInVolume(volume.fourthPeriod.outVolume.toInt(), volume.fourthPeriod.inVolume.toInt());
-  }
-
-  OutInVolume? firstPeriod;
-  OutInVolume? secondPeriod;
-  OutInVolume? thirdPeriod;
-  OutInVolume? fourthPeriod;
+  double percent1;
+  double percent2;
+  double percent3;
+  double percent4;
+  double rate;
 }
 
 class TradeIndex {
