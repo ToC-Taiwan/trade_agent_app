@@ -8,7 +8,7 @@ import 'package:trade_agent_v2/layout/strategy.dart';
 import 'package:trade_agent_v2/layout/targets.dart';
 
 class MyHomePage extends StatefulWidget {
-  const MyHomePage({Key? key, required this.title, required this.db}) : super(key: key);
+  const MyHomePage({required this.title, required this.db, Key? key}) : super(key: key);
   final AppDatabase db;
 
   final String title;
@@ -49,32 +49,30 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: pages[_page],
-      bottomNavigationBar: CurvedNavigationBar(
-        key: _bottomNavigationKey,
-        height: 70,
-        items: const <Widget>[
-          Icon(Icons.assignment_outlined, size: 30),
-          Icon(Icons.call_to_action_rounded, size: 30),
-          Icon(Icons.account_balance_outlined, size: 30),
-          Icon(Icons.dashboard_customize, size: 30),
-          // Icon(Icons.today_outlined, size: 30),
-          Icon(Icons.money, size: 30),
-        ],
-        color: Colors.blueGrey,
-        buttonBackgroundColor: Colors.greenAccent,
-        backgroundColor: Colors.white,
-        animationCurve: Curves.easeInCubic,
-        animationDuration: const Duration(milliseconds: 150),
-        onTap: (index) {
-          setState(() {
-            _page = index;
-          });
-        },
-        letIndexChange: (index) => true,
-      ),
-    );
-  }
+  Widget build(BuildContext context) => Scaffold(
+        body: pages[_page] as Widget,
+        bottomNavigationBar: CurvedNavigationBar(
+          key: _bottomNavigationKey,
+          height: 70,
+          items: const <Widget>[
+            Icon(Icons.assignment_outlined, size: 30),
+            Icon(Icons.call_to_action_rounded, size: 30),
+            Icon(Icons.account_balance_outlined, size: 30),
+            Icon(Icons.dashboard_customize, size: 30),
+            // Icon(Icons.today_outlined, size: 30),
+            Icon(Icons.money, size: 30),
+          ],
+          color: Colors.blueGrey,
+          buttonBackgroundColor: Colors.greenAccent,
+          backgroundColor: Colors.white,
+          animationCurve: Curves.easeInCubic,
+          animationDuration: const Duration(milliseconds: 150),
+          onTap: (index) {
+            setState(() {
+              _page = index;
+            });
+          },
+          letIndexChange: (index) => true,
+        ),
+      );
 }

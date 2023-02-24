@@ -549,9 +549,6 @@ class WSOrder extends $pb.GeneratedMessage {
     ..aInt64(4, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'action')
     ..a<$core.double>(5, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'price', $pb.PbFieldType.OD)
     ..aInt64(6, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'quantity')
-    ..aOS(7, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'tradeTime')
-    ..aOS(8, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'tickTime')
-    ..aOS(9, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'groupId')
     ..hasRequiredFields = false
   ;
 
@@ -563,9 +560,6 @@ class WSOrder extends $pb.GeneratedMessage {
     $fixnum.Int64? action,
     $core.double? price,
     $fixnum.Int64? quantity,
-    $core.String? tradeTime,
-    $core.String? tickTime,
-    $core.String? groupId,
   }) {
     final _result = create();
     if (orderId != null) {
@@ -585,15 +579,6 @@ class WSOrder extends $pb.GeneratedMessage {
     }
     if (quantity != null) {
       _result.quantity = quantity;
-    }
-    if (tradeTime != null) {
-      _result.tradeTime = tradeTime;
-    }
-    if (tickTime != null) {
-      _result.tickTime = tickTime;
-    }
-    if (groupId != null) {
-      _result.groupId = groupId;
     }
     return _result;
   }
@@ -671,33 +656,6 @@ class WSOrder extends $pb.GeneratedMessage {
   $core.bool hasQuantity() => $_has(5);
   @$pb.TagNumber(6)
   void clearQuantity() => clearField(6);
-
-  @$pb.TagNumber(7)
-  $core.String get tradeTime => $_getSZ(6);
-  @$pb.TagNumber(7)
-  set tradeTime($core.String v) { $_setString(6, v); }
-  @$pb.TagNumber(7)
-  $core.bool hasTradeTime() => $_has(6);
-  @$pb.TagNumber(7)
-  void clearTradeTime() => clearField(7);
-
-  @$pb.TagNumber(8)
-  $core.String get tickTime => $_getSZ(7);
-  @$pb.TagNumber(8)
-  set tickTime($core.String v) { $_setString(7, v); }
-  @$pb.TagNumber(8)
-  $core.bool hasTickTime() => $_has(7);
-  @$pb.TagNumber(8)
-  void clearTickTime() => clearField(8);
-
-  @$pb.TagNumber(9)
-  $core.String get groupId => $_getSZ(8);
-  @$pb.TagNumber(9)
-  set groupId($core.String v) { $_setString(8, v); }
-  @$pb.TagNumber(9)
-  $core.bool hasGroupId() => $_has(8);
-  @$pb.TagNumber(9)
-  void clearGroupId() => clearField(9);
 }
 
 class WSFutureTick extends $pb.GeneratedMessage {
@@ -987,19 +945,19 @@ class WSFutureTick extends $pb.GeneratedMessage {
 
 class WSTradeIndex extends $pb.GeneratedMessage {
   static final $pb.BuilderInfo _i = $pb.BuilderInfo(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'WSTradeIndex', package: const $pb.PackageName(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'sinopac_forwarder'), createEmptyInstance: create)
-    ..aOM<WSStockSnapShot>(1, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'tse', subBuilder: WSStockSnapShot.create)
-    ..aOM<WSStockSnapShot>(2, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'otc', subBuilder: WSStockSnapShot.create)
-    ..aOM<WSYahooPrice>(3, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'nasdaq', subBuilder: WSYahooPrice.create)
-    ..aOM<WSYahooPrice>(4, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'nf', subBuilder: WSYahooPrice.create)
+    ..aOM<WSIndexStatus>(1, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'tse', subBuilder: WSIndexStatus.create)
+    ..aOM<WSIndexStatus>(2, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'otc', subBuilder: WSIndexStatus.create)
+    ..aOM<WSIndexStatus>(3, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'nasdaq', subBuilder: WSIndexStatus.create)
+    ..aOM<WSIndexStatus>(4, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'nf', subBuilder: WSIndexStatus.create)
     ..hasRequiredFields = false
   ;
 
   WSTradeIndex._() : super();
   factory WSTradeIndex({
-    WSStockSnapShot? tse,
-    WSStockSnapShot? otc,
-    WSYahooPrice? nasdaq,
-    WSYahooPrice? nf,
+    WSIndexStatus? tse,
+    WSIndexStatus? otc,
+    WSIndexStatus? nasdaq,
+    WSIndexStatus? nf,
   }) {
     final _result = create();
     if (tse != null) {
@@ -1038,394 +996,109 @@ class WSTradeIndex extends $pb.GeneratedMessage {
   static WSTradeIndex? _defaultInstance;
 
   @$pb.TagNumber(1)
-  WSStockSnapShot get tse => $_getN(0);
+  WSIndexStatus get tse => $_getN(0);
   @$pb.TagNumber(1)
-  set tse(WSStockSnapShot v) { setField(1, v); }
+  set tse(WSIndexStatus v) { setField(1, v); }
   @$pb.TagNumber(1)
   $core.bool hasTse() => $_has(0);
   @$pb.TagNumber(1)
   void clearTse() => clearField(1);
   @$pb.TagNumber(1)
-  WSStockSnapShot ensureTse() => $_ensure(0);
+  WSIndexStatus ensureTse() => $_ensure(0);
 
   @$pb.TagNumber(2)
-  WSStockSnapShot get otc => $_getN(1);
+  WSIndexStatus get otc => $_getN(1);
   @$pb.TagNumber(2)
-  set otc(WSStockSnapShot v) { setField(2, v); }
+  set otc(WSIndexStatus v) { setField(2, v); }
   @$pb.TagNumber(2)
   $core.bool hasOtc() => $_has(1);
   @$pb.TagNumber(2)
   void clearOtc() => clearField(2);
   @$pb.TagNumber(2)
-  WSStockSnapShot ensureOtc() => $_ensure(1);
+  WSIndexStatus ensureOtc() => $_ensure(1);
 
   @$pb.TagNumber(3)
-  WSYahooPrice get nasdaq => $_getN(2);
+  WSIndexStatus get nasdaq => $_getN(2);
   @$pb.TagNumber(3)
-  set nasdaq(WSYahooPrice v) { setField(3, v); }
+  set nasdaq(WSIndexStatus v) { setField(3, v); }
   @$pb.TagNumber(3)
   $core.bool hasNasdaq() => $_has(2);
   @$pb.TagNumber(3)
   void clearNasdaq() => clearField(3);
   @$pb.TagNumber(3)
-  WSYahooPrice ensureNasdaq() => $_ensure(2);
+  WSIndexStatus ensureNasdaq() => $_ensure(2);
 
   @$pb.TagNumber(4)
-  WSYahooPrice get nf => $_getN(3);
+  WSIndexStatus get nf => $_getN(3);
   @$pb.TagNumber(4)
-  set nf(WSYahooPrice v) { setField(4, v); }
+  set nf(WSIndexStatus v) { setField(4, v); }
   @$pb.TagNumber(4)
   $core.bool hasNf() => $_has(3);
   @$pb.TagNumber(4)
   void clearNf() => clearField(4);
   @$pb.TagNumber(4)
-  WSYahooPrice ensureNf() => $_ensure(3);
+  WSIndexStatus ensureNf() => $_ensure(3);
 }
 
-class WSStockSnapShot extends $pb.GeneratedMessage {
-  static final $pb.BuilderInfo _i = $pb.BuilderInfo(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'WSStockSnapShot', package: const $pb.PackageName(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'sinopac_forwarder'), createEmptyInstance: create)
-    ..aOS(1, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'stockNum')
-    ..aOS(2, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'stockName')
-    ..aOS(3, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'snapTime')
-    ..a<$core.double>(4, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'open', $pb.PbFieldType.OD)
-    ..a<$core.double>(5, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'high', $pb.PbFieldType.OD)
-    ..a<$core.double>(6, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'low', $pb.PbFieldType.OD)
-    ..a<$core.double>(7, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'close', $pb.PbFieldType.OD)
-    ..aOS(8, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'tickType')
-    ..a<$core.double>(9, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'priceChg', $pb.PbFieldType.OD)
-    ..a<$core.double>(10, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'pctChg', $pb.PbFieldType.OD)
-    ..aOS(11, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'chgType')
-    ..aInt64(12, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'volume')
-    ..aInt64(13, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'volumeSum')
-    ..aInt64(14, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'amount')
-    ..aInt64(15, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'amountSum')
-    ..a<$core.double>(16, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'yesterdayVolume', $pb.PbFieldType.OD)
-    ..a<$core.double>(17, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'volumeRatio', $pb.PbFieldType.OD)
+class WSIndexStatus extends $pb.GeneratedMessage {
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'WSIndexStatus', package: const $pb.PackageName(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'sinopac_forwarder'), createEmptyInstance: create)
+    ..aInt64(1, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'breakCount')
+    ..a<$core.double>(2, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'priceChg', $pb.PbFieldType.OD)
     ..hasRequiredFields = false
   ;
 
-  WSStockSnapShot._() : super();
-  factory WSStockSnapShot({
-    $core.String? stockNum,
-    $core.String? stockName,
-    $core.String? snapTime,
-    $core.double? open,
-    $core.double? high,
-    $core.double? low,
-    $core.double? close,
-    $core.String? tickType,
+  WSIndexStatus._() : super();
+  factory WSIndexStatus({
+    $fixnum.Int64? breakCount,
     $core.double? priceChg,
-    $core.double? pctChg,
-    $core.String? chgType,
-    $fixnum.Int64? volume,
-    $fixnum.Int64? volumeSum,
-    $fixnum.Int64? amount,
-    $fixnum.Int64? amountSum,
-    $core.double? yesterdayVolume,
-    $core.double? volumeRatio,
   }) {
     final _result = create();
-    if (stockNum != null) {
-      _result.stockNum = stockNum;
-    }
-    if (stockName != null) {
-      _result.stockName = stockName;
-    }
-    if (snapTime != null) {
-      _result.snapTime = snapTime;
-    }
-    if (open != null) {
-      _result.open = open;
-    }
-    if (high != null) {
-      _result.high = high;
-    }
-    if (low != null) {
-      _result.low = low;
-    }
-    if (close != null) {
-      _result.close = close;
-    }
-    if (tickType != null) {
-      _result.tickType = tickType;
+    if (breakCount != null) {
+      _result.breakCount = breakCount;
     }
     if (priceChg != null) {
       _result.priceChg = priceChg;
     }
-    if (pctChg != null) {
-      _result.pctChg = pctChg;
-    }
-    if (chgType != null) {
-      _result.chgType = chgType;
-    }
-    if (volume != null) {
-      _result.volume = volume;
-    }
-    if (volumeSum != null) {
-      _result.volumeSum = volumeSum;
-    }
-    if (amount != null) {
-      _result.amount = amount;
-    }
-    if (amountSum != null) {
-      _result.amountSum = amountSum;
-    }
-    if (yesterdayVolume != null) {
-      _result.yesterdayVolume = yesterdayVolume;
-    }
-    if (volumeRatio != null) {
-      _result.volumeRatio = volumeRatio;
-    }
     return _result;
   }
-  factory WSStockSnapShot.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
-  factory WSStockSnapShot.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
+  factory WSIndexStatus.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
+  factory WSIndexStatus.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
   @$core.Deprecated(
   'Using this can add significant overhead to your binary. '
   'Use [GeneratedMessageGenericExtensions.deepCopy] instead. '
   'Will be removed in next major version')
-  WSStockSnapShot clone() => WSStockSnapShot()..mergeFromMessage(this);
+  WSIndexStatus clone() => WSIndexStatus()..mergeFromMessage(this);
   @$core.Deprecated(
   'Using this can add significant overhead to your binary. '
   'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
   'Will be removed in next major version')
-  WSStockSnapShot copyWith(void Function(WSStockSnapShot) updates) => super.copyWith((message) => updates(message as WSStockSnapShot)) as WSStockSnapShot; // ignore: deprecated_member_use
+  WSIndexStatus copyWith(void Function(WSIndexStatus) updates) => super.copyWith((message) => updates(message as WSIndexStatus)) as WSIndexStatus; // ignore: deprecated_member_use
   $pb.BuilderInfo get info_ => _i;
   @$core.pragma('dart2js:noInline')
-  static WSStockSnapShot create() => WSStockSnapShot._();
-  WSStockSnapShot createEmptyInstance() => create();
-  static $pb.PbList<WSStockSnapShot> createRepeated() => $pb.PbList<WSStockSnapShot>();
+  static WSIndexStatus create() => WSIndexStatus._();
+  WSIndexStatus createEmptyInstance() => create();
+  static $pb.PbList<WSIndexStatus> createRepeated() => $pb.PbList<WSIndexStatus>();
   @$core.pragma('dart2js:noInline')
-  static WSStockSnapShot getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<WSStockSnapShot>(create);
-  static WSStockSnapShot? _defaultInstance;
+  static WSIndexStatus getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<WSIndexStatus>(create);
+  static WSIndexStatus? _defaultInstance;
 
   @$pb.TagNumber(1)
-  $core.String get stockNum => $_getSZ(0);
+  $fixnum.Int64 get breakCount => $_getI64(0);
   @$pb.TagNumber(1)
-  set stockNum($core.String v) { $_setString(0, v); }
+  set breakCount($fixnum.Int64 v) { $_setInt64(0, v); }
   @$pb.TagNumber(1)
-  $core.bool hasStockNum() => $_has(0);
+  $core.bool hasBreakCount() => $_has(0);
   @$pb.TagNumber(1)
-  void clearStockNum() => clearField(1);
+  void clearBreakCount() => clearField(1);
 
   @$pb.TagNumber(2)
-  $core.String get stockName => $_getSZ(1);
+  $core.double get priceChg => $_getN(1);
   @$pb.TagNumber(2)
-  set stockName($core.String v) { $_setString(1, v); }
+  set priceChg($core.double v) { $_setDouble(1, v); }
   @$pb.TagNumber(2)
-  $core.bool hasStockName() => $_has(1);
+  $core.bool hasPriceChg() => $_has(1);
   @$pb.TagNumber(2)
-  void clearStockName() => clearField(2);
-
-  @$pb.TagNumber(3)
-  $core.String get snapTime => $_getSZ(2);
-  @$pb.TagNumber(3)
-  set snapTime($core.String v) { $_setString(2, v); }
-  @$pb.TagNumber(3)
-  $core.bool hasSnapTime() => $_has(2);
-  @$pb.TagNumber(3)
-  void clearSnapTime() => clearField(3);
-
-  @$pb.TagNumber(4)
-  $core.double get open => $_getN(3);
-  @$pb.TagNumber(4)
-  set open($core.double v) { $_setDouble(3, v); }
-  @$pb.TagNumber(4)
-  $core.bool hasOpen() => $_has(3);
-  @$pb.TagNumber(4)
-  void clearOpen() => clearField(4);
-
-  @$pb.TagNumber(5)
-  $core.double get high => $_getN(4);
-  @$pb.TagNumber(5)
-  set high($core.double v) { $_setDouble(4, v); }
-  @$pb.TagNumber(5)
-  $core.bool hasHigh() => $_has(4);
-  @$pb.TagNumber(5)
-  void clearHigh() => clearField(5);
-
-  @$pb.TagNumber(6)
-  $core.double get low => $_getN(5);
-  @$pb.TagNumber(6)
-  set low($core.double v) { $_setDouble(5, v); }
-  @$pb.TagNumber(6)
-  $core.bool hasLow() => $_has(5);
-  @$pb.TagNumber(6)
-  void clearLow() => clearField(6);
-
-  @$pb.TagNumber(7)
-  $core.double get close => $_getN(6);
-  @$pb.TagNumber(7)
-  set close($core.double v) { $_setDouble(6, v); }
-  @$pb.TagNumber(7)
-  $core.bool hasClose() => $_has(6);
-  @$pb.TagNumber(7)
-  void clearClose() => clearField(7);
-
-  @$pb.TagNumber(8)
-  $core.String get tickType => $_getSZ(7);
-  @$pb.TagNumber(8)
-  set tickType($core.String v) { $_setString(7, v); }
-  @$pb.TagNumber(8)
-  $core.bool hasTickType() => $_has(7);
-  @$pb.TagNumber(8)
-  void clearTickType() => clearField(8);
-
-  @$pb.TagNumber(9)
-  $core.double get priceChg => $_getN(8);
-  @$pb.TagNumber(9)
-  set priceChg($core.double v) { $_setDouble(8, v); }
-  @$pb.TagNumber(9)
-  $core.bool hasPriceChg() => $_has(8);
-  @$pb.TagNumber(9)
-  void clearPriceChg() => clearField(9);
-
-  @$pb.TagNumber(10)
-  $core.double get pctChg => $_getN(9);
-  @$pb.TagNumber(10)
-  set pctChg($core.double v) { $_setDouble(9, v); }
-  @$pb.TagNumber(10)
-  $core.bool hasPctChg() => $_has(9);
-  @$pb.TagNumber(10)
-  void clearPctChg() => clearField(10);
-
-  @$pb.TagNumber(11)
-  $core.String get chgType => $_getSZ(10);
-  @$pb.TagNumber(11)
-  set chgType($core.String v) { $_setString(10, v); }
-  @$pb.TagNumber(11)
-  $core.bool hasChgType() => $_has(10);
-  @$pb.TagNumber(11)
-  void clearChgType() => clearField(11);
-
-  @$pb.TagNumber(12)
-  $fixnum.Int64 get volume => $_getI64(11);
-  @$pb.TagNumber(12)
-  set volume($fixnum.Int64 v) { $_setInt64(11, v); }
-  @$pb.TagNumber(12)
-  $core.bool hasVolume() => $_has(11);
-  @$pb.TagNumber(12)
-  void clearVolume() => clearField(12);
-
-  @$pb.TagNumber(13)
-  $fixnum.Int64 get volumeSum => $_getI64(12);
-  @$pb.TagNumber(13)
-  set volumeSum($fixnum.Int64 v) { $_setInt64(12, v); }
-  @$pb.TagNumber(13)
-  $core.bool hasVolumeSum() => $_has(12);
-  @$pb.TagNumber(13)
-  void clearVolumeSum() => clearField(13);
-
-  @$pb.TagNumber(14)
-  $fixnum.Int64 get amount => $_getI64(13);
-  @$pb.TagNumber(14)
-  set amount($fixnum.Int64 v) { $_setInt64(13, v); }
-  @$pb.TagNumber(14)
-  $core.bool hasAmount() => $_has(13);
-  @$pb.TagNumber(14)
-  void clearAmount() => clearField(14);
-
-  @$pb.TagNumber(15)
-  $fixnum.Int64 get amountSum => $_getI64(14);
-  @$pb.TagNumber(15)
-  set amountSum($fixnum.Int64 v) { $_setInt64(14, v); }
-  @$pb.TagNumber(15)
-  $core.bool hasAmountSum() => $_has(14);
-  @$pb.TagNumber(15)
-  void clearAmountSum() => clearField(15);
-
-  @$pb.TagNumber(16)
-  $core.double get yesterdayVolume => $_getN(15);
-  @$pb.TagNumber(16)
-  set yesterdayVolume($core.double v) { $_setDouble(15, v); }
-  @$pb.TagNumber(16)
-  $core.bool hasYesterdayVolume() => $_has(15);
-  @$pb.TagNumber(16)
-  void clearYesterdayVolume() => clearField(16);
-
-  @$pb.TagNumber(17)
-  $core.double get volumeRatio => $_getN(16);
-  @$pb.TagNumber(17)
-  set volumeRatio($core.double v) { $_setDouble(16, v); }
-  @$pb.TagNumber(17)
-  $core.bool hasVolumeRatio() => $_has(16);
-  @$pb.TagNumber(17)
-  void clearVolumeRatio() => clearField(17);
-}
-
-class WSYahooPrice extends $pb.GeneratedMessage {
-  static final $pb.BuilderInfo _i = $pb.BuilderInfo(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'WSYahooPrice', package: const $pb.PackageName(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'sinopac_forwarder'), createEmptyInstance: create)
-    ..a<$core.double>(1, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'last', $pb.PbFieldType.OD)
-    ..a<$core.double>(2, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'price', $pb.PbFieldType.OD)
-    ..aOS(3, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'updatedAt')
-    ..hasRequiredFields = false
-  ;
-
-  WSYahooPrice._() : super();
-  factory WSYahooPrice({
-    $core.double? last,
-    $core.double? price,
-    $core.String? updatedAt,
-  }) {
-    final _result = create();
-    if (last != null) {
-      _result.last = last;
-    }
-    if (price != null) {
-      _result.price = price;
-    }
-    if (updatedAt != null) {
-      _result.updatedAt = updatedAt;
-    }
-    return _result;
-  }
-  factory WSYahooPrice.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
-  factory WSYahooPrice.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
-  @$core.Deprecated(
-  'Using this can add significant overhead to your binary. '
-  'Use [GeneratedMessageGenericExtensions.deepCopy] instead. '
-  'Will be removed in next major version')
-  WSYahooPrice clone() => WSYahooPrice()..mergeFromMessage(this);
-  @$core.Deprecated(
-  'Using this can add significant overhead to your binary. '
-  'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
-  'Will be removed in next major version')
-  WSYahooPrice copyWith(void Function(WSYahooPrice) updates) => super.copyWith((message) => updates(message as WSYahooPrice)) as WSYahooPrice; // ignore: deprecated_member_use
-  $pb.BuilderInfo get info_ => _i;
-  @$core.pragma('dart2js:noInline')
-  static WSYahooPrice create() => WSYahooPrice._();
-  WSYahooPrice createEmptyInstance() => create();
-  static $pb.PbList<WSYahooPrice> createRepeated() => $pb.PbList<WSYahooPrice>();
-  @$core.pragma('dart2js:noInline')
-  static WSYahooPrice getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<WSYahooPrice>(create);
-  static WSYahooPrice? _defaultInstance;
-
-  @$pb.TagNumber(1)
-  $core.double get last => $_getN(0);
-  @$pb.TagNumber(1)
-  set last($core.double v) { $_setDouble(0, v); }
-  @$pb.TagNumber(1)
-  $core.bool hasLast() => $_has(0);
-  @$pb.TagNumber(1)
-  void clearLast() => clearField(1);
-
-  @$pb.TagNumber(2)
-  $core.double get price => $_getN(1);
-  @$pb.TagNumber(2)
-  set price($core.double v) { $_setDouble(1, v); }
-  @$pb.TagNumber(2)
-  $core.bool hasPrice() => $_has(1);
-  @$pb.TagNumber(2)
-  void clearPrice() => clearField(2);
-
-  @$pb.TagNumber(3)
-  $core.String get updatedAt => $_getSZ(2);
-  @$pb.TagNumber(3)
-  set updatedAt($core.String v) { $_setString(2, v); }
-  @$pb.TagNumber(3)
-  $core.bool hasUpdatedAt() => $_has(2);
-  @$pb.TagNumber(3)
-  void clearUpdatedAt() => clearField(3);
+  void clearPriceChg() => clearField(2);
 }
 
 class WSFuturePosition extends $pb.GeneratedMessage {

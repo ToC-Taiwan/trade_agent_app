@@ -1,5 +1,5 @@
 import 'package:floor/floor.dart';
-import 'package:trade_agent_v2/models/base.dart';
+import 'package:trade_agent_v2/entity/base.dart';
 
 @Entity(tableName: 'pick_stock')
 class PickStock extends BaseObject {
@@ -22,13 +22,13 @@ class PickStock extends BaseObject {
   final String stockName;
 
   @ColumnInfo(name: 'price')
-  final num price;
+  final double price;
 
   @ColumnInfo(name: 'price_change_rate')
-  final num priceChangeRate;
+  final double priceChangeRate;
 
   @ColumnInfo(name: 'price_change')
-  final num priceChange;
+  final double priceChange;
 
   @ColumnInfo(name: 'is_target')
   final int isTarget;

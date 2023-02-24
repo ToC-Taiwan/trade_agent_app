@@ -2,16 +2,16 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:trade_agent_v2/basic/base.dart';
+import 'package:trade_agent_v2/constant/constant.dart';
 import 'package:trade_agent_v2/database.dart';
+import 'package:trade_agent_v2/entity/entity.dart';
 import 'package:trade_agent_v2/generated/l10n.dart';
 import 'package:trade_agent_v2/layout/kbar.dart';
-import 'package:trade_agent_v2/models/model.dart';
 import 'package:trade_agent_v2/utils/app_bar.dart';
 import 'package:web_socket_channel/io.dart';
 
 class PickStockPage extends StatefulWidget {
-  const PickStockPage({Key? key, required this.db}) : super(key: key);
+  const PickStockPage({required this.db, Key? key}) : super(key: key);
   final AppDatabase db;
 
   @override
@@ -27,9 +27,9 @@ class _PickStockPageState extends State<PickStockPage> {
 
   @override
   void initState() {
-    super.initState();
     stockArray = widget.db.pickStockDao.getAllPickStock();
     initialWS();
+    super.initState();
   }
 
   @override
@@ -40,40 +40,40 @@ class _PickStockPageState extends State<PickStockPage> {
   }
 
   void initialWS() {
-    _channel = IOWebSocketChannel.connect(Uri.parse(tradeAgentWSURLPrefix));
+    _channel = IOWebSocketChannel.connect(Uri.parse(tradeAgentWSURLPrefix), pingInterval: const Duration(seconds: 1));
     _channel!.stream.listen(
       (message) {
-        if (message == 'pong') {
+        if (!mounted) {
           return;
         }
 
-        for (final Map<String, dynamic> i in jsonDecode(message)) {
+        for (final i in jsonDecode(message as String) as List<dynamic>) {
           for (final j in stockList) {
-            if (i['stock_num'] == j.stockNum) {
+            if ((i as Map<String, dynamic>)['stock_num'] == j.stockNum) {
               if (i['price_change'] is int) {
-                var tmp = i['price_change'] as int;
+                final tmp = i['price_change'] as int;
                 i['price_change'] = tmp.toDouble();
               }
               if (i['price_change_rate'] is int) {
-                var tmp = i['price_change_rate'] as int;
+                final tmp = i['price_change_rate'] as int;
                 i['price_change_rate'] = tmp.toDouble();
               }
               if (i['price'] is int) {
-                var tmp = i['price'] as int;
+                final tmp = i['price'] as int;
                 i['price'] = tmp.toDouble();
               }
-              var tmp = PickStock(
-                i['stock_num'],
-                i['stock_name'],
+              final tmp = PickStock(
+                i['stock_num'] as String,
+                i['stock_name'] as String,
                 0,
-                i['price_change'],
-                i['price_change_rate'],
-                i['price'],
+                i['price_change'] as double,
+                i['price_change_rate'] as double,
+                i['price'] as double,
                 id: j.id,
                 createTime: j.createTime,
                 updateTime: j.updateTime,
               );
-              if (i['wrong']) {
+              if (i['wrong'] as bool) {
                 widget.db.pickStockDao.deletePickStock(tmp);
                 showDialog(
                   context: context,
@@ -104,27 +104,19 @@ class _PickStockPageState extends State<PickStockPage> {
       },
       onDone: () {
         if (mounted) {
-          initialWS();
+          Future.delayed(const Duration(milliseconds: 1000)).then((value) {
+            _channel!.sink.close();
+            initialWS();
+          });
         }
       },
+      onError: (error) {},
     );
-    checkConnection(_channel!);
-  }
-
-  void checkConnection(IOWebSocketChannel channel) {
-    var period = const Duration(seconds: 1);
-    Timer.periodic(period, (timer) {
-      try {
-        channel.sink.add('ping');
-      } catch (e) {
-        timer.cancel();
-      }
-    });
   }
 
   @override
   Widget build(BuildContext context) {
-    var actions = [
+    final actions = [
       IconButton(
         icon: const Icon(Icons.delete_forever),
         onPressed: () {
@@ -149,9 +141,11 @@ class _PickStockPageState extends State<PickStockPage> {
                   onPressed: () {
                     widget.db.pickStockDao.deleteAllPickStock();
                     stockList = [];
-                    _channel!.sink.add(jsonEncode({
-                      'pick_stock_list': [],
-                    }));
+                    _channel!.sink.add(
+                      jsonEncode({
+                        'pick_stock_list': [],
+                      }),
+                    );
                     setState(() {
                       stockArray = widget.db.pickStockDao.getAllPickStock();
                     });
@@ -170,77 +164,75 @@ class _PickStockPageState extends State<PickStockPage> {
           onPressed: () {
             showDialog(
               context: context,
-              builder: (context) {
-                return AlertDialog(
-                  title: Text(S.of(context).type_stock_number),
-                  content: TextField(
-                    // onChanged: (value) {},
-                    controller: textFieldController,
-                    decoration: InputDecoration(
-                      hintText: '${S.of(context).stock_number}(0050, 00878...)',
-                    ),
-                    keyboardType: TextInputType.number,
-                    autofocus: true,
+              builder: (context) => AlertDialog(
+                title: Text(S.of(context).type_stock_number),
+                content: TextField(
+                  // onChanged: (value) {},
+                  controller: textFieldController,
+                  decoration: InputDecoration(
+                    hintText: '${S.of(context).stock_number}(0050, 00878...)',
                   ),
-                  actions: <Widget>[
-                    ElevatedButton(
-                      child: Text(
-                        S.of(context).cancel,
-                        style: const TextStyle(color: Colors.black),
-                      ),
-                      onPressed: () {
-                        textFieldController.clear();
-                        Navigator.pop(context);
-                      },
+                  keyboardType: TextInputType.number,
+                  autofocus: true,
+                ),
+                actions: <Widget>[
+                  ElevatedButton(
+                    child: Text(
+                      S.of(context).cancel,
+                      style: const TextStyle(color: Colors.black),
                     ),
-                    ElevatedButton(
-                      onPressed: () {
-                        if (textFieldController.text.isEmpty) {
-                          showDialog(
-                            context: context,
-                            builder: (context) => AlertDialog(
-                              title: Text(S.of(context).warning),
-                              content: Text(S.of(context).input_must_not_empty),
-                              actions: [
-                                ElevatedButton(
-                                  child: Text(
-                                    S.of(context).ok,
-                                    style: const TextStyle(color: Colors.black),
-                                  ),
-                                  onPressed: () => Navigator.pop(context),
+                    onPressed: () {
+                      textFieldController.clear();
+                      Navigator.pop(context);
+                    },
+                  ),
+                  ElevatedButton(
+                    onPressed: () {
+                      if (textFieldController.text.isEmpty) {
+                        showDialog(
+                          context: context,
+                          builder: (context) => AlertDialog(
+                            title: Text(S.of(context).warning),
+                            content: Text(S.of(context).input_must_not_empty),
+                            actions: [
+                              ElevatedButton(
+                                child: Text(
+                                  S.of(context).ok,
+                                  style: const TextStyle(color: Colors.black),
                                 ),
-                              ],
-                            ),
-                          );
-                          return;
-                        }
-                        var t = PickStock(
-                          textFieldController.text,
-                          textFieldController.text,
-                          1,
-                          0,
-                          0,
-                          0,
+                                onPressed: () => Navigator.pop(context),
+                              ),
+                            ],
+                          ),
                         );
-                        var exist =
-                            stockList.firstWhere((element) => element.stockNum == textFieldController.text, orElse: () => PickStock('', '', 0, 0, 0, 0));
-                        if (exist.stockNum == '') {
-                          widget.db.pickStockDao.insertPickStock(t);
-                          setState(() {
-                            stockArray = widget.db.pickStockDao.getAllPickStock();
-                          });
-                        }
-                        textFieldController.clear();
-                        Navigator.pop(context);
-                      },
-                      child: Text(
-                        S.of(context).add,
-                        style: const TextStyle(color: Colors.black),
-                      ),
+                        return;
+                      }
+                      final t = PickStock(
+                        textFieldController.text,
+                        textFieldController.text,
+                        1,
+                        0,
+                        0,
+                        0,
+                      );
+                      final exist =
+                          stockList.firstWhere((element) => element.stockNum == textFieldController.text, orElse: () => PickStock('', '', 0, 0, 0, 0));
+                      if (exist.stockNum == '') {
+                        widget.db.pickStockDao.insertPickStock(t);
+                        setState(() {
+                          stockArray = widget.db.pickStockDao.getAllPickStock();
+                        });
+                      }
+                      textFieldController.clear();
+                      Navigator.pop(context);
+                    },
+                    child: Text(
+                      S.of(context).add,
+                      style: const TextStyle(color: Colors.black),
                     ),
-                  ],
-                );
-              },
+                  ),
+                ],
+              ),
             );
           },
         ),
@@ -259,9 +251,11 @@ class _PickStockPageState extends State<PickStockPage> {
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             if (snapshot.data!.isEmpty) {
-              _channel!.sink.add(jsonEncode({
-                'pick_stock_list': [],
-              }));
+              _channel!.sink.add(
+                jsonEncode({
+                  'pick_stock_list': [],
+                }),
+              );
               return Center(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -281,15 +275,17 @@ class _PickStockPageState extends State<PickStockPage> {
                 ),
               );
             } else {
-              var numList = <String>[];
+              final numList = <String>[];
               stockList = [];
               for (final s in snapshot.data!) {
                 stockList.add(s);
                 numList.add(s.stockNum);
               }
-              _channel!.sink.add(jsonEncode({
-                'pick_stock_list': numList,
-              }));
+              _channel!.sink.add(
+                jsonEncode({
+                  'pick_stock_list': numList,
+                }),
+              );
             }
             return ListView.separated(
               separatorBuilder: (context, index) => const Divider(
@@ -363,36 +359,34 @@ class _PickStockPageState extends State<PickStockPage> {
                   onLongPress: () {
                     showDialog(
                       context: context,
-                      builder: (context) {
-                        return AlertDialog(
-                          title: Text(S.of(context).delete),
-                          content: Text(S.of(context).delete_pick_stock_confirm),
-                          actions: <Widget>[
-                            ElevatedButton(
-                              child: Text(
-                                S.of(context).cancel,
-                                style: const TextStyle(color: Colors.black),
-                              ),
-                              onPressed: () {
-                                Navigator.pop(context);
-                              },
+                      builder: (context) => AlertDialog(
+                        title: Text(S.of(context).delete),
+                        content: Text(S.of(context).delete_pick_stock_confirm),
+                        actions: <Widget>[
+                          ElevatedButton(
+                            child: Text(
+                              S.of(context).cancel,
+                              style: const TextStyle(color: Colors.black),
                             ),
-                            ElevatedButton(
-                              child: Text(
-                                S.of(context).ok,
-                                style: const TextStyle(color: Colors.black),
-                              ),
-                              onPressed: () {
-                                setState(() {
-                                  widget.db.pickStockDao.deletePickStock(snapshot.data![index]);
-                                  stockArray = widget.db.pickStockDao.getAllPickStock();
-                                });
-                                Navigator.pop(context);
-                              },
+                            onPressed: () {
+                              Navigator.pop(context);
+                            },
+                          ),
+                          ElevatedButton(
+                            child: Text(
+                              S.of(context).ok,
+                              style: const TextStyle(color: Colors.black),
                             ),
-                          ],
-                        );
-                      },
+                            onPressed: () {
+                              setState(() {
+                                widget.db.pickStockDao.deletePickStock(snapshot.data![index]);
+                                stockArray = widget.db.pickStockDao.getAllPickStock();
+                              });
+                              Navigator.pop(context);
+                            },
+                          ),
+                        ],
+                      ),
                     );
                   },
                 );
@@ -400,9 +394,10 @@ class _PickStockPageState extends State<PickStockPage> {
             );
           }
           return const Center(
-              child: CircularProgressIndicator(
-            color: Colors.black,
-          ));
+            child: CircularProgressIndicator(
+              color: Colors.black,
+            ),
+          );
         },
       ),
     );

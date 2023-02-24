@@ -4,14 +4,15 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:http/http.dart' as http;
-import 'package:trade_agent_v2/basic/base.dart';
+import 'package:trade_agent_v2/constant/constant.dart';
 import 'package:trade_agent_v2/database.dart';
+import 'package:trade_agent_v2/entity/entity.dart';
 import 'package:trade_agent_v2/generated/l10n.dart';
 import 'package:trade_agent_v2/layout/orders.dart';
 import 'package:trade_agent_v2/utils/app_bar.dart';
 
 class BalancePage extends StatefulWidget {
-  const BalancePage({Key? key, required this.db}) : super(key: key);
+  const BalancePage({required this.db, Key? key}) : super(key: key);
   final AppDatabase db;
 
   @override
@@ -33,9 +34,11 @@ class _BalancePageState extends State<BalancePage> {
   void initState() {
     super.initState();
     futureBalance = fetchBalance();
-    widget.db.basicDao.getBasicByKey('remove_ad_status').then((value) => {
-          if (value != null) {alreadyRemovedAd = value.value == 'true'}
-        });
+    widget.db.basicDao.getBasicByKey('remove_ad_status').then(
+          (value) => {
+            if (value != null) {alreadyRemovedAd = value.value == 'true'}
+          },
+        );
   }
 
   @override
@@ -45,7 +48,7 @@ class _BalancePageState extends State<BalancePage> {
     _loadAd();
   }
 
-  void _loadAd() async {
+  Future<void> _loadAd() async {
     await _inlineAdaptiveAd?.dispose();
     setState(() {
       _inlineAdaptiveAd = null;
@@ -53,7 +56,7 @@ class _BalancePageState extends State<BalancePage> {
     });
 
     // Get an inline adaptive size for the current orientation.
-    AdSize size = AdSize.getInlineAdaptiveBannerAdSize(_adWidth.truncate(), 60);
+    final AdSize size = AdSize.getInlineAdaptiveBannerAdSize(_adWidth.truncate(), 60);
     _inlineAdaptiveAd = BannerAd(
       adUnitId: bannerAdUnitID,
       size: size,
@@ -63,7 +66,7 @@ class _BalancePageState extends State<BalancePage> {
           // After the ad is loaded, get the platform ad size and use it to
           // update the height of the container. This is necessary because the
           // height can change after the ad is loaded.
-          var bannerAd = ad as BannerAd;
+          final bannerAd = ad as BannerAd;
           final size = await bannerAd.getPlatformAdSize();
           if (size == null) {
             return;
@@ -86,29 +89,27 @@ class _BalancePageState extends State<BalancePage> {
   /// Gets a widget containing the ad, if one is loaded.
   /// Returns an empty container if no ad is loaded, or the orientation
   /// has changed. Also loads a new ad if the orientation changes.
-  Widget _getAdWidget() {
-    return OrientationBuilder(
-      builder: (context, orientation) {
-        if (_currentOrientation == orientation && _inlineAdaptiveAd != null && _isLoaded && _adSize != null) {
-          return Align(
-            child: SizedBox(
-              width: _adWidth,
-              height: _adSize!.height.toDouble(),
-              child: AdWidget(
-                ad: _inlineAdaptiveAd!,
+  Widget _getAdWidget() => OrientationBuilder(
+        builder: (context, orientation) {
+          if (_currentOrientation == orientation && _inlineAdaptiveAd != null && _isLoaded && _adSize != null) {
+            return Align(
+              child: SizedBox(
+                width: _adWidth,
+                height: _adSize!.height.toDouble(),
+                child: AdWidget(
+                  ad: _inlineAdaptiveAd!,
+                ),
               ),
-            ),
-          );
-        }
-        // Reload the ad if the orientation changes.
-        if (_currentOrientation != orientation) {
-          _currentOrientation = orientation;
-          _loadAd();
-        }
-        return Container();
-      },
-    );
-  }
+            );
+          }
+          // Reload the ad if the orientation changes.
+          if (_currentOrientation != orientation) {
+            _currentOrientation = orientation;
+            _loadAd();
+          }
+          return Container();
+        },
+      );
 
   @override
   void dispose() {
@@ -140,80 +141,78 @@ class _BalancePageState extends State<BalancePage> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      // backgroundColor: Colors.white,
-      appBar: trAppbar(
-        context,
-        S.of(context).balance,
-        widget.db,
-      ),
-      body: FutureBuilder<Balance>(
-        future: futureBalance,
-        builder: (context, snapshot) {
-          if (snapshot.hasData) {
-            if (snapshot.data!.future == null && snapshot.data!.stock == null) {
-              return Center(
-                child: Text(
-                  S.of(context).no_data,
-                  style: const TextStyle(
-                    fontSize: 30,
+  Widget build(BuildContext context) => Scaffold(
+        // backgroundColor: Colors.white,
+        appBar: trAppbar(
+          context,
+          S.of(context).balance,
+          widget.db,
+        ),
+        body: FutureBuilder<Balance>(
+          future: futureBalance,
+          builder: (context, snapshot) {
+            if (snapshot.hasData) {
+              if (snapshot.data!.future == null && snapshot.data!.stock == null) {
+                return Center(
+                  child: Text(
+                    S.of(context).no_data,
+                    style: const TextStyle(
+                      fontSize: 30,
+                    ),
                   ),
-                ),
-              );
-            }
-            var data = snapshot.data!;
-            num total = 0;
-            num lastTotal = 0;
-            var stockArr = <BalanceDetail>[];
-            var futureArr = <BalanceDetail>[];
-            if (data.future != null) {
-              data.future!.asMap().forEach((i, value) {
-                total += value.total!;
-                if (i == data.future!.length - 1) {
-                  lastTotal += value.total!;
-                }
-              });
-              futureArr = data.future!.reversed.toList();
-            }
-            if (data.stock != null) {
-              data.stock!.asMap().forEach((i, value) {
-                total += value.total!;
-                if (i == data.stock!.length - 1) {
-                  lastTotal += value.total!;
-                }
-              });
-              stockArr = data.stock!.reversed.toList();
-            }
+                );
+              }
+              final data = snapshot.data!;
+              num total = 0;
+              num lastTotal = 0;
+              var stockArr = <BalanceDetail>[];
+              var futureArr = <BalanceDetail>[];
+              if (data.future != null) {
+                data.future!.asMap().forEach((i, value) {
+                  total += value.total!;
+                  if (i == data.future!.length - 1) {
+                    lastTotal += value.total!;
+                  }
+                });
+                futureArr = data.future!.reversed.toList();
+              }
+              if (data.stock != null) {
+                data.stock!.asMap().forEach((i, value) {
+                  total += value.total!;
+                  if (i == data.stock!.length - 1) {
+                    lastTotal += value.total!;
+                  }
+                });
+                stockArr = data.stock!.reversed.toList();
+              }
 
-            return Column(
-              children: [
-                Expanded(
-                  flex: 23,
-                  child: DefaultTabController(
-                    length: 2,
-                    child: Scaffold(
-                      appBar: AppBar(
-                        elevation: 5,
-                        flexibleSpace: TabBar(
-                          labelStyle: const TextStyle(fontSize: 18),
-                          padding: const EdgeInsets.only(top: 5),
-                          tabs: [
-                            Tab(text: S.of(context).future),
-                            Tab(text: S.of(context).stock),
-                          ],
+              return Column(
+                children: [
+                  Expanded(
+                    flex: 23,
+                    child: DefaultTabController(
+                      length: 2,
+                      child: Scaffold(
+                        appBar: AppBar(
+                          elevation: 5,
+                          flexibleSpace: TabBar(
+                            labelStyle: const TextStyle(fontSize: 18),
+                            padding: const EdgeInsets.only(top: 5),
+                            tabs: [
+                              Tab(text: S.of(context).future),
+                              Tab(text: S.of(context).stock),
+                            ],
+                          ),
                         ),
-                      ),
-                      body: TabBarView(
-                        children: [
-                          ListView.separated(
-                            separatorBuilder: (context, index) => const Divider(
-                              height: 0,
-                              color: Colors.grey,
-                            ),
-                            itemCount: futureArr.length,
-                            itemBuilder: (context, index) {
-                              return ListTile(
+                        body: TabBarView(
+                          children: [
+                            ListView.separated(
+                              separatorBuilder: (context, index) => const Divider(
+                                height: 0,
+                                color: Colors.grey,
+                              ),
+                              itemCount: futureArr.length,
+                              itemBuilder: (context, index) => ListTile(
                                 onTap: () {
                                   Navigator.push(
                                     context,
@@ -234,17 +233,15 @@ class _BalancePageState extends State<BalancePage> {
                                     color: _balanceColors(futureArr[index].total!),
                                   ),
                                 ),
-                              );
-                            },
-                          ),
-                          ListView.separated(
-                            separatorBuilder: (context, index) => const Divider(
-                              height: 0,
-                              color: Colors.grey,
+                              ),
                             ),
-                            itemCount: stockArr.length,
-                            itemBuilder: (context, index) {
-                              return ListTile(
+                            ListView.separated(
+                              separatorBuilder: (context, index) => const Divider(
+                                height: 0,
+                                color: Colors.grey,
+                              ),
+                              itemCount: stockArr.length,
+                              itemBuilder: (context, index) => ListTile(
                                 leading: Icon(Icons.account_balance_wallet, color: _balanceColors(stockArr[index].total!)),
                                 title: Text(stockArr[index].tradeDay!.substring(0, 10)),
                                 subtitle: Text('${S.of(context).trade_count}: ${stockArr[index].tradeCount}'),
@@ -255,106 +252,101 @@ class _BalancePageState extends State<BalancePage> {
                                     color: _balanceColors(stockArr[index].total!),
                                   ),
                                 ),
-                              );
-                            },
-                          ),
-                        ],
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   ),
-                ),
-                Expanded(
-                  flex: 4,
-                  child: _buildAd(),
-                ),
-                Expanded(
-                  flex: 3,
-                  child: Row(
-                    children: [
-                      Expanded(
-                        flex: 4,
-                        child: ListTile(
-                          title: Text(
-                            S.of(context).latest,
-                            style: const TextStyle(fontWeight: FontWeight.bold),
-                          ),
-                          subtitle: SizedBox(
-                            child: Text(
-                              commaNumber(lastTotal.toString()),
-                              style: TextStyle(fontSize: 22, color: _balanceColors(lastTotal)),
-                            ),
-                          ),
-                        ),
-                      ),
-                      Expanded(
-                        flex: 4,
-                        child: ListTile(
-                          title: Text(
-                            S.of(context).total,
-                            style: const TextStyle(fontWeight: FontWeight.bold),
-                          ),
-                          subtitle: SizedBox(
-                            child: Text(
-                              commaNumber(total.toString()),
-                              style: TextStyle(fontSize: 22, color: _balanceColors(total)),
-                            ),
-                          ),
-                        ),
-                      ),
-                      Expanded(
-                        flex: 2,
-                        child: Padding(
-                          padding: const EdgeInsets.only(right: 26),
-                          child: IconButton(
-                            padding: EdgeInsets.zero,
-                            onPressed: () {
-                              setState(() {
-                                futureBalance = fetchBalance();
-                              });
-                            },
-                            icon: const Icon(
-                              Icons.refresh,
-                              size: 28,
-                            ),
-                            color: Colors.blue,
-                          ),
-                        ),
-                      ),
-                    ],
+                  Expanded(
+                    flex: 4,
+                    child: _buildAd(),
                   ),
-                )
-              ],
-            );
-          }
-          return const Center(
+                  Expanded(
+                    flex: 3,
+                    child: Row(
+                      children: [
+                        Expanded(
+                          flex: 4,
+                          child: ListTile(
+                            title: Text(
+                              S.of(context).latest,
+                              style: const TextStyle(fontWeight: FontWeight.bold),
+                            ),
+                            subtitle: SizedBox(
+                              child: Text(
+                                commaNumber(lastTotal.toString()),
+                                style: TextStyle(fontSize: 22, color: _balanceColors(lastTotal)),
+                              ),
+                            ),
+                          ),
+                        ),
+                        Expanded(
+                          flex: 4,
+                          child: ListTile(
+                            title: Text(
+                              S.of(context).total,
+                              style: const TextStyle(fontWeight: FontWeight.bold),
+                            ),
+                            subtitle: SizedBox(
+                              child: Text(
+                                commaNumber(total.toString()),
+                                style: TextStyle(fontSize: 22, color: _balanceColors(total)),
+                              ),
+                            ),
+                          ),
+                        ),
+                        Expanded(
+                          flex: 2,
+                          child: Padding(
+                            padding: const EdgeInsets.only(right: 26),
+                            child: IconButton(
+                              padding: EdgeInsets.zero,
+                              onPressed: () {
+                                setState(() {
+                                  futureBalance = fetchBalance();
+                                });
+                              },
+                              icon: const Icon(
+                                Icons.refresh,
+                                size: 28,
+                              ),
+                              color: Colors.blue,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  )
+                ],
+              );
+            }
+            return const Center(
               child: CircularProgressIndicator(
-            color: Colors.black,
-          ));
-        },
-      ),
-    );
-  }
+                color: Colors.black,
+              ),
+            );
+          },
+        ),
+      );
 }
 
-String commaNumber(String n) {
-  return n.replaceAllMapped(reg, mathFunc);
-}
+String commaNumber(String n) => n.replaceAllMapped(reg, mathFunc);
 
 RegExp reg = RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))');
-String mathFunc(Match match) {
-  return '${match[1]},';
-}
+String mathFunc(Match match) => '${match[1]},';
 
 Future<Balance> fetchBalance() async {
   // var balance = Balance;
   try {
     final response = await http.get(Uri.parse('$tradeAgentURLPrefix/order/balance'));
     if (response.statusCode == 200) {
-      return Balance.fromJson(jsonDecode(response.body));
+      return Balance.fromJson(jsonDecode(response.body) as Map<String, dynamic>);
     } else {
       return Balance();
     }
-  } catch (e) {
+  } on Exception {
     return Balance();
   }
 }
@@ -371,16 +363,18 @@ Widget generateBalanceRow(BalanceDetail balance) {
     child: Row(
       children: [
         Expanded(
-            flex: 4,
-            child: Text(
-              balance.tradeDay!.substring(0, 10),
-              style: const TextStyle(fontWeight: FontWeight.bold),
-            )),
+          flex: 4,
+          child: Text(
+            balance.tradeDay!.substring(0, 10),
+            style: const TextStyle(fontWeight: FontWeight.bold),
+          ),
+        ),
         Expanded(
-            flex: 2,
-            child: Text(
-              balance.tradeCount!.toString(),
-            )),
+          flex: 2,
+          child: Text(
+            balance.tradeCount!.toString(),
+          ),
+        ),
         Expanded(
           flex: 3,
           child: Text(
@@ -394,110 +388,13 @@ Widget generateBalanceRow(BalanceDetail balance) {
           ),
         ),
         Expanded(
-            flex: 3,
-            child: Text(
-              balance.total!.toString(),
-              style: TextStyle(color: tmp),
-            )),
+          flex: 3,
+          child: Text(
+            balance.total!.toString(),
+            style: TextStyle(color: tmp),
+          ),
+        ),
       ],
     ),
   );
-}
-
-// class Balance {
-//   Balance({this.tradeDay, this.tradeCount, this.forward, this.originalBalance, this.discount, this.total});
-
-//   Balance.fromJson(Map<String, dynamic> json) {
-//     tradeDay = json['trade_day'];
-//     tradeCount = json['trade_count'];
-//     forward = json['forward'];
-//     originalBalance = json['original_balance'];
-//     discount = json['discount'];
-//     total = json['total'];
-//   }
-
-//   Map<String, dynamic> toJson() {
-//     var data = <String, dynamic>{};
-//     data['trade_day'] = tradeDay;
-//     data['trade_count'] = tradeCount;
-//     data['forward'] = forward;
-//     data['original_balance'] = originalBalance;
-//     data['discount'] = discount;
-//     data['total'] = total;
-//     return data;
-//   }
-
-//   String? tradeDay;
-//   num? tradeCount;
-//   num? forward;
-//   num? originalBalance;
-//   num? discount;
-//   num? total;
-// }
-
-class Balance {
-  Balance({this.stock, this.future});
-  Balance.fromJson(Map<String, dynamic> json) {
-    if (json['stock'] != null) {
-      stock = <BalanceDetail>[];
-      json['stock'].forEach((v) {
-        stock!.add(BalanceDetail.fromJson(v));
-      });
-    }
-    if (json['future'] != null) {
-      future = <BalanceDetail>[];
-      json['future'].forEach((v) {
-        future!.add(BalanceDetail.fromJson(v));
-      });
-    }
-  }
-
-  List<BalanceDetail>? stock;
-  List<BalanceDetail>? future;
-
-  Map<String, dynamic> toJson() {
-    final data = <String, dynamic>{};
-    if (stock != null) {
-      data['stock'] = stock!.map((v) => v.toJson()).toList();
-    }
-    if (future != null) {
-      data['future'] = future!.map((v) => v.toJson()).toList();
-    }
-    return data;
-  }
-}
-
-class BalanceDetail {
-  BalanceDetail({this.id, this.tradeCount, this.forward, this.reverse, this.originalBalance, this.discount, this.total, this.tradeDay});
-  BalanceDetail.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
-    tradeCount = json['trade_count'];
-    forward = json['forward'];
-    reverse = json['reverse'];
-    originalBalance = json['original_balance'];
-    discount = json['discount'];
-    total = json['total'];
-    tradeDay = json['trade_day'];
-  }
-  num? id;
-  num? tradeCount;
-  num? forward;
-  num? reverse;
-  num? originalBalance;
-  num? discount;
-  num? total;
-  String? tradeDay;
-
-  Map<String, dynamic> toJson() {
-    final data = <String, dynamic>{};
-    data['id'] = id;
-    data['trade_count'] = tradeCount;
-    data['forward'] = forward;
-    data['reverse'] = reverse;
-    data['original_balance'] = originalBalance;
-    data['discount'] = discount;
-    data['total'] = total;
-    data['trade_day'] = tradeDay;
-    return data;
-  }
 }

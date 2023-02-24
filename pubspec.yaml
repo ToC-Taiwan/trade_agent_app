@@ -5,49 +5,49 @@ publish_to: "none"
 version: 4.2.0+38038
 
 environment:
-  sdk: ">=2.18.4 <3.0.0"
+  sdk: ">=2.18.5 <3.0.0"
 
 dependencies:
-  flutter:
-    sdk: flutter
-  cupertino_icons: ^1.0.4
-  google_mobile_ads: ^2.2.0
-  flutter_staggered_grid_view: ^0.6.1
-  url_launcher: ^6.1.0
   auto_size_text: ^3.0.0
-  curved_navigation_bar: ^1.0.3
-  http: ^0.13.4
-  floor: ^1.2.0
-  firebase_core: ^2.2.0
-  table_calendar: ^3.0.5
   candlesticks:
     git:
-      url: https://github.com/Chindada/candlesticks.git
       ref: master
-  in_app_purchase: ^3.0.2
-  web_socket_channel: ^2.2.0
-  sqflite: ^2.2.0+3
-  in_app_purchase_storekit: ^0.3.3
-  flutter_localizations: # Add this line
-    sdk: flutter
-  intl: ^0.17.0
-  yaml: ^3.1.1
+      url: https://github.com/Chindada/candlesticks.git
+  curved_navigation_bar: ^1.0.3
   date_format: ^2.0.7
-  percent_indicator: ^4.2.2
-  google_fonts: ^3.0.1
   elegant_notification: ^1.6.4
-  wakelock: ^0.6.2
+  firebase_core: ^2.2.0
+  floor: ^1.2.0
+  flutter:
+    sdk: flutter
+  flutter_localizations:
+    sdk: flutter
+  flutter_staggered_grid_view: ^0.6.1
+  google_fonts: ^4.0.3
+  google_mobile_ads: ^2.2.0
+  http: ^0.13.4
+  in_app_purchase: ^3.0.2
+  in_app_purchase_storekit: ^0.3.3
+  intl: ^0.17.0
   numberpicker: ^2.1.1
+  percent_indicator: ^4.2.2
   protobuf: ^2.1.0
+  sqflite: ^2.2.0+3
   syncfusion_flutter_charts: ^20.3.59
+  table_calendar: ^3.0.5
+  url_launcher: ^6.1.0
+  wakelock: ^0.6.2
+  web_socket_channel: ^2.2.0
+  yaml: ^3.1.1
 
 dev_dependencies:
-  flutter_test:
-    sdk: flutter
-  flutter_lints: ^2.0.1
-  flutter_launcher_icons: ^0.10.0
+  analysis_options: any
   build_runner: ^2.1.10
   floor_generator: ^1.2.0
+  flutter_launcher_icons: ^0.11.0
+  flutter_lints: ^2.0.1
+  flutter_test:
+    sdk: flutter
 
 flutter_icons:
   android: true

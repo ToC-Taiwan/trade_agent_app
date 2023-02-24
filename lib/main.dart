@@ -7,15 +7,19 @@ import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:trade_agent_v2/database.dart';
+import 'package:trade_agent_v2/entity/entity.dart';
 import 'package:trade_agent_v2/firebase_options.dart';
 import 'package:trade_agent_v2/generated/l10n.dart';
 import 'package:trade_agent_v2/intro.dart';
-import 'package:trade_agent_v2/models/model.dart';
 import 'package:yaml/yaml.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+
+  await SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp,
+    DeviceOrientation.portraitDown,
+  ]);
 
   // firebase
   await Firebase.initializeApp(
@@ -34,30 +38,30 @@ void main() async {
 
   final data = await rootBundle.loadString('pubspec.yaml');
   final mapData = loadYaml(data);
-  var latestVersion = mapData['version'];
+  final latestVersion = (mapData as YamlMap)['version'];
 
   // initital floor
   // final db = await $FloorAppDatabase.databaseBuilder('app_database_tr.db').addMigrations([migration1to2]).build();
   final db = await $FloorAppDatabase.databaseBuilder('app_database_tr.db').build();
-  var version = await db.basicDao.getBasicByKey('version');
+  final version = await db.basicDao.getBasicByKey('version');
   if (version == null) {
-    await db.basicDao.insertBasic(Basic('version', latestVersion));
+    await db.basicDao.insertBasic(Basic('version', latestVersion as String));
   } else {
-    version.value = latestVersion;
+    version.value = latestVersion as String;
     await db.basicDao.updateBasic(version);
   }
 
-  var balanceHigh = await db.basicDao.getBasicByKey('balance_high');
+  final balanceHigh = await db.basicDao.getBasicByKey('balance_high');
   if (balanceHigh == null) {
     await db.basicDao.insertBasic(Basic('balance_high', '1'));
   }
 
-  var balanceLow = await db.basicDao.getBasicByKey('balance_low');
+  final balanceLow = await db.basicDao.getBasicByKey('balance_low');
   if (balanceLow == null) {
     await db.basicDao.insertBasic(Basic('balance_low', '-1'));
   }
 
-  var timePeriod = await db.basicDao.getBasicByKey('time_period');
+  final timePeriod = await db.basicDao.getBasicByKey('time_period');
   if (timePeriod == null) {
     await db.basicDao.insertBasic(Basic('time_period', '5'));
   }
@@ -66,7 +70,7 @@ void main() async {
   if (dbLanguageSetup == null) {
     final defaultLocale = Platform.localeName;
     Basic tmp;
-    var splitLocale = defaultLocale.split('_');
+    final splitLocale = defaultLocale.split('_');
     if (splitLocale[0] == 'zh' && splitLocale[1] == 'Hant') {
       tmp = Basic('language_setup', 'zh_Hant');
     } else if (splitLocale[0] == 'zh' && splitLocale[1] == 'Hans') {
@@ -87,7 +91,7 @@ void main() async {
 }
 
 class MyApp extends StatefulWidget {
-  const MyApp(this.languageSetup, {Key? key, required this.db}) : super(key: key);
+  const MyApp(this.languageSetup, {required this.db, Key? key}) : super(key: key);
   final AppDatabase db;
 
   final String languageSetup;
@@ -104,7 +108,7 @@ class _MyAppState extends State<MyApp> {
 
   @override
   void initState() {
-    var splitLanguage = widget.languageSetup.split('_');
+    final splitLanguage = widget.languageSetup.split('_');
     if (splitLanguage[0].isNotEmpty) {
       language = splitLanguage[0];
     } else {
@@ -134,46 +138,44 @@ class _MyAppState extends State<MyApp> {
   }
 
   void hideKeyboard(BuildContext context) {
-    var currentFocus = FocusScope.of(context);
+    final currentFocus = FocusScope.of(context);
     if (!currentFocus.hasPrimaryFocus && currentFocus.focusedChild != null) {
       FocusManager.instance.primaryFocus?.unfocus();
     }
   }
 
   @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      theme: ThemeData(
-        primarySwatch: createMaterialColor(const Color.fromARGB(255, 255, 255, 255)),
-      ),
-      home: IntroPage(
-        db: widget.db,
-      ),
-      debugShowCheckedModeBanner: false,
-      localizationsDelegates: const [
-        S.delegate,
-        GlobalMaterialLocalizations.delegate,
-        GlobalWidgetsLocalizations.delegate,
-        GlobalCupertinoLocalizations.delegate,
-      ],
-      locale: locale,
-      supportedLocales: S.delegate.supportedLocales,
-      builder: (context, child) => Scaffold(
-        // Global GestureDetector that will dismiss the keyboard
-        body: GestureDetector(
-          onTap: () {
-            hideKeyboard(context);
-          },
-          child: child,
+  Widget build(BuildContext context) => MaterialApp(
+        theme: ThemeData(
+          primarySwatch: createMaterialColor(const Color.fromARGB(255, 255, 255, 255)),
         ),
-      ),
-    );
-  }
+        home: IntroPage(
+          db: widget.db,
+        ),
+        debugShowCheckedModeBanner: false,
+        localizationsDelegates: const [
+          S.delegate,
+          GlobalMaterialLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate,
+          GlobalCupertinoLocalizations.delegate,
+        ],
+        locale: locale,
+        supportedLocales: S.delegate.supportedLocales,
+        builder: (context, child) => Scaffold(
+          // Global GestureDetector that will dismiss the keyboard
+          body: GestureDetector(
+            onTap: () {
+              hideKeyboard(context);
+            },
+            child: child,
+          ),
+        ),
+      );
 }
 
 MaterialColor createMaterialColor(Color color) {
-  List strengths = <double>[.05];
-  var swatch = <int, Color>{};
+  final List strengths = <double>[.05];
+  final swatch = <int, Color>{};
 
   final r = color.red;
   final g = color.green;
@@ -183,7 +185,7 @@ MaterialColor createMaterialColor(Color color) {
     strengths.add(0.1 * i);
   }
   for (final strength in strengths) {
-    final ds = 0.5 - strength;
+    final ds = 0.5 - (strength as num);
     swatch[((strength as double) * 1000).round()] = Color.fromRGBO(
       r + ((ds < 0 ? r : (255 - r)) * ds).round(),
       g + ((ds < 0 ? g : (255 - g)) * ds).round(),

@@ -3,11 +3,12 @@ import 'dart:convert';
 import 'package:candlesticks/candlesticks.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:trade_agent_v2/basic/base.dart';
+import 'package:trade_agent_v2/constant/constant.dart';
+import 'package:trade_agent_v2/entity/entity.dart';
 import 'package:trade_agent_v2/generated/l10n.dart';
 
 class Kbar extends StatefulWidget {
-  const Kbar({Key? key, required this.stockNum, required this.stockName}) : super(key: key);
+  const Kbar({required this.stockNum, required this.stockName, Key? key}) : super(key: key);
 
   final String stockNum;
   final String stockName;
@@ -33,33 +34,39 @@ class _KbarState extends State<Kbar> {
   }
 
   Future<List<Candle>> fetchCandles(String stockNum, String startDate, String interval) async {
-    var candleArr = <Candle>[];
+    final candleArr = <Candle>[];
     try {
       final response = await http.get(Uri.parse('$tradeAgentURLPrefix/history/day-kbar/$stockNum/$startDate/$interval'));
       if (response.statusCode == 200) {
-        for (final Map<String, dynamic> i in jsonDecode(response.body)) {
-          var tmp = KbarData.fromJson(i);
-          var time = DateTime.parse(tmp.kbarTime!);
-          candleArr.add(Candle(
+        for (final i in jsonDecode(response.body) as List<dynamic>? ?? <dynamic>[]) {
+          final tmp = KbarData.fromJson(i as Map<String, dynamic>);
+          final time = DateTime.parse(tmp.kbarTime!);
+          candleArr.add(
+            Candle(
               date: time.add(const Duration(hours: 8)),
               high: tmp.high!.toDouble(),
               low: tmp.low!.toDouble(),
               open: tmp.open!.toDouble(),
               close: tmp.close!.toDouble(),
-              volume: tmp.volume!.toDouble()));
+              volume: tmp.volume!.toDouble(),
+            ),
+          );
+        }
+        if (candleArr.isEmpty) {
+          return candleArr;
         }
         startTime = candleArr[candleArr.length - 1].date.add(const Duration(days: -1)).toString().substring(0, 10);
         return candleArr;
       } else {
         return candleArr;
       }
-    } catch (e) {
+    } on Exception {
       return candleArr;
     }
   }
 
   Future<void> addCandles(String stockNum, String startDate, String interval) async {
-    var newData = await fetchCandles(widget.stockNum, startTime, '30');
+    final newData = await fetchCandles(widget.stockNum, startTime, '30');
     if (mounted) {
       setState(() {
         candles += newData;
@@ -137,7 +144,7 @@ class _KbarState extends State<Kbar> {
           child: Candlesticks(
             candles: candles,
             onLoadMoreCandles: () async {
-              var newData = await fetchCandles(widget.stockNum, startTime, '30');
+              final newData = await fetchCandles(widget.stockNum, startTime, '30');
               if (mounted) {
                 setState(() {
                   candles += newData;
@@ -148,7 +155,7 @@ class _KbarState extends State<Kbar> {
               ToolBarAction(
                 child: const Icon(Icons.refresh),
                 onPressed: () async {
-                  var newData = await fetchCandles(widget.stockNum, startTime, '30');
+                  final newData = await fetchCandles(widget.stockNum, startTime, '30');
                   if (mounted) {
                     setState(() {
                       candles += newData;
@@ -162,35 +169,4 @@ class _KbarState extends State<Kbar> {
       ),
     );
   }
-}
-
-class KbarData {
-  KbarData({this.kbarTime, this.close, this.open, this.high, this.low, this.volume});
-
-  KbarData.fromJson(Map<String, dynamic> json) {
-    kbarTime = json['kbar_time'];
-    close = json['close'];
-    open = json['open'];
-    high = json['high'];
-    low = json['low'];
-    volume = json['volume'];
-  }
-
-  Map<String, dynamic> toJson() {
-    final data = <String, dynamic>{};
-    data['kbar_time'] = kbarTime;
-    data['close'] = close;
-    data['open'] = open;
-    data['high'] = high;
-    data['low'] = low;
-    data['volume'] = volume;
-    return data;
-  }
-
-  String? kbarTime;
-  num? close;
-  num? open;
-  num? high;
-  num? low;
-  int? volume;
 }

@@ -5,14 +5,14 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:table_calendar/table_calendar.dart';
-import 'package:trade_agent_v2/basic/base.dart';
+import 'package:trade_agent_v2/constant/constant.dart';
 import 'package:trade_agent_v2/database.dart';
+import 'package:trade_agent_v2/entity/entity.dart';
 import 'package:trade_agent_v2/generated/l10n.dart';
-import 'package:trade_agent_v2/models/model.dart';
 import 'package:trade_agent_v2/utils/app_bar.dart';
 
 class StrategyPage extends StatefulWidget {
-  const StrategyPage({Key? key, required this.db}) : super(key: key);
+  const StrategyPage({required this.db, Key? key}) : super(key: key);
   final AppDatabase db;
 
   @override
@@ -55,7 +55,7 @@ class _StrategyPage extends State<StrategyPage> {
   }
 
   Future<Map<String, bool>> getAllPickStock() async {
-    var result = <String, bool>{};
+    final result = <String, bool>{};
     final stocks = await widget.db.pickStockDao.getAllPickStock();
     for (final stock in stocks) {
       result[stock.stockNum] = true;
@@ -63,10 +63,10 @@ class _StrategyPage extends State<StrategyPage> {
     return result;
   }
 
-  List<Event> _getEventsForDay(DateTime day) {
-    // Implementation example
-    return kEvents[day] ?? [];
-  }
+  List<Event> _getEventsForDay(DateTime day)
+      // Implementation example
+      =>
+      kEvents[day] ?? [];
 
   List<Event> _getEventsForRange(DateTime start, DateTime end) {
     // Implementation example
@@ -111,106 +111,102 @@ class _StrategyPage extends State<StrategyPage> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: trAppbar(
-        context,
-        S.of(context).strategy,
-        widget.db,
-      ),
-      body: Column(
-        children: [
-          FutureBuilder<List<Strategy>>(
-            future: futureStrategy,
-            builder: (context, snapshot) {
-              if (snapshot.hasData) {
-                var tmp = snapshot.data!;
-                var result = <DateTime, List<Event>>{};
-                for (final i in tmp) {
-                  result[DateTime.parse(i.date!)] = [];
-                  for (final s in i.stocks!) {
-                    result[DateTime.parse(i.date!)]!.add(Event(s.number!, s.name!));
-                  }
-                }
-                kEvents = LinkedHashMap<DateTime, List<Event>>(
-                  equals: isSameDay,
-                  hashCode: getHashCode,
-                )..addAll(result);
-                return TableCalendar(
-                  firstDay: kFirstDay,
-                  lastDay: kLastDay,
-                  focusedDay: _focusedDay,
-                  selectedDayPredicate: (day) {
-                    return isSameDay(_selectedDay, day);
-                  },
-                  rangeStartDay: _rangeStart,
-                  rangeEndDay: _rangeEnd,
-                  calendarFormat: _calendarFormat,
-                  rangeSelectionMode: _rangeSelectionMode,
-                  eventLoader: _getEventsForDay,
-                  startingDayOfWeek: StartingDayOfWeek.monday,
-                  calendarStyle: const CalendarStyle(
-                    outsideDaysVisible: false,
-                    markerDecoration: BoxDecoration(
-                      color: Colors.orange,
-                      shape: BoxShape.circle,
-                    ),
-                  ),
-                  onDaySelected: _onDaySelected,
-                  onRangeSelected: _onRangeSelected,
-                  onFormatChanged: (format) {
-                    if (_calendarFormat != format) {
-                      setState(() {
-                        _calendarFormat = format;
-                      });
+  Widget build(BuildContext context) => Scaffold(
+        backgroundColor: Colors.white,
+        appBar: trAppbar(
+          context,
+          S.of(context).strategy,
+          widget.db,
+        ),
+        body: Column(
+          children: [
+            FutureBuilder<List<Strategy>>(
+              future: futureStrategy,
+              builder: (context, snapshot) {
+                if (snapshot.hasData) {
+                  final tmp = snapshot.data!;
+                  final result = <DateTime, List<Event>>{};
+                  for (final i in tmp) {
+                    result[DateTime.parse(i.date!)] = [];
+                    for (final s in i.stocks!) {
+                      result[DateTime.parse(i.date!)]!.add(Event(s.number!, s.name!));
                     }
-                  },
-                  onPageChanged: (focusedDay) {
-                    // No need to call `setState()` here
-                    _focusedDay = focusedDay;
-                  },
-                  // custom
-                  headerStyle: const HeaderStyle(
-                    leftChevronIcon: Icon(Icons.chevron_left, color: Colors.black),
-                    rightChevronIcon: Icon(Icons.chevron_right, color: Colors.black),
-                    formatButtonTextStyle: TextStyle(
-                      fontSize: 14,
+                  }
+                  kEvents = LinkedHashMap<DateTime, List<Event>>(
+                    equals: isSameDay,
+                    hashCode: getHashCode,
+                  )..addAll(result);
+                  return TableCalendar(
+                    firstDay: kFirstDay,
+                    lastDay: kLastDay,
+                    focusedDay: _focusedDay,
+                    selectedDayPredicate: (day) => isSameDay(_selectedDay, day),
+                    rangeStartDay: _rangeStart,
+                    rangeEndDay: _rangeEnd,
+                    calendarFormat: _calendarFormat,
+                    rangeSelectionMode: _rangeSelectionMode,
+                    eventLoader: _getEventsForDay,
+                    startingDayOfWeek: StartingDayOfWeek.monday,
+                    calendarStyle: const CalendarStyle(
+                      outsideDaysVisible: false,
+                      markerDecoration: BoxDecoration(
+                        color: Colors.orange,
+                        shape: BoxShape.circle,
+                      ),
+                    ),
+                    onDaySelected: _onDaySelected,
+                    onRangeSelected: _onRangeSelected,
+                    onFormatChanged: (format) {
+                      if (_calendarFormat != format) {
+                        setState(() {
+                          _calendarFormat = format;
+                        });
+                      }
+                    },
+                    onPageChanged: (focusedDay) {
+                      // No need to call `setState()` here
+                      _focusedDay = focusedDay;
+                    },
+                    // custom
+                    headerStyle: const HeaderStyle(
+                      leftChevronIcon: Icon(Icons.chevron_left, color: Colors.black),
+                      rightChevronIcon: Icon(Icons.chevron_right, color: Colors.black),
+                      formatButtonTextStyle: TextStyle(
+                        fontSize: 14,
+                        color: Colors.black,
+                      ),
+                    ),
+                    daysOfWeekHeight: 40,
+                  );
+                }
+                return const Padding(
+                  padding: EdgeInsets.all(80),
+                  child: Center(
+                    child: CircularProgressIndicator(
                       color: Colors.black,
                     ),
                   ),
-                  daysOfWeekHeight: 40,
                 );
-              }
-              return const Padding(
-                padding: EdgeInsets.all(80),
-                child: Center(
-                  child: CircularProgressIndicator(
-                    color: Colors.black,
-                  ),
-                ),
-              );
-            },
-          ),
-          const SizedBox(height: 8),
-          Expanded(
-            child: ValueListenableBuilder<List<Event>>(
-              valueListenable: _selectedEvents,
-              builder: (context, value, _) {
-                if (value.isEmpty) {
-                  return Center(
-                    child: Text(
-                      S.of(context).no_data,
-                      style: const TextStyle(
-                        fontSize: 20,
+              },
+            ),
+            const SizedBox(height: 8),
+            Expanded(
+              child: ValueListenableBuilder<List<Event>>(
+                valueListenable: _selectedEvents,
+                builder: (context, value, _) {
+                  if (value.isEmpty) {
+                    return Center(
+                      child: Text(
+                        S.of(context).no_data,
+                        style: const TextStyle(
+                          fontSize: 20,
+                        ),
                       ),
-                    ),
-                  );
-                }
-                return ListView.builder(
-                  itemCount: value.length,
-                  itemBuilder: (context, index) {
-                    return Container(
+                    );
+                  }
+                  return ListView.builder(
+                    itemCount: value.length,
+                    itemBuilder: (context, index) => Container(
                       margin: const EdgeInsets.symmetric(
                         horizontal: 12,
                         vertical: 4,
@@ -224,7 +220,7 @@ class _StrategyPage extends State<StrategyPage> {
                           if (eventCache[value[index].stockNum] != null) {
                             return;
                           }
-                          var t = PickStock(
+                          final t = PickStock(
                             value[index].stockNum,
                             value[index].stockNum,
                             1,
@@ -239,47 +235,37 @@ class _StrategyPage extends State<StrategyPage> {
                         },
                         title: Text('${value[index].stockNum} ${value[index].stockName}'),
                         trailing: FutureBuilder<Map<String, bool>>(
-                            future: alreadyPick,
-                            builder: (context, snapshot) {
-                              if (snapshot.hasData) {
-                                var tmp = snapshot.data!;
-                                eventCache = tmp;
-                                if (tmp[value[index].stockNum] != null) {
-                                  return const Icon(
-                                    Icons.check,
-                                    color: Colors.green,
-                                  );
-                                }
+                          future: alreadyPick,
+                          builder: (context, snapshot) {
+                            if (snapshot.hasData) {
+                              final tmp = snapshot.data!;
+                              eventCache = tmp;
+                              if (tmp[value[index].stockNum] != null) {
+                                return const Icon(
+                                  Icons.check,
+                                  color: Colors.green,
+                                );
                               }
-                              return const Icon(Icons.add, color: Colors.red);
-                            }),
+                            }
+                            return const Icon(Icons.add, color: Colors.red);
+                          },
+                        ),
                       ),
-                    );
-                  },
-                );
-              },
+                    ),
+                  );
+                },
+              ),
             ),
-          ),
-        ],
-      ),
-    );
-  }
+          ],
+        ),
+      );
 }
 
 final kToday = DateTime.now();
 final kFirstDay = DateTime(kToday.year, kToday.month - 3, kToday.day);
 final kLastDay = DateTime(kToday.year, kToday.month + 3, kToday.day);
 
-class Event {
-  Event(this.stockNum, this.stockName);
-
-  final String stockNum;
-  final String stockName;
-}
-
-int getHashCode(DateTime key) {
-  return key.day * 1000000 + key.month * 10000 + key.year;
-}
+int getHashCode(DateTime key) => key.day * 1000000 + key.month * 10000 + key.year;
 
 /// Returns a list of [DateTime] objects from [first] to [last], inclusive.
 List<DateTime> daysInRange(DateTime first, DateTime last) {
@@ -291,70 +277,66 @@ List<DateTime> daysInRange(DateTime first, DateTime last) {
 }
 
 List<Widget> generateStockRow(List<Stocks> arr, BuildContext context) {
-  var tmp = <Widget>[];
+  final tmp = <Widget>[];
   for (final i in arr) {
-    tmp.add(SizedBox(
-      // height: 15,
-      width: MediaQuery.of(context).size.width * 0.8,
-      child: Row(
-        children: [
-          Expanded(
-            child: Text(
-              i.number!,
+    tmp.add(
+      SizedBox(
+        // height: 15,
+        width: MediaQuery.of(context).size.width * 0.8,
+        child: Row(
+          children: [
+            Expanded(
+              child: Text(
+                i.number!,
+              ),
             ),
-          ),
-          Expanded(
-            child: Text(
-              i.name!,
+            Expanded(
+              child: Text(
+                i.name!,
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
-    ));
+    );
   }
   return tmp;
 }
 
-String commaNumber(String n) {
-  return n.replaceAllMapped(reg, mathFunc);
-}
+String commaNumber(String n) => n.replaceAllMapped(reg, mathFunc);
 
 RegExp reg = RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))');
-String mathFunc(Match match) {
-  return '${match[1]},';
-}
+String mathFunc(Match match) => '${match[1]},';
 
-Widget generateRow(String columnName, String value) {
-  return SizedBox(
-    height: 50,
-    child: Padding(
-      padding: const EdgeInsets.only(left: 20, top: 20),
-      child: Flex(
-        direction: Axis.horizontal,
-        children: [
-          Expanded(
-            flex: 3,
-            child: Text(
-              '$columnName: ',
-              style: const TextStyle(fontSize: 20),
-              textAlign: TextAlign.left,
+Widget generateRow(String columnName, String value) => SizedBox(
+      height: 50,
+      child: Padding(
+        padding: const EdgeInsets.only(left: 20, top: 20),
+        child: Flex(
+          direction: Axis.horizontal,
+          children: [
+            Expanded(
+              flex: 3,
+              child: Text(
+                '$columnName: ',
+                style: const TextStyle(fontSize: 20),
+                textAlign: TextAlign.left,
+              ),
             ),
-          ),
-          Expanded(
-            flex: 2,
-            child: Text(
-              value,
-              style: const TextStyle(fontSize: 20),
-              textAlign: TextAlign.left,
+            Expanded(
+              flex: 2,
+              child: Text(
+                value,
+                style: const TextStyle(fontSize: 20),
+                textAlign: TextAlign.left,
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
-    ),
-  );
-}
+    );
 
-void addTargets(String opt, BuildContext context) async {
+Future<void> addTargets(String opt, BuildContext context) async {
   final response = await http.post(
     Uri.parse('$tradeAgentURLPrefix/targets'),
     headers: <String, String>{
@@ -364,98 +346,37 @@ void addTargets(String opt, BuildContext context) async {
   );
   if (response.statusCode == 200) {
     num count;
-    count = (jsonDecode(response.body) as Map<String, dynamic>)['total_add'];
+    count = (jsonDecode(response.body) as Map<String, dynamic>)['total_add'] as num;
     await showDialog(
       context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: const Text('Result'),
-          content: Text('Success $count added'),
-        );
-      },
+      builder: (context) => AlertDialog(
+        title: const Text('Result'),
+        content: Text('Success $count added'),
+      ),
     );
   } else {
     await showDialog(
       context: context,
-      builder: (context) {
-        return const AlertDialog(
-          title: Text('Fail'),
-        );
-      },
+      builder: (context) => const AlertDialog(
+        title: Text('Fail'),
+      ),
     );
   }
 }
 
 Future<List<Strategy>> fetchStrategy() async {
-  var straregyArr = <Strategy>[];
+  final straregyArr = <Strategy>[];
   try {
     final response = await http.get(Uri.parse('$tradeAgentURLPrefix/analyze/reborn'));
     if (response.statusCode == 200) {
-      for (final Map<String, dynamic> i in jsonDecode(response.body)) {
-        straregyArr.add(Strategy.fromJson(i));
+      for (final i in jsonDecode(response.body) as List<dynamic>) {
+        straregyArr.add(Strategy.fromJson(i as Map<String, dynamic>));
       }
       return straregyArr;
     } else {
       return straregyArr;
     }
-  } catch (e) {
+  } on Exception {
     return straregyArr;
   }
-}
-
-class Strategy {
-  Strategy({this.date, this.stocks});
-
-  Strategy.fromJson(Map<String, dynamic> json) {
-    date = json['date'];
-    if (json['stocks'] != null) {
-      stocks = <Stocks>[];
-      for (final v in json['stocks'] as List) {
-        stocks!.add(Stocks.fromJson(v));
-      }
-    }
-  }
-
-  Map<String, dynamic> toJson() {
-    var data = <String, dynamic>{};
-    data['date'] = date;
-    if (stocks != null) {
-      data['stocks'] = stocks!.map((v) => v.toJson()).toList();
-    }
-    return data;
-  }
-
-  String? date;
-  List<Stocks>? stocks;
-}
-
-class Stocks {
-  Stocks({this.number, this.name, this.exchange, this.category, this.dayTrade, this.lastClose});
-
-  Stocks.fromJson(Map<String, dynamic> json) {
-    number = json['number'];
-    name = json['name'];
-    exchange = json['exchange'];
-    category = json['category'];
-    dayTrade = json['day_trade'];
-    lastClose = json['last_close'];
-  }
-
-  Map<String, dynamic> toJson() {
-    var data = <String, dynamic>{};
-    data['number'] = number;
-    data['name'] = name;
-    data['exchange'] = exchange;
-    data['category'] = category;
-    data['day_trade'] = dayTrade;
-    data['last_close'] = lastClose;
-    return data;
-  }
-
-  String? number;
-  String? name;
-  String? exchange;
-  String? category;
-  bool? dayTrade;
-  num? lastClose;
 }

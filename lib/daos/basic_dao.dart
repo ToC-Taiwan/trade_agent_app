@@ -1,5 +1,5 @@
 import 'package:floor/floor.dart';
-import 'package:trade_agent_v2/models/model.dart';
+import 'package:trade_agent_v2/entity/entity.dart';
 
 @dao
 abstract class BasickDao {

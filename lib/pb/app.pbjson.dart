@@ -99,14 +99,11 @@ const WSOrder$json = const {
     const {'1': 'action', '3': 4, '4': 1, '5': 3, '10': 'action'},
     const {'1': 'price', '3': 5, '4': 1, '5': 1, '10': 'price'},
     const {'1': 'quantity', '3': 6, '4': 1, '5': 3, '10': 'quantity'},
-    const {'1': 'trade_time', '3': 7, '4': 1, '5': 9, '10': 'tradeTime'},
-    const {'1': 'tick_time', '3': 8, '4': 1, '5': 9, '10': 'tickTime'},
-    const {'1': 'group_id', '3': 9, '4': 1, '5': 9, '10': 'groupId'},
   ],
 };
 
 /// Descriptor for `WSOrder`. Decode as a `google.protobuf.DescriptorProto`.
-final $typed_data.Uint8List wSOrderDescriptor = $convert.base64Decode('CgdXU09yZGVyEhkKCG9yZGVyX2lkGAEgASgJUgdvcmRlcklkEhYKBnN0YXR1cxgCIAEoA1IGc3RhdHVzEh0KCm9yZGVyX3RpbWUYAyABKAlSCW9yZGVyVGltZRIWCgZhY3Rpb24YBCABKANSBmFjdGlvbhIUCgVwcmljZRgFIAEoAVIFcHJpY2USGgoIcXVhbnRpdHkYBiABKANSCHF1YW50aXR5Eh0KCnRyYWRlX3RpbWUYByABKAlSCXRyYWRlVGltZRIbCgl0aWNrX3RpbWUYCCABKAlSCHRpY2tUaW1lEhkKCGdyb3VwX2lkGAkgASgJUgdncm91cElk');
+final $typed_data.Uint8List wSOrderDescriptor = $convert.base64Decode('CgdXU09yZGVyEhkKCG9yZGVyX2lkGAEgASgJUgdvcmRlcklkEhYKBnN0YXR1cxgCIAEoA1IGc3RhdHVzEh0KCm9yZGVyX3RpbWUYAyABKAlSCW9yZGVyVGltZRIWCgZhY3Rpb24YBCABKANSBmFjdGlvbhIUCgVwcmljZRgFIAEoAVIFcHJpY2USGgoIcXVhbnRpdHkYBiABKANSCHF1YW50aXR5');
 @$core.Deprecated('Use wSFutureTickDescriptor instead')
 const WSFutureTick$json = const {
   '1': 'WSFutureTick',
@@ -138,53 +135,26 @@ final $typed_data.Uint8List wSFutureTickDescriptor = $convert.base64Decode('CgxX
 const WSTradeIndex$json = const {
   '1': 'WSTradeIndex',
   '2': const [
-    const {'1': 'tse', '3': 1, '4': 1, '5': 11, '6': '.sinopac_forwarder.WSStockSnapShot', '10': 'tse'},
-    const {'1': 'otc', '3': 2, '4': 1, '5': 11, '6': '.sinopac_forwarder.WSStockSnapShot', '10': 'otc'},
-    const {'1': 'nasdaq', '3': 3, '4': 1, '5': 11, '6': '.sinopac_forwarder.WSYahooPrice', '10': 'nasdaq'},
-    const {'1': 'nf', '3': 4, '4': 1, '5': 11, '6': '.sinopac_forwarder.WSYahooPrice', '10': 'nf'},
+    const {'1': 'tse', '3': 1, '4': 1, '5': 11, '6': '.sinopac_forwarder.WSIndexStatus', '10': 'tse'},
+    const {'1': 'otc', '3': 2, '4': 1, '5': 11, '6': '.sinopac_forwarder.WSIndexStatus', '10': 'otc'},
+    const {'1': 'nasdaq', '3': 3, '4': 1, '5': 11, '6': '.sinopac_forwarder.WSIndexStatus', '10': 'nasdaq'},
+    const {'1': 'nf', '3': 4, '4': 1, '5': 11, '6': '.sinopac_forwarder.WSIndexStatus', '10': 'nf'},
   ],
 };
 
 /// Descriptor for `WSTradeIndex`. Decode as a `google.protobuf.DescriptorProto`.
-final $typed_data.Uint8List wSTradeIndexDescriptor = $convert.base64Decode('CgxXU1RyYWRlSW5kZXgSNAoDdHNlGAEgASgLMiIuc2lub3BhY19mb3J3YXJkZXIuV1NTdG9ja1NuYXBTaG90UgN0c2USNAoDb3RjGAIgASgLMiIuc2lub3BhY19mb3J3YXJkZXIuV1NTdG9ja1NuYXBTaG90UgNvdGMSNwoGbmFzZGFxGAMgASgLMh8uc2lub3BhY19mb3J3YXJkZXIuV1NZYWhvb1ByaWNlUgZuYXNkYXESLwoCbmYYBCABKAsyHy5zaW5vcGFjX2ZvcndhcmRlci5XU1lhaG9vUHJpY2VSAm5m');
-@$core.Deprecated('Use wSStockSnapShotDescriptor instead')
-const WSStockSnapShot$json = const {
-  '1': 'WSStockSnapShot',
+final $typed_data.Uint8List wSTradeIndexDescriptor = $convert.base64Decode('CgxXU1RyYWRlSW5kZXgSMgoDdHNlGAEgASgLMiAuc2lub3BhY19mb3J3YXJkZXIuV1NJbmRleFN0YXR1c1IDdHNlEjIKA290YxgCIAEoCzIgLnNpbm9wYWNfZm9yd2FyZGVyLldTSW5kZXhTdGF0dXNSA290YxI4CgZuYXNkYXEYAyABKAsyIC5zaW5vcGFjX2ZvcndhcmRlci5XU0luZGV4U3RhdHVzUgZuYXNkYXESMAoCbmYYBCABKAsyIC5zaW5vcGFjX2ZvcndhcmRlci5XU0luZGV4U3RhdHVzUgJuZg==');
+@$core.Deprecated('Use wSIndexStatusDescriptor instead')
+const WSIndexStatus$json = const {
+  '1': 'WSIndexStatus',
   '2': const [
-    const {'1': 'stock_num', '3': 1, '4': 1, '5': 9, '10': 'stockNum'},
-    const {'1': 'stock_name', '3': 2, '4': 1, '5': 9, '10': 'stockName'},
-    const {'1': 'snap_time', '3': 3, '4': 1, '5': 9, '10': 'snapTime'},
-    const {'1': 'open', '3': 4, '4': 1, '5': 1, '10': 'open'},
-    const {'1': 'high', '3': 5, '4': 1, '5': 1, '10': 'high'},
-    const {'1': 'low', '3': 6, '4': 1, '5': 1, '10': 'low'},
-    const {'1': 'close', '3': 7, '4': 1, '5': 1, '10': 'close'},
-    const {'1': 'tick_type', '3': 8, '4': 1, '5': 9, '10': 'tickType'},
-    const {'1': 'price_chg', '3': 9, '4': 1, '5': 1, '10': 'priceChg'},
-    const {'1': 'pct_chg', '3': 10, '4': 1, '5': 1, '10': 'pctChg'},
-    const {'1': 'chg_type', '3': 11, '4': 1, '5': 9, '10': 'chgType'},
-    const {'1': 'volume', '3': 12, '4': 1, '5': 3, '10': 'volume'},
-    const {'1': 'volume_sum', '3': 13, '4': 1, '5': 3, '10': 'volumeSum'},
-    const {'1': 'amount', '3': 14, '4': 1, '5': 3, '10': 'amount'},
-    const {'1': 'amount_sum', '3': 15, '4': 1, '5': 3, '10': 'amountSum'},
-    const {'1': 'yesterday_volume', '3': 16, '4': 1, '5': 1, '10': 'yesterdayVolume'},
-    const {'1': 'volume_ratio', '3': 17, '4': 1, '5': 1, '10': 'volumeRatio'},
+    const {'1': 'break_count', '3': 1, '4': 1, '5': 3, '10': 'breakCount'},
+    const {'1': 'price_chg', '3': 2, '4': 1, '5': 1, '10': 'priceChg'},
   ],
 };
 
-/// Descriptor for `WSStockSnapShot`. Decode as a `google.protobuf.DescriptorProto`.
-final $typed_data.Uint8List wSStockSnapShotDescriptor = $convert.base64Decode('Cg9XU1N0b2NrU25hcFNob3QSGwoJc3RvY2tfbnVtGAEgASgJUghzdG9ja051bRIdCgpzdG9ja19uYW1lGAIgASgJUglzdG9ja05hbWUSGwoJc25hcF90aW1lGAMgASgJUghzbmFwVGltZRISCgRvcGVuGAQgASgBUgRvcGVuEhIKBGhpZ2gYBSABKAFSBGhpZ2gSEAoDbG93GAYgASgBUgNsb3cSFAoFY2xvc2UYByABKAFSBWNsb3NlEhsKCXRpY2tfdHlwZRgIIAEoCVIIdGlja1R5cGUSGwoJcHJpY2VfY2hnGAkgASgBUghwcmljZUNoZxIXCgdwY3RfY2hnGAogASgBUgZwY3RDaGcSGQoIY2hnX3R5cGUYCyABKAlSB2NoZ1R5cGUSFgoGdm9sdW1lGAwgASgDUgZ2b2x1bWUSHQoKdm9sdW1lX3N1bRgNIAEoA1IJdm9sdW1lU3VtEhYKBmFtb3VudBgOIAEoA1IGYW1vdW50Eh0KCmFtb3VudF9zdW0YDyABKANSCWFtb3VudFN1bRIpChB5ZXN0ZXJkYXlfdm9sdW1lGBAgASgBUg95ZXN0ZXJkYXlWb2x1bWUSIQoMdm9sdW1lX3JhdGlvGBEgASgBUgt2b2x1bWVSYXRpbw==');
-@$core.Deprecated('Use wSYahooPriceDescriptor instead')
-const WSYahooPrice$json = const {
-  '1': 'WSYahooPrice',
-  '2': const [
-    const {'1': 'last', '3': 1, '4': 1, '5': 1, '10': 'last'},
-    const {'1': 'price', '3': 2, '4': 1, '5': 1, '10': 'price'},
-    const {'1': 'updated_at', '3': 3, '4': 1, '5': 9, '10': 'updatedAt'},
-  ],
-};
-
-/// Descriptor for `WSYahooPrice`. Decode as a `google.protobuf.DescriptorProto`.
-final $typed_data.Uint8List wSYahooPriceDescriptor = $convert.base64Decode('CgxXU1lhaG9vUHJpY2USEgoEbGFzdBgBIAEoAVIEbGFzdBIUCgVwcmljZRgCIAEoAVIFcHJpY2USHQoKdXBkYXRlZF9hdBgDIAEoCVIJdXBkYXRlZEF0');
+/// Descriptor for `WSIndexStatus`. Decode as a `google.protobuf.DescriptorProto`.
+final $typed_data.Uint8List wSIndexStatusDescriptor = $convert.base64Decode('Cg1XU0luZGV4U3RhdHVzEh8KC2JyZWFrX2NvdW50GAEgASgDUgpicmVha0NvdW50EhsKCXByaWNlX2NoZxgCIAEoAVIIcHJpY2VDaGc=');
 @$core.Deprecated('Use wSFuturePositionDescriptor instead')
 const WSFuturePosition$json = const {
   '1': 'WSFuturePosition',
