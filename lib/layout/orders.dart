@@ -188,7 +188,7 @@ class _OrderPage extends State<OrderPage> {
                           ),
                         ),
                         trailing: Text(
-                          '${order.price.toString()} x ${order.quantity.toString()}',
+                          '${order.price} x ${order.quantity}',
                           style: GoogleFonts.getFont(
                             'Source Code Pro',
                             fontStyle: FontStyle.normal,

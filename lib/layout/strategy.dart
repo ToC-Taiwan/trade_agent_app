@@ -336,34 +336,6 @@ Widget generateRow(String columnName, String value) => SizedBox(
       ),
     );
 
-Future<void> addTargets(String opt, BuildContext context) async {
-  final response = await http.post(
-    Uri.parse('$tradeAgentURLPrefix/targets'),
-    headers: <String, String>{
-      'Content-Type': 'application/json; charset=UTF-8',
-      'price_range': opt,
-    },
-  );
-  if (response.statusCode == 200) {
-    num count;
-    count = (jsonDecode(response.body) as Map<String, dynamic>)['total_add'] as num;
-    await showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Result'),
-        content: Text('Success $count added'),
-      ),
-    );
-  } else {
-    await showDialog(
-      context: context,
-      builder: (context) => const AlertDialog(
-        title: Text('Fail'),
-      ),
-    );
-  }
-}
-
 Future<List<Strategy>> fetchStrategy() async {
   final straregyArr = <Strategy>[];
   try {

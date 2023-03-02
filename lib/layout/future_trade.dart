@@ -28,14 +28,13 @@ class _FutureTradePageState extends State<FutureTradePage> {
   String code = '';
   String delieveryDate = '';
 
-  List<RealTimeFutureTick> totalTickArr = [];
+  RealTimeFutureTickArr totalTickArr = RealTimeFutureTickArr();
   List<RealTimeFutureTick> tickArr = [];
 
   Future<TradeIndex?> tradeIndex = Future.value();
   Future<FuturePosition?> futurePosition = Future.value();
   Future<List<RealTimeFutureTick>?> realTimeFutureTickArr = Future.value([]);
 
-  TradeRate tradeRate = TradeRate(0, 0, 0, 0, 0);
   RealTimeFutureTick? lastTick;
   List<KbarData> kbarArr = [];
   int kbarMaxVolume = 0;
@@ -121,69 +120,11 @@ class _FutureTradePageState extends State<FutureTradePage> {
     );
   }
 
-  void updateTradeRate(pb.WSFutureTick ws, List<RealTimeFutureTick> totalArr) {
-    totalTickArr.add(RealTimeFutureTick.fromProto(ws));
-
-    const baseDuration = Duration(seconds: 10);
-    final firstPeriod = RealTimeFutureTickArr();
-    final secondPeriod = RealTimeFutureTickArr();
-    final thirdPeriod = RealTimeFutureTickArr();
-    final fourthPeriod = RealTimeFutureTickArr();
-
-    for (var i = 0; i < totalTickArr.length; i++) {
-      if (totalTickArr[i].tickTime!.isBefore(DateTime.now().subtract(baseDuration * 4))) {
-        totalTickArr.removeAt(i);
-        continue;
-      }
-
-      if (totalTickArr[i].tickTime!.isBefore(DateTime.now().subtract(baseDuration * 3))) {
-        fourthPeriod.arr.add(totalTickArr[i]);
-        continue;
-      }
-
-      if (totalTickArr[i].tickTime!.isBefore(DateTime.now().subtract(baseDuration * 2))) {
-        thirdPeriod.arr.add(totalTickArr[i]);
-        fourthPeriod.arr.add(totalTickArr[i]);
-        continue;
-      }
-
-      if (totalTickArr[i].tickTime!.isBefore(DateTime.now().subtract(baseDuration * 1))) {
-        secondPeriod.arr.add(totalTickArr[i]);
-        thirdPeriod.arr.add(totalTickArr[i]);
-        fourthPeriod.arr.add(totalTickArr[i]);
-        continue;
-      }
-
-      firstPeriod.arr.add(totalTickArr[i]);
-      secondPeriod.arr.add(totalTickArr[i]);
-      thirdPeriod.arr.add(totalTickArr[i]);
-      fourthPeriod.arr.add(totalTickArr[i]);
-    }
-
-    setState(() {
-      tradeRate = TradeRate(
-        firstPeriod.getOutInVolume().getOutInRatio(),
-        secondPeriod.getOutInVolume().getOutInRatio(),
-        thirdPeriod.getOutInVolume().getOutInRatio(),
-        fourthPeriod.getOutInVolume().getOutInRatio(),
-        firstPeriod.getOutInVolume().getRate(),
-      );
-    });
+  void updateTradeRate(pb.WSFutureTick ws, RealTimeFutureTickArr totalArr) {
+    totalTickArr
+      ..add(RealTimeFutureTick.fromProto(ws))
+      ..process();
   }
-
-  CircularPercentIndicator _buildVolumeRatioCircle(double percent, double rate) => CircularPercentIndicator(
-        animateFromLastPercent: true,
-        animation: true,
-        radius: 25,
-        lineWidth: 8,
-        percent: percent / 100,
-        center: Text('${percent.toStringAsFixed(0)}%'),
-        progressColor: percent >= 55
-            ? Colors.red
-            : percent <= 45
-                ? Colors.green
-                : Colors.yellow,
-      );
 
   Future<TradeIndex> updateTradeIndex(pb.WSTradeIndex ws) async => TradeIndex.fromProto(ws);
   Future<FuturePosition> updateFuturePosition(pb.WSFuturePosition ws, String code) async => FuturePosition.fromProto(ws, code);
@@ -589,24 +530,45 @@ class _FutureTradePageState extends State<FutureTradePage> {
                       ),
                     ),
                     Padding(
-                      padding: const EdgeInsets.only(left: 20, right: 20),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          _buildVolumeRatioCircle(tradeRate.percent1, tradeRate.rate),
-                          _buildVolumeRatioCircle(tradeRate.percent2, tradeRate.rate),
-                          Text(
-                            '${tradeRate.rate.toStringAsFixed(2)}/s',
-                            style: GoogleFonts.getFont(
-                              'Source Code Pro',
-                              fontStyle: FontStyle.normal,
-                              fontSize: 25,
-                              color: tradeRate.rate >= 10 ? Colors.red : Colors.grey,
+                      padding: const EdgeInsets.only(left: 40, right: 20),
+                      child: SizedBox(
+                        child: Row(
+                          children: [
+                            Expanded(
+                              flex: 2,
+                              child: Text(
+                                '${totalTickArr.rate.toStringAsFixed(1)}/s',
+                                style: GoogleFonts.getFont(
+                                  'Source Code Pro',
+                                  fontStyle: FontStyle.normal,
+                                  fontSize: 25,
+                                  color: totalTickArr.rate > 10 ? Colors.red : Colors.grey,
+                                ),
+                              ),
                             ),
-                          ),
-                          _buildVolumeRatioCircle(tradeRate.percent3, tradeRate.rate),
-                          _buildVolumeRatioCircle(tradeRate.percent4, tradeRate.rate),
-                        ],
+                            Expanded(
+                              flex: 4,
+                              child: LinearPercentIndicator(
+                                barRadius: const Radius.circular(10),
+                                animateFromLastPercent: true,
+                                width: 220,
+                                lineHeight: 50,
+                                percent: totalTickArr.outInRatio.toDouble(),
+                                center: Text(
+                                  (100 * totalTickArr.outInRatio).toStringAsFixed(1),
+                                  style: GoogleFonts.getFont(
+                                    'Source Code Pro',
+                                    fontStyle: FontStyle.normal,
+                                    fontSize: 25,
+                                    color: totalTickArr.outInRatio != 0 ? Colors.white : Colors.transparent,
+                                  ),
+                                ),
+                                progressColor: Colors.redAccent,
+                                backgroundColor: totalTickArr.outInRatio != 0 ? Colors.greenAccent : Colors.transparent,
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   ],

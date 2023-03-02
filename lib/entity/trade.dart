@@ -75,23 +75,54 @@ class RealTimeFutureTick {
 }
 
 class RealTimeFutureTickArr {
-  OutInVolume getOutInVolume() {
-    var outVolume = 0;
-    var inVolume = 0;
-    for (var i = 0; i < arr.length; i++) {
-      switch (arr[i].tickType) {
+  void add(RealTimeFutureTick tick) => arr.add(tick);
+  void process() {
+    if (arr.length < 2) {
+      return;
+    }
+
+    if (arr[arr.length - 1].tickTime!.difference(arr[arr.length - 2].tickTime!) > const Duration(seconds: 3)) {
+      arr = [];
+      return;
+    }
+
+    final totalTime = arr.last.tickTime!.difference(arr.first.tickTime!);
+
+    if (totalTime > const Duration(seconds: 20)) {
+      arr.removeAt(0);
+    }
+
+    if (totalTime < const Duration(seconds: 10)) {
+      outInRatio = 0.0;
+      rate = 0.0;
+      return;
+    }
+
+    var outVolume = 0.0;
+    var inVolume = 0.0;
+
+    for (final element in arr) {
+      switch (element.tickType) {
         case 1:
-          outVolume += arr[i].volume!.toInt();
-          continue;
+          outVolume += element.volume!.toDouble();
+          break;
         case 2:
-          inVolume += arr[i].volume!.toInt();
-          continue;
+          inVolume += element.volume!.toDouble();
+          break;
+        default:
+          outVolume += element.volume!.toDouble();
+          break;
       }
     }
-    return OutInVolume(outVolume, inVolume);
+
+    outInRatio = outVolume / (outVolume + inVolume);
+    rate = 1000 * 1000 * (outVolume + inVolume) / totalTime.inMicroseconds.toDouble();
   }
 
   List<RealTimeFutureTick> arr = [];
+
+  num outInRatio = 0.0;
+  num rate = 0.0;
 }
 
 class AssistStatus {
@@ -112,38 +143,6 @@ class ErrMessage {
 
   num? errCode;
   String? response;
-}
-
-class OutInVolume {
-  OutInVolume(this.outVolume, this.inVolume);
-
-  double getOutInRatio() {
-    if (outVolume == 0 && inVolume == 0) {
-      return 0;
-    }
-    return 100 * (outVolume! / (outVolume! + inVolume!));
-  }
-
-  double getRate() => (outVolume! + inVolume!) / 10;
-
-  num? outVolume;
-  num? inVolume;
-}
-
-class TradeRate {
-  TradeRate(
-    this.percent1,
-    this.percent2,
-    this.percent3,
-    this.percent4,
-    this.rate,
-  );
-
-  double percent1;
-  double percent2;
-  double percent3;
-  double percent4;
-  double rate;
 }
 
 class TradeIndex {
