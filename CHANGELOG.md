@@ -1,5 +1,17 @@
 # CHANGELOG
 
+## [v5.0.0](https://github.com/ToC-Taiwan/trade_agent_app/compare/v4.2.0...v5.0.0)
+
+> 2023-03-02
+
+### Code Refactoring (1)
+
+* **dart:** refactor most layout in new lint rule, move all data class to entity
+
+### Features (1)
+
+* **traderate:** modify calculate method, and style of trade rate
+
 ## v4.2.0
 
 > 2022-12-10
