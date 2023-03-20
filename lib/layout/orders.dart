@@ -201,8 +201,17 @@ class _OrderPage extends State<OrderPage> {
                     },
                   );
                 }
-                return const Center(
-                  child: Text('No Order'),
+                return Center(
+                  child: Text(
+                    S.of(context).no_data,
+                    style: GoogleFonts.getFont(
+                      'Source Code Pro',
+                      fontStyle: FontStyle.normal,
+                      fontSize: 30,
+                      color: Colors.grey,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
                 );
               },
             ),

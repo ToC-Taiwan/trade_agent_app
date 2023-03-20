@@ -15,15 +15,16 @@ class FutureOrderArr {
 }
 
 class Orders {
-  Orders({this.baseOrder, this.code, this.manual});
+  Orders({
+    this.baseOrder,
+    this.code,
+  });
 
   Orders.fromJson(Map<String, dynamic> json) {
     baseOrder = json['base_order'] != null ? BaseOrder.fromJson(json['base_order'] as Map<String, dynamic>) : null;
     code = json['code'] as String;
-    manual = json['manual'] as bool;
   }
 
   BaseOrder? baseOrder;
   String? code;
-  bool? manual;
 }
