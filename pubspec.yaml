@@ -15,35 +15,35 @@ dependencies:
       url: https://github.com/Chindada/candlesticks.git
   curved_navigation_bar: ^1.0.3
   date_format: ^2.0.7
-  elegant_notification: ^1.6.4
-  firebase_core: ^2.2.0
-  floor: ^1.2.0
+  elegant_notification: ^1.8.1
+  firebase_core: ^2.9.0
+  floor: ^1.4.1
   flutter:
     sdk: flutter
   flutter_localizations:
     sdk: flutter
-  flutter_staggered_grid_view: ^0.6.1
+  flutter_staggered_grid_view: ^0.6.2
   google_fonts: ^4.0.3
-  google_mobile_ads: ^2.2.0
-  http: ^0.13.4
-  in_app_purchase: ^3.0.2
-  in_app_purchase_storekit: ^0.3.3
+  google_mobile_ads: ^2.4.0
+  http: ^0.13.5
+  in_app_purchase: ^3.1.5
+  in_app_purchase_storekit: ^0.3.6+2
   intl: ^0.17.0
   numberpicker: ^2.1.1
-  percent_indicator: ^4.2.2
+  percent_indicator: ^4.2.3
   protobuf: ^2.1.0
-  sqflite: ^2.2.0+3
-  syncfusion_flutter_charts: ^20.3.59
-  table_calendar: ^3.0.5
-  url_launcher: ^6.1.0
+  sqflite:
+  syncfusion_flutter_charts: ^21.1.37
+  table_calendar: ^3.0.8
+  url_launcher: ^6.1.10
   wakelock: ^0.6.2
-  web_socket_channel: ^2.2.0
+  web_socket_channel: ^2.3.0
   yaml: ^3.1.1
 
 dev_dependencies:
   analysis_options: any
-  build_runner: ^2.1.10
-  floor_generator: ^1.2.0
+  build_runner: ^2.3.3
+  floor_generator: ^1.4.1
   flutter_launcher_icons: ^0.12.0
   flutter_lints: ^2.0.1
   flutter_test:
